@@ -1,0 +1,163 @@
+cargo:rerun-if-changed=curl
+first run of vcpkg did not find libcurl: Could not find Vcpkg tree: No vcpkg installation found. Set the VCPKG_ROOT environment variable or run 'vcpkg integrate install'
+second run of vcpkg did not find libcurl: Could not find Vcpkg tree: No vcpkg installation found. Set the VCPKG_ROOT environment variable or run 'vcpkg integrate install'
+cargo:root=C:\Users\nicola\git\PersonalFinance\OpenBanking\target\debug\build\curl-sys-35e7a9be9386bdbf\out
+cargo:include=C:\Users\nicola\git\PersonalFinance\OpenBanking\target\debug\build\curl-sys-35e7a9be9386bdbf\out\include
+cargo:static=1
+cargo:rustc-cfg=libcurl_vendored
+cargo:rustc-cfg=link_libz
+TARGET = Some("x86_64-pc-windows-msvc")
+OPT_LEVEL = Some("0")
+HOST = Some("x86_64-pc-windows-msvc")
+cargo:rerun-if-env-changed=CC_x86_64-pc-windows-msvc
+CC_x86_64-pc-windows-msvc = None
+cargo:rerun-if-env-changed=CC_x86_64_pc_windows_msvc
+CC_x86_64_pc_windows_msvc = None
+cargo:rerun-if-env-changed=HOST_CC
+HOST_CC = None
+cargo:rerun-if-env-changed=CC
+CC = None
+cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+CRATE_CC_NO_DEFAULTS = None
+CARGO_CFG_TARGET_FEATURE = Some("fxsr,sse,sse2")
+DEBUG = Some("true")
+cargo:rerun-if-env-changed=CFLAGS_x86_64-pc-windows-msvc
+CFLAGS_x86_64-pc-windows-msvc = None
+cargo:rerun-if-env-changed=CFLAGS_x86_64_pc_windows_msvc
+CFLAGS_x86_64_pc_windows_msvc = None
+cargo:rerun-if-env-changed=HOST_CFLAGS
+HOST_CFLAGS = None
+cargo:rerun-if-env-changed=CFLAGS
+CFLAGS = None
+cargo:rerun-if-env-changed=CC_ENABLE_DEBUG_OUTPUT
+asyn-thread.c
+altsvc.c
+base64.c
+bufq.c
+bufref.c
+cfilters.c
+cf-h1-proxy.c
+cf-haproxy.c
+cf-https-connect.c
+cf-socket.c
+conncache.c
+connect.c
+content_encoding.c
+cookie.c
+curl_addrinfo.c
+curl_get_line.c
+curl_memrchr.c
+curl_range.c
+curl_threads.c
+curl_trc.c
+doh.c
+dynbuf.c
+dynhds.c
+easy.c
+escape.c
+file.c
+fileinfo.c
+fopen.c
+formdata.c
+getenv.c
+getinfo.c
+hash.c
+headers.c
+hmac.c
+hostasyn.c
+hostip.c
+hostip6.c
+hsts.c
+http.c
+http1.c
+http_aws_sigv4.c
+http_chunks.c
+http_digest.c
+http_proxy.c
+idn.c
+if2ip.c
+inet_ntop.c
+inet_pton.c
+llist.c
+md5.c
+mime.c
+macos.c
+mprintf.c
+mqtt.c
+multi.c
+netrc.c
+nonblock.c
+noproxy.c
+parsedate.c
+progress.c
+rand.c
+rename.c
+select.c
+sendf.c
+setopt.c
+sha256.c
+share.c
+slist.c
+socks.c
+socketpair.c
+speedcheck.c
+splay.c
+strcase.c
+strdup.c
+strerror.c
+strtok.c
+strtoofft.c
+timeval.c
+transfer.c
+url.c
+urlapi.c
+version.c
+digest.c
+vauth.c
+curl_msh3.c
+curl_ngtcp2.c
+curl_osslq.c
+curl_quiche.c
+vquic.c
+vquic-tls.c
+hostcheck.c
+keylog.c
+vtls.c
+warnless.c
+timediff.c
+http_negotiate.c
+curl_sspi.c
+socks_sspi.c
+spnego_sspi.c
+vauth.c
+schannel.c
+schannel_verify.c
+x509asn1.c
+bufref.c
+system_win32.c
+version_win32.c
+digest_sspi.c
+curl_multibyte.c
+cargo:rerun-if-env-changed=AR_x86_64-pc-windows-msvc
+AR_x86_64-pc-windows-msvc = None
+cargo:rerun-if-env-changed=AR_x86_64_pc_windows_msvc
+AR_x86_64_pc_windows_msvc = None
+cargo:rerun-if-env-changed=HOST_AR
+HOST_AR = None
+cargo:rerun-if-env-changed=AR
+AR = None
+cargo:rerun-if-env-changed=ARFLAGS_x86_64-pc-windows-msvc
+ARFLAGS_x86_64-pc-windows-msvc = None
+cargo:rerun-if-env-changed=ARFLAGS_x86_64_pc_windows_msvc
+ARFLAGS_x86_64_pc_windows_msvc = None
+cargo:rerun-if-env-changed=HOST_ARFLAGS
+HOST_ARFLAGS = None
+cargo:rerun-if-env-changed=ARFLAGS
+ARFLAGS = None
+C:\Users\nicola\git\PersonalFinance\OpenBanking\target\debug\build\curl-sys-35e7a9be9386bdbf\out\build\f69a63c6d6bb925f-vauth.o : warning LNK4042: object specified more than once; extras ignored
+Replacing C:\Users\nicola\git\PersonalFinance\OpenBanking\target\debug\build\curl-sys-35e7a9be9386bdbf\out\build\4da0da058b5259b3-bufref.o
+cargo:rustc-link-search=native=C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\atlmfc\lib\x64
+cargo:rustc-link-lib=static=curl
+cargo:rustc-link-search=native=C:\Users\nicola\git\PersonalFinance\OpenBanking\target\debug\build\curl-sys-35e7a9be9386bdbf\out\build
+cargo:rustc-link-lib=ws2_32
+cargo:rustc-link-lib=crypt32
