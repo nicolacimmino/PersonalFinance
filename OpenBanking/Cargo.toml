@@ -1,3 +1,4 @@
+workspace = { members = [] }
 [package]
 name = "OpenBanking"
 version = "0.1.0"
@@ -8,3 +9,6 @@ edition = "2021"
 [dependencies]
 curl = "0.4.46"
 diesel = "2.1.5"
+dotenvy = "0.15.7"
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0.115"
