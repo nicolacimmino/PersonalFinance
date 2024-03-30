@@ -1,6 +1,6 @@
 use std::env;
 use dotenvy::dotenv;
-use crate::go_cardless_api::GoCardlessApi;
+use go_cardless_api::GoCardlessApi;
 
 mod go_cardless_api;
 
@@ -9,14 +9,11 @@ fn main() {
     let go_cardless_secret_id = env::var("GOCARDLESS_SECRET_ID").expect("GOCARDLESS_SECRET_ID must be set");
     let go_cardless_secret_key = env::var("GOCARDLESS_SECRET_KEY").expect("GOCARDLESS_SECRET_KEY must be set");
 
-    let go_cardless_api = GoCardlessApi {
-        secret_id: go_cardless_secret_id,
-        secret_key: go_cardless_secret_key,
-    };
+    let mut go_cardless_api = GoCardlessApi::new();
 
-    let response = go_cardless_api.get_token();
+    go_cardless_api.get_token(go_cardless_secret_id, go_cardless_secret_key);
 
-    println!("{}", response.access);
+    //println!("{}", response.access);
 
     //println!("{:?}", result);
 

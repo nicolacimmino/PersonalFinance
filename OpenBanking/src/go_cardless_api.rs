@@ -3,9 +3,9 @@ use std::io::Read;
 use curl::easy::{Easy, List};
 use serde::{Deserialize, Serialize};
 
+#[derive(Default)]
 pub struct GoCardlessApi {
-    pub(crate) secret_id: String,
-    pub(crate) secret_key: String,
+    access_token: String,
 }
 
 #[derive(Serialize)]
@@ -23,10 +23,16 @@ pub struct CreateTokenResponse {
 }
 
 impl GoCardlessApi {
-    pub fn get_token(&self) -> CreateTokenResponse {
+    pub fn new() -> GoCardlessApi {
+        GoCardlessApi {
+            access_token: "".to_string()
+        }
+    }
+
+    pub fn get_token(&mut self, secret_id: String, secret_key: String) {
         let binding = serde_json::to_string(&CreateTokenRequest {
-            secret_id: self.secret_id.to_string(),
-            secret_key: self.secret_key.to_string(),
+            secret_id: secret_id.to_string(),
+            secret_key: secret_key.to_string(),
         }).unwrap();
         let mut body = binding.as_bytes();
         let mut dst = Vec::new();
@@ -62,6 +68,6 @@ impl GoCardlessApi {
 
         println!("{}", response.access);
 
-        return response;
+        self.access_token = response.access;
     }
 }
