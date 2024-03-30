@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::io::Read;
 
 use curl::easy::{Easy, List};
@@ -30,20 +31,38 @@ impl GoCardlessApi {
     }
 
     pub fn get_token(&mut self, secret_id: String, secret_key: String) {
-        let binding = serde_json::to_string(&CreateTokenRequest {
-            secret_id: secret_id.to_string(),
-            secret_key: secret_key.to_string(),
-        }).unwrap();
-        let mut body = binding.as_bytes();
+        let response: CreateTokenResponse = self.make_post_request(
+            "https://bankaccountdata.gocardless.com/api/v2/token/new/",
+            CreateTokenRequest {
+                secret_id: secret_id.to_string(),
+                secret_key: secret_key.to_string(),
+            }).unwrap();
+
+        println!("{}", response.access);
+
+        self.access_token = response.access;
+    }
+
+    fn make_post_request<RequestT, ResponseT>(&mut self, url: &str, request: RequestT) -> Result<ResponseT, &'static dyn Error>
+        where
+            RequestT: Serialize,
+            ResponseT: for<'a> Deserialize<'a> + Sized
+    {
+        let json_body = match serde_json::to_string(&request) {
+            Ok(json) => json,
+            Err(_e) => panic!("Error!"),
+        };
+        let mut body = json_body.as_bytes();
+
         let mut dst = Vec::new();
         let mut easy = Easy::new();
 
-        easy.url("https://bankaccountdata.gocardless.com/api/v2/token/new/").unwrap();
+        easy.url(url).unwrap();
         easy.post(true).unwrap();
         easy.post_field_size(body.len() as u64).unwrap();
 
         let mut list = List::new();
-        list.append(&format!("Content-Type: application/json")).unwrap();
+        list.append(&"Content-Type: application/json".to_string()).unwrap();
         easy.http_headers(list).unwrap();
 
         {
@@ -61,13 +80,18 @@ impl GoCardlessApi {
 
             transfer.perform().unwrap();
         }
+
         let response_json = String::from_utf8(dst).expect("Cannot parse string");
 
-        let response: CreateTokenResponse = serde_json::from_str(&*response_json)
-            .expect("Cannot deserialize");
+        //return serde_json::from_str(&*response_json)
+        //.expect("Cannot deserialize");
 
-        println!("{}", response.access);
-
-        self.access_token = response.access;
+        match serde_json::from_str(&*response_json) {
+            Ok(response) => Ok(response),
+            Err(_e) => panic!("conversion error"),
+        }
+        // println!("{}", response.access);
+        //
+        // self.access_token = response.access;
     }
 }
