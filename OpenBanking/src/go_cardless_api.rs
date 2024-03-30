@@ -1,7 +1,4 @@
 use std::error::Error;
-use std::io::Read;
-
-use curl::easy::{Easy, List};
 use serde::{Deserialize, Serialize};
 
 #[derive(Default)]
@@ -52,46 +49,18 @@ impl GoCardlessApi {
             Ok(json) => json,
             Err(_e) => panic!("Error!"),
         };
-        let mut body = json_body.as_bytes();
+        //let body = json_body.as_bytes();
 
-        let mut dst = Vec::new();
-        let mut easy = Easy::new();
+        let client = reqwest::blocking::Client::new();
+        let response_text = client
+            .post(url)
+            .header("Content-Type", "application/json")
+            .body(json_body)
+            .send().unwrap().text().unwrap();
 
-        easy.url(url).unwrap();
-        easy.post(true).unwrap();
-        easy.post_field_size(body.len() as u64).unwrap();
-
-        let mut list = List::new();
-        list.append(&"Content-Type: application/json".to_string()).unwrap();
-        easy.http_headers(list).unwrap();
-
-        {
-            let mut transfer = easy.transfer();
-            transfer.read_function(|buf| {
-                Ok(body.read(buf).unwrap_or(0))
-            }).unwrap();
-
-            transfer
-                .write_function(|buf| {
-                    dst.extend_from_slice(buf);
-                    Ok(buf.len())
-                })
-                .unwrap();
-
-            transfer.perform().unwrap();
-        }
-
-        let response_json = String::from_utf8(dst).expect("Cannot parse string");
-
-        //return serde_json::from_str(&*response_json)
-        //.expect("Cannot deserialize");
-
-        match serde_json::from_str(&*response_json) {
+        match serde_json::from_str(&*response_text) {
             Ok(response) => Ok(response),
             Err(_e) => panic!("conversion error"),
         }
-        // println!("{}", response.access);
-        //
-        // self.access_token = response.access;
     }
 }
