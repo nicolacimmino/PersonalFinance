@@ -1,8 +1,8 @@
 use std::env;
 
-use diesel::{Connection, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::{Connection, QueryDsl, RunQueryDsl};
 use diesel::expression_methods::ExpressionMethods;
-use diesel::internal::derives::multiconnection::SelectStatementAccessor;
+
 use diesel::pg::PgConnection;
 use dotenvy::dotenv;
 
@@ -37,7 +37,7 @@ fn main() {
             .get_result(connection)
             .expect("Error loading transactions");
 
-        if (found_transactions > 0) {
+        if found_transactions > 0 {
             continue;
         }
 
