@@ -29,10 +29,7 @@ fn main() {
 
     for transaction in transactions {
         let found_transactions: i64 = ob_transactions
-            .limit(1)
-            .filter(internal_transaction_id.eq(""))
-            // .select(ObTransaction::as_select())
-            // .load(connection)
+            .filter(internal_transaction_id.eq(&*transaction.internal_transaction_id))
             .count()
             .get_result(connection)
             .expect("Error loading transactions");

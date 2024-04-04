@@ -1,4 +1,6 @@
+use std::env;
 use std::error::Error;
+use dotenvy::dotenv;
 
 use serde::{Deserialize, Serialize};
 
@@ -102,8 +104,11 @@ impl GoCardlessApi {
     }
 
     pub fn get_transactions(&mut self, account_id: &String) -> Vec<Transaction> {
+        dotenv().ok();
+
+        let gocardless_host = env::var("GOCARDLESS_HOST").expect("GOCARDLESS_HOST");
         let response: GetTransactionsResponse = self.make_get_request(
-            &format!("https://bankaccountdata.gocardless.com/api/v2/accounts/{account_id}/transactions/"),
+            &format!("{gocardless_host}/api/v2/accounts/{account_id}/transactions/"),
         ).unwrap();
 
         println!("{}", response.transactions.booked[0].remittance_information_unstructured);
