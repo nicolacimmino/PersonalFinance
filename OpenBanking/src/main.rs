@@ -1,13 +1,15 @@
 mod schema;
 
 use std::env;
-use diesel::{Connection, RunQueryDsl};
+use diesel::{Connection, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::internal::derives::multiconnection::SelectStatementAccessor;
 use dotenvy::dotenv;
 use go_cardless_api::GoCardlessApi;
 pub use schema::ob_transactions::dsl::*;
-use crate::model::NewObTransaction;
+use crate::model::{NewObTransaction, ObTransaction};
 use diesel::pg::PgConnection;
 use crate::go_cardless_api::Account;
+use diesel::expression_methods::ExpressionMethods;
 
 mod go_cardless_api;
 mod model;
@@ -26,8 +28,20 @@ fn main() {
     let connection = &mut establish_db_connection();
 
     for transaction in transactions {
+        let found_transactions: i64 = ob_transactions
+            .limit(1)
+            .filter(internal_transaction_id.eq(""))
+            // .select(ObTransaction::as_select())
+            // .load(connection)
+            .count()
+            .get_result(connection)
+            .expect("Error loading transactions");
+
+        if (found_transactions > 0) {
+            continue;
+        }
+
         diesel::insert_into(ob_transactions)
-            //.values(vec![&description.eq(record.note),&amount_cents.eq(100)])
             .values(NewObTransaction {
                 transaction_id: &*transaction.transaction_id,
                 booking_date: &*transaction.booking_date,
