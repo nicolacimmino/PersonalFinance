@@ -34,51 +34,51 @@ pub struct Transactions {
 
 #[derive(Deserialize)]
 pub struct Amount {
-    amount: String,
-    currency: String,
+    pub amount: String,
+    pub currency: String,
 }
 
 #[derive(Deserialize)]
 pub struct Account {
-    iban: String,
+    pub iban: String,
 }
 
 #[derive(Deserialize)]
 pub struct Balance {
     #[serde(rename(deserialize = "balanceAmount"))]
-    balance_amount: Amount,
+    pub balance_amount: Amount,
     #[serde(rename(deserialize = "balanceType"))]
-    balance_type: String,
+    pub balance_type: String,
 }
 
 #[derive(Deserialize)]
 pub struct Transaction {
     #[serde(rename(deserialize = "transactionId"))]
-    transaction_id: String,
+    pub transaction_id: String,
     #[serde(rename(deserialize = "bookingDate"))]
-    booking_date: String,
+    pub booking_date: String,
     #[serde(rename(deserialize = "valueDate"))]
-    value_date: String,
+    pub value_date: String,
     #[serde(rename(deserialize = "bookingDateTime"))]
-    booking_date_time: String,
+    pub booking_date_time: String,
     #[serde(rename(deserialize = "transactionAmount"))]
-    transaction_amount: Amount,
+    pub transaction_amount: Amount,
     #[serde(default)]
     #[serde(rename(deserialize = "creditorName"))]
-    creditor_name: String,
+    pub creditor_name: String,
     #[serde(default)]
     #[serde(rename(deserialize = "debtorName"))]
-    debtor_name: String,
+    pub debtor_name: String,
     #[serde(rename(deserialize = "debtorAccount"))]
-    debtor_account: Option<Account>,
+    pub debtor_account: Option<Account>,
     #[serde(rename(deserialize = "remittanceInformationUnstructured"))]
-    remittance_information_unstructured: String,
+    pub remittance_information_unstructured: String,
     #[serde(rename(deserialize = "remittanceInformationUnstructuredArray"))]
-    remittance_information_unstructured_array: Vec<String>,
+    pub remittance_information_unstructured_array: Vec<String>,
     #[serde(rename(deserialize = "balanceAfterTransaction"))]
-    balance_after_transaction: Balance,
+    pub balance_after_transaction: Balance,
     #[serde(rename(deserialize = "internalTransactionId"))]
-    internal_transaction_id: String,
+    pub internal_transaction_id: String,
 }
 
 impl GoCardlessApi {
@@ -101,12 +101,14 @@ impl GoCardlessApi {
         self.access_token = response.access;
     }
 
-    pub fn get_transactions(&mut self, account_id: String) {
+    pub fn get_transactions(&mut self, account_id: &String) -> Vec<Transaction> {
         let response: GetTransactionsResponse = self.make_get_request(
             &format!("https://bankaccountdata.gocardless.com/api/v2/accounts/{account_id}/transactions/"),
         ).unwrap();
 
         println!("{}", response.transactions.booked[0].remittance_information_unstructured);
+
+        return response.transactions.booked;
     }
 
     fn make_post_request<RequestT, ResponseT>(&mut self, url: &str, request: RequestT) -> Result<ResponseT, &'static dyn Error>

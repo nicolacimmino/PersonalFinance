@@ -1,8 +1,16 @@
+mod schema;
+
 use std::env;
+use diesel::{Connection, RunQueryDsl};
 use dotenvy::dotenv;
 use go_cardless_api::GoCardlessApi;
+pub use schema::ob_transactions::dsl::*;
+use crate::model::NewObTransaction;
+use diesel::pg::PgConnection;
+use crate::go_cardless_api::Account;
 
 mod go_cardless_api;
+mod model;
 
 fn main() {
     dotenv().ok();
@@ -13,5 +21,39 @@ fn main() {
     let mut go_cardless_api = GoCardlessApi::new();
 
     go_cardless_api.get_token(go_cardless_secret_id, go_cardless_secret_key);
-    go_cardless_api.get_transactions(tmp_account_number);
+    let transactions = go_cardless_api.get_transactions(&tmp_account_number);
+
+    let connection = &mut establish_db_connection();
+
+    for transaction in transactions {
+        diesel::insert_into(ob_transactions)
+            //.values(vec![&description.eq(record.note),&amount_cents.eq(100)])
+            .values(NewObTransaction {
+                transaction_id: &*transaction.transaction_id,
+                booking_date: &*transaction.booking_date,
+                value_date: &*transaction.value_date,
+                booking_date_time: &*transaction.booking_date_time,
+                transaction_amount_cents: (transaction.transaction_amount.amount.parse::<f64>().expect("Cannot parse transaction_amount") * 100f64) as i32,
+                transaction_amount_currency: &*transaction.transaction_amount.currency,
+                creditor_name: &*transaction.creditor_name,
+                debtor_name: &*transaction.debtor_name,
+                debtor_account_iban: &*transaction.debtor_account.unwrap_or(Account {
+                    iban: "".to_string()
+                }).iban,
+                remittance_information_unstructured: &*transaction.remittance_information_unstructured,
+                balance_after_transaction_amount_cents: (transaction.balance_after_transaction.balance_amount.amount.parse::<f64>().expect("Cannot parse balance_amount") * 100f64) as i32,
+                balance_after_transaction_currency: &*transaction.balance_after_transaction.balance_amount.currency,
+                balance_after_transaction_type: &*transaction.balance_after_transaction.balance_type,
+                internal_transaction_id: &*transaction.internal_transaction_id,
+            })
+            .execute(connection).expect("Cannot insert");
+    }
+}
+
+pub fn establish_db_connection() -> PgConnection {
+    dotenv().ok();
+
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    PgConnection::establish(&database_url)
+        .unwrap_or_else(|_| panic!("Error connecting to database"))
 }
