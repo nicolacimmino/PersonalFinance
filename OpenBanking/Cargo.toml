@@ -1,6 +1,6 @@
 workspace = { members = [] }
 [package]
-name = "OpenBanking"
+name = "open_banking"
 version = "0.1.0"
 edition = "2021"
 

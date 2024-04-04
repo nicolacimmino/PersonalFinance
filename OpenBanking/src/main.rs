@@ -1,15 +1,18 @@
-mod schema;
-
 use std::env;
+
 use diesel::{Connection, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::expression_methods::ExpressionMethods;
 use diesel::internal::derives::multiconnection::SelectStatementAccessor;
+use diesel::pg::PgConnection;
 use dotenvy::dotenv;
+
 use go_cardless_api::GoCardlessApi;
 pub use schema::ob_transactions::dsl::*;
-use crate::model::{NewObTransaction, ObTransaction};
-use diesel::pg::PgConnection;
+
 use crate::go_cardless_api::Account;
-use diesel::expression_methods::ExpressionMethods;
+use crate::model::NewObTransaction;
+
+mod schema;
 
 mod go_cardless_api;
 mod model;

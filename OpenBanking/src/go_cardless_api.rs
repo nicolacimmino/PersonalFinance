@@ -18,9 +18,6 @@ struct CreateTokenRequest {
 #[derive(Deserialize)]
 pub struct CreateTokenResponse {
     pub(crate) access: String,
-    access_expires: i64,
-    refresh: String,
-    refresh_expires: i64,
 }
 
 #[derive(Deserialize)]
@@ -31,7 +28,6 @@ pub struct GetTransactionsResponse {
 #[derive(Deserialize)]
 pub struct Transactions {
     booked: Vec<Transaction>,
-    pending: Vec<Transaction>,
 }
 
 #[derive(Deserialize)]
@@ -91,14 +87,16 @@ impl GoCardlessApi {
     }
 
     pub fn get_token(&mut self, secret_id: String, secret_key: String) {
+        dotenv().ok();
+
+        let gocardless_host = env::var("GOCARDLESS_HOST").expect("GOCARDLESS_HOST");
+
         let response: CreateTokenResponse = self.make_post_request(
-            "https://bankaccountdata.gocardless.com/api/v2/token/new/",
+            &format!("{gocardless_host}/api/v2/token/new/"),
             CreateTokenRequest {
                 secret_id: secret_id.to_string(),
                 secret_key: secret_key.to_string(),
             }).unwrap();
-
-        println!("{}", response.access);
 
         self.access_token = response.access;
     }
@@ -110,8 +108,6 @@ impl GoCardlessApi {
         let response: GetTransactionsResponse = self.make_get_request(
             &format!("{gocardless_host}/api/v2/accounts/{account_id}/transactions/"),
         ).unwrap();
-
-        println!("{}", response.transactions.booked[0].remittance_information_unstructured);
 
         return response.transactions.booked;
     }
@@ -150,8 +146,6 @@ impl GoCardlessApi {
             .get(url)
             .header("Authorization", &format!("Bearer {access_token}"))
             .send().unwrap().text().unwrap();
-
-        println!("{}", response_text);
 
         match serde_json::from_str(&*response_text) {
             Ok(response) => Ok(response),
