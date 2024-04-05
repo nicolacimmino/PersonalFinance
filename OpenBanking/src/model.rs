@@ -1,9 +1,20 @@
 use diesel::{Insertable, Queryable, Selectable};
+use uuid::Uuid;
+
+#[derive(Queryable, Selectable)]
+#[diesel(table_name = crate::schema::ob_accounts)]
+#[diesel(check_for_backend(diesel::pg::Pg))]
+pub struct ObAccount {
+    pub id: Uuid,
+    pub provider: String,
+    pub provider_account_id: String
+}
 
 #[derive(Queryable, Selectable)]
 #[diesel(table_name = crate::schema::ob_transactions)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct ObTransaction {
+    pub ob_account_id: Uuid,
     pub transaction_id: String,
     pub booking_date: String,
     pub value_date: String,
@@ -24,6 +35,7 @@ pub struct ObTransaction {
 #[diesel(table_name = crate::schema::ob_transactions)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct NewObTransaction<'a> {
+    pub ob_account_id: &'a Uuid,
     pub transaction_id: &'a str,
     pub booking_date: &'a str,
     pub value_date: &'a str,

@@ -1,6 +1,7 @@
 CREATE TABLE ob_transactions
 (
     id                                     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ob_account_id                          UUID       NOT NULL REFERENCES ob_accounts,
     transaction_id                         TEXT       NOT NULL,
     booking_date                           TEXT       NOT NULL,
     value_date                             TEXT       NOT NULL,

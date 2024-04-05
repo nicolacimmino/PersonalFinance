@@ -7,12 +7,15 @@ diesel::table! {
         provider -> Varchar,
         #[max_length = 128]
         provider_account_id -> Varchar,
+        #[max_length = 128]
+        name -> Varchar,
     }
 }
 
 diesel::table! {
     ob_transactions (id) {
         id -> Uuid,
+        ob_account_id -> Uuid,
         transaction_id -> Text,
         booking_date -> Text,
         value_date -> Text,
@@ -31,6 +34,8 @@ diesel::table! {
         internal_transaction_id -> Text,
     }
 }
+
+diesel::joinable!(ob_transactions -> ob_accounts (ob_account_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     ob_accounts,

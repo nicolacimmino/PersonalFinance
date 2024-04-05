@@ -1,16 +1,17 @@
 use std::env;
 
-use diesel::{Connection, QueryDsl, RunQueryDsl};
+use diesel::{Connection, QueryDsl, RunQueryDsl, SelectableHelper};
 use diesel::expression_methods::ExpressionMethods;
-
 use diesel::pg::PgConnection;
 use dotenvy::dotenv;
+use uuid::Uuid;
 
 use go_cardless_api::GoCardlessApi;
 pub use schema::ob_transactions::dsl::*;
 
 use crate::go_cardless_api::Account;
-use crate::model::NewObTransaction;
+use crate::model::{NewObTransaction, ObAccount};
+use crate::schema::ob_accounts::dsl::ob_accounts;
 
 mod schema;
 
@@ -19,20 +20,35 @@ mod model;
 
 fn main() {
     dotenv().ok();
+    //let tmp_account_number = env::var("TMP_ACCOUNT_NUMBER").expect("TMP_ACCOUNT_NUMBER must be set");
+
+    let connection = &mut establish_db_connection();
+
+    let ob_accounts_to_sync: Vec<ObAccount> = ob_accounts
+        .select(ObAccount::as_select())
+        .load(connection)
+        .expect("Error loading ob_accounts");
+
+    for ob_account in ob_accounts_to_sync {
+        sync_account_transactions(&ob_account.id, &ob_account.provider_account_id)
+    }
+}
+
+fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
     let go_cardless_secret_id = env::var("GOCARDLESS_SECRET_ID").expect("GOCARDLESS_SECRET_ID must be set");
     let go_cardless_secret_key = env::var("GOCARDLESS_SECRET_KEY").expect("GOCARDLESS_SECRET_KEY must be set");
-    let tmp_account_number = env::var("TMP_ACCOUNT_NUMBER").expect("TMP_ACCOUNT_NUMBER must be set");
 
     let mut go_cardless_api = GoCardlessApi::new();
 
     go_cardless_api.get_token(go_cardless_secret_id, go_cardless_secret_key);
-    let transactions = go_cardless_api.get_transactions(&tmp_account_number);
+    let transactions = go_cardless_api.get_transactions(provider_account_id);
 
     let connection = &mut establish_db_connection();
 
     for transaction in transactions {
         let found_transactions: i64 = ob_transactions
             .filter(internal_transaction_id.eq(&*transaction.internal_transaction_id))
+            .filter(ob_account_id.eq(account_id))
             .count()
             .get_result(connection)
             .expect("Error loading transactions");
@@ -43,6 +59,7 @@ fn main() {
 
         diesel::insert_into(ob_transactions)
             .values(NewObTransaction {
+                ob_account_id: account_id,
                 transaction_id: &*transaction.transaction_id,
                 booking_date: &*transaction.booking_date,
                 value_date: &*transaction.value_date,
