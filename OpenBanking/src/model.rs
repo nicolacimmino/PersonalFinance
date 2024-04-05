@@ -7,7 +7,8 @@ use uuid::Uuid;
 pub struct ObAccount {
     pub id: Uuid,
     pub provider: String,
-    pub provider_account_id: String
+    pub provider_account_id: String,
+    pub name: String
 }
 
 #[derive(Queryable, Selectable)]

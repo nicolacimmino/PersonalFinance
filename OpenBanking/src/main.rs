@@ -20,7 +20,6 @@ mod model;
 
 fn main() {
     dotenv().ok();
-    //let tmp_account_number = env::var("TMP_ACCOUNT_NUMBER").expect("TMP_ACCOUNT_NUMBER must be set");
 
     let connection = &mut establish_db_connection();
 
@@ -30,6 +29,7 @@ fn main() {
         .expect("Error loading ob_accounts");
 
     for ob_account in ob_accounts_to_sync {
+        println!("Syncing account {} ({})", ob_account.name, ob_account.id);
         sync_account_transactions(&ob_account.id, &ob_account.provider_account_id)
     }
 }
@@ -57,6 +57,10 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
             continue;
         }
 
+        println!("Found transaction {} ({})",
+               transaction.remittance_information_unstructured,
+               transaction.internal_transaction_id);
+
         diesel::insert_into(ob_transactions)
             .values(NewObTransaction {
                 ob_account_id: account_id,
@@ -82,8 +86,6 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
 }
 
 pub fn establish_db_connection() -> PgConnection {
-    dotenv().ok();
-
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     PgConnection::establish(&database_url)
         .unwrap_or_else(|_| panic!("Error connecting to database"))
