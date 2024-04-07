@@ -90,6 +90,11 @@ Connect to the Postgres db, open the `ob_accounts` table and add a new row for e
 
 `provider` -> `GOCARDLESS`
 `provider_account_id` -> The account ID from the previous step ("Get the GoCardless account IDs")
+
+You are all set! Just run the app again with `cargo run` and it will fetch all available transactions and store them in `ob_transactions`. If you run the application again at a later date only new transactions will be added to the database.
+
+
+
 `name` -> Just a friendly name for your reference e.g. "Checking account"
 
 
