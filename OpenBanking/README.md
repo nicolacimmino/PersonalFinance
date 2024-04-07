@@ -13,7 +13,7 @@ Once the requisition is created it will be enough to add the GoCardless accounts
 ## Install and first run
 
 You will need to:
-* Create a GoCardless account and API key
+* Create a GoCardless account and API key. Note: GoCardless core business is Payments Initiation and that API is not free. However they provide the "Bank Account Data" API which is free for up to 10 active requisitions (bank connection) in a given month.
 * Create a Postgres empty database
 * Install Rust
 * Clone this repo and add a .env file in the `OpenBanking` folder with the following:
