@@ -56,7 +56,7 @@ curl --location 'https://bankaccountdata.gocardless.com/api/v2/institutions/?cou
 --header 'Accept: application/json' \
 --header 'Authorization: Bearer [access token]'
 ````
-Note: change the country code in the URL the one of your bank.
+Note: change the country code in the URL to the one of your bank.
 
 Find your bank and note its ID (eg `NORDEA_NDEAFIHH`).
 
@@ -100,15 +100,6 @@ Connect to the Postgres db, open the `ob_accounts` table and add a new row for e
 | `name`   | A friendly name for your convenience | `Checking Account` |
 
 
-You are all set! Just run the app awith `cargo run` and it will fetch all available transactions and store them in `ob_transactions`. 
+You are all set! Just run the app with `cargo run` and it will fetch all available transactions and store them in `ob_transactions`. 
 
 If you run the application again at a later date only new transactions will be added to the database.
-
-
-
-`name` -> Just a friendly name for your reference e.g. "Checking account"
-
-
-
-
-
