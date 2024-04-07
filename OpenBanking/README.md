@@ -26,7 +26,9 @@ GOCARDLESS_SECRET_KEY=[your GoCardless API Secret Key]
 GOCARDLESS_HOST=https://bankaccountdata.gocardless.com
 ````
 
-* Run the app once with `cargo run`
+* Install `diesel_cli` with `cargo install diesel_cli`
+  
+* Run the migrations with `diesel migration run`
 
 If all is setup correctly this will run the `diesel` migrations and you should have a db schema with `ob_accounts` and `ob_transactions` tables.
 
