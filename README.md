@@ -4,5 +4,6 @@ Basic set of tools to run personal financial reports, budgeting and general spen
 
 ## Services
 
+|Service|Description|
 |---|---|
 |OpenBanking| Responsible to fetch transactions from institutions through Open Banking. |
