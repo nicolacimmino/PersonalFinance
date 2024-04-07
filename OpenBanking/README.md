@@ -19,7 +19,7 @@ You will need to:
 * Clone this repo and add a .env file in the `OpenBanking` folder with the following:
 
 ````
-DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/pfinance
+DATABASE_URL=postgresql://[user]:[password]@127.0.0.1:5432/[dbname]
 
 GOCARDLESS_SECRET_ID=[your GoCardless API Secret]
 GOCARDLESS_SECRET_KEY=[your GoCardless API Secret Key]
