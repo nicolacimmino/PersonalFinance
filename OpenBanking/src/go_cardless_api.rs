@@ -58,7 +58,7 @@ pub struct Transaction {
     #[serde(rename(deserialize = "valueDate"))]
     pub value_date: String,
     #[serde(rename(deserialize = "bookingDateTime"))]
-    pub booking_date_time: String,
+    pub booking_date_time: Option<String>,
     #[serde(rename(deserialize = "transactionAmount"))]
     pub transaction_amount: Amount,
     #[serde(default)]
@@ -71,10 +71,8 @@ pub struct Transaction {
     pub debtor_account: Option<Account>,
     #[serde(rename(deserialize = "remittanceInformationUnstructured"))]
     pub remittance_information_unstructured: String,
-    #[serde(rename(deserialize = "remittanceInformationUnstructuredArray"))]
-    pub remittance_information_unstructured_array: Vec<String>,
     #[serde(rename(deserialize = "balanceAfterTransaction"))]
-    pub balance_after_transaction: Balance,
+    pub balance_after_transaction: Option<Balance>,
     #[serde(rename(deserialize = "internalTransactionId"))]
     pub internal_transaction_id: String,
 }

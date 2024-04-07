@@ -9,9 +9,10 @@ use uuid::Uuid;
 use go_cardless_api::GoCardlessApi;
 pub use schema::ob_transactions::dsl::*;
 
-use crate::go_cardless_api::Account;
+use crate::go_cardless_api::{Account, Amount, Balance};
 use crate::model::{NewObTransaction, ObAccount};
 use crate::schema::ob_accounts::dsl::ob_accounts;
+use crate::schema::ob_accounts::provider;
 
 mod schema;
 
@@ -24,6 +25,7 @@ fn main() {
     let connection = &mut establish_db_connection();
 
     let ob_accounts_to_sync: Vec<ObAccount> = ob_accounts
+        .filter(provider.eq("GOCARDLESS"))
         .select(ObAccount::as_select())
         .load(connection)
         .expect("Error loading ob_accounts");
@@ -58,8 +60,16 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
         }
 
         println!("Found transaction {} ({})",
-               transaction.remittance_information_unstructured,
-               transaction.internal_transaction_id);
+                 transaction.remittance_information_unstructured,
+                 transaction.internal_transaction_id);
+
+        let balance_after_transaction = transaction.balance_after_transaction.unwrap_or(Balance {
+            balance_amount: Amount {
+                amount: "0".to_string(),
+                currency: "".to_string(),
+            },
+            balance_type: "".to_string(),
+        });
 
         diesel::insert_into(ob_transactions)
             .values(NewObTransaction {
@@ -67,7 +77,7 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
                 transaction_id: &*transaction.transaction_id,
                 booking_date: &*transaction.booking_date,
                 value_date: &*transaction.value_date,
-                booking_date_time: &*transaction.booking_date_time,
+                booking_date_time: &*transaction.booking_date_time.unwrap_or("".to_string()),
                 transaction_amount_cents: (transaction.transaction_amount.amount.parse::<f64>().expect("Cannot parse transaction_amount") * 100f64) as i32,
                 transaction_amount_currency: &*transaction.transaction_amount.currency,
                 creditor_name: &*transaction.creditor_name,
@@ -76,9 +86,9 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
                     iban: "".to_string()
                 }).iban,
                 remittance_information_unstructured: &*transaction.remittance_information_unstructured,
-                balance_after_transaction_amount_cents: (transaction.balance_after_transaction.balance_amount.amount.parse::<f64>().expect("Cannot parse balance_amount") * 100f64) as i32,
-                balance_after_transaction_currency: &*transaction.balance_after_transaction.balance_amount.currency,
-                balance_after_transaction_type: &*transaction.balance_after_transaction.balance_type,
+                balance_after_transaction_amount_cents: (balance_after_transaction.balance_amount.amount.parse::<f64>().expect("Cannot parse balance_amount") * 100f64) as i32,
+                balance_after_transaction_currency: &*balance_after_transaction.balance_amount.currency,
+                balance_after_transaction_type: &*balance_after_transaction.balance_type,
                 internal_transaction_id: &*transaction.internal_transaction_id,
             })
             .execute(connection).expect("Cannot insert");
