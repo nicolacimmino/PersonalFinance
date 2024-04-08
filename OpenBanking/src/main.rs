@@ -4,6 +4,7 @@ use diesel::{Connection, QueryDsl, RunQueryDsl, SelectableHelper};
 use diesel::expression_methods::ExpressionMethods;
 use diesel::pg::PgConnection;
 use dotenvy::dotenv;
+use log::{error, info, LevelFilter};
 use uuid::Uuid;
 
 use go_cardless_api::GoCardlessApi;
@@ -20,6 +21,9 @@ mod go_cardless_api;
 mod model;
 
 fn main() {
+    simple_logging::log_to_stderr(LevelFilter::Info);
+    info!("Starting");
+
     dotenv().ok();
 
     let connection = &mut establish_db_connection();
@@ -30,22 +34,34 @@ fn main() {
         .load(connection)
         .expect("Error loading ob_accounts");
 
+    info!("Found {} accounts to sync", ob_accounts_to_sync.len());
+
     for ob_account in ob_accounts_to_sync {
-        println!("Syncing account {} ({})", ob_account.name, ob_account.id);
+        info!("Syncing account {} ({})", ob_account.name, ob_account.id);
         sync_account_transactions(&ob_account.id, &ob_account.provider_account_id)
     }
+
+    info!("Done");
 }
 
 fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
     let go_cardless_secret_id = env::var("GOCARDLESS_SECRET_ID").expect("GOCARDLESS_SECRET_ID must be set");
     let go_cardless_secret_key = env::var("GOCARDLESS_SECRET_KEY").expect("GOCARDLESS_SECRET_KEY must be set");
+    let mut inserted_transactions = 0;
 
     let mut go_cardless_api = GoCardlessApi::new();
+
+    info!("Getting transactions");
 
     go_cardless_api.get_token(go_cardless_secret_id, go_cardless_secret_key);
     let transactions = go_cardless_api.get_transactions(provider_account_id);
 
+    let found_transactions = &transactions.len();
+
+    info!("Got {} transactions", found_transactions);
+
     let connection = &mut establish_db_connection();
+
 
     for transaction in transactions {
         let found_transactions: i64 = ob_transactions
@@ -59,7 +75,7 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
             continue;
         }
 
-        println!("Found transaction {} ({})",
+        info!("Found new transaction {} ({})",
                  transaction.remittance_information_unstructured,
                  transaction.internal_transaction_id);
 
@@ -92,11 +108,19 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
                 internal_transaction_id: &*transaction.internal_transaction_id,
             })
             .execute(connection).expect("Cannot insert");
+
+        inserted_transactions += 1;
     }
+
+    info!("Added {} transactions, {} already in DB.", inserted_transactions, found_transactions);
 }
 
 pub fn establish_db_connection() -> PgConnection {
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let database_url = env::var("DATABASE_URL")
+        .map_err(|_e| error!("DATABASE_URL missing"))
+        .expect("config");
+
     PgConnection::establish(&database_url)
-        .unwrap_or_else(|_| panic!("Error connecting to database"))
+        .map_err(|e| error!("Cannot connect to DB: {}", e.to_string()))
+        .unwrap()
 }
