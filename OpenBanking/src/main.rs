@@ -1,10 +1,12 @@
 use std::env;
 
+use log::{error, info, warn};
+use log4rs;
+
 use diesel::{Connection, QueryDsl, RunQueryDsl, SelectableHelper};
 use diesel::expression_methods::ExpressionMethods;
 use diesel::pg::PgConnection;
 use dotenvy::dotenv;
-use log::{error, info, LevelFilter};
 use uuid::Uuid;
 
 use go_cardless_api::GoCardlessApi;
@@ -21,7 +23,7 @@ mod go_cardless_api;
 mod model;
 
 fn main() {
-    simple_logging::log_to_stderr(LevelFilter::Info);
+    log4rs::init_file("log4rs.yaml", Default::default()).unwrap();
     info!("Starting");
 
     dotenv().ok();
