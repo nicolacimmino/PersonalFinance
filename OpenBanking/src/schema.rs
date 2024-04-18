@@ -1,5 +1,3 @@
-// @generated automatically by Diesel CLI.
-
 diesel::table! {
     ob_accounts (id) {
         id -> Uuid,

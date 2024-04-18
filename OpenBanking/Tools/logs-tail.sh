@@ -1,0 +1,1 @@
+ssh $PF_HOST -i $PF_HOST_PEM tail pfinance-prod/open-banking/log/run.log "$@"

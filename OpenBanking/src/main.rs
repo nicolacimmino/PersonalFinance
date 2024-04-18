@@ -77,9 +77,7 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
             continue;
         }
 
-        info!("Found new transaction {} ({})",
-                 transaction.remittance_information_unstructured,
-                 transaction.internal_transaction_id);
+        info!("Found new transaction {}", transaction.transaction_id);
 
         let balance_after_transaction = transaction.balance_after_transaction.unwrap_or(Balance {
             balance_amount: Amount {
@@ -88,6 +86,10 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
             },
             balance_type: "".to_string(),
         });
+
+        let test = transaction.remittance_information_unstructured_array.unwrap_or(vec!["".to_string()]).join(" ");
+
+        let remittance_information = transaction.remittance_information_unstructured.unwrap_or(test);
 
         diesel::insert_into(ob_transactions)
             .values(NewObTransaction {
@@ -103,7 +105,7 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
                 debtor_account_iban: &*transaction.debtor_account.unwrap_or(Account {
                     iban: "".to_string()
                 }).iban,
-                remittance_information_unstructured: &*transaction.remittance_information_unstructured,
+                remittance_information_unstructured: &*remittance_information,
                 balance_after_transaction_amount_cents: (balance_after_transaction.balance_amount.amount.parse::<f64>().expect("Cannot parse balance_amount") * 100f64) as i32,
                 balance_after_transaction_currency: &*balance_after_transaction.balance_amount.currency,
                 balance_after_transaction_type: &*balance_after_transaction.balance_type,

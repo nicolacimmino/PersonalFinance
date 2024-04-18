@@ -70,7 +70,9 @@ pub struct Transaction {
     #[serde(rename(deserialize = "debtorAccount"))]
     pub debtor_account: Option<Account>,
     #[serde(rename(deserialize = "remittanceInformationUnstructured"))]
-    pub remittance_information_unstructured: String,
+    pub remittance_information_unstructured: Option<String>,
+    #[serde(rename(deserialize = "remittanceInformationUnstructuredArray"))]
+    pub remittance_information_unstructured_array: Option<Vec<String>>,
     #[serde(rename(deserialize = "balanceAfterTransaction"))]
     pub balance_after_transaction: Option<Balance>,
     #[serde(rename(deserialize = "internalTransactionId"))]
