@@ -1,6 +1,6 @@
 use std::env;
 
-use log::{error, info, warn};
+use log::{error, info};
 use log4rs;
 
 use diesel::{Connection, QueryDsl, RunQueryDsl, SelectableHelper};
