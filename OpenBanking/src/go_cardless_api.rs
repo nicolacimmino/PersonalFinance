@@ -56,7 +56,7 @@ pub struct Transaction {
     #[serde(rename(deserialize = "bookingDate"))]
     pub booking_date: String,
     #[serde(rename(deserialize = "valueDate"))]
-    pub value_date: String,
+    pub value_date: Option<String>,
     #[serde(rename(deserialize = "bookingDateTime"))]
     pub booking_date_time: Option<String>,
     #[serde(rename(deserialize = "transactionAmount"))]

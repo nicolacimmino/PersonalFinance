@@ -96,7 +96,7 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
                 ob_account_id: account_id,
                 transaction_id: &*transaction.transaction_id,
                 booking_date: &*transaction.booking_date,
-                value_date: &*transaction.value_date,
+                value_date: &*transaction.value_date.unwrap_or("".to_string()),
                 booking_date_time: &*transaction.booking_date_time.unwrap_or("".to_string()),
                 transaction_amount_cents: (transaction.transaction_amount.amount.parse::<f64>().expect("Cannot parse transaction_amount") * 100f64) as i32,
                 transaction_amount_currency: &*transaction.transaction_amount.currency,
