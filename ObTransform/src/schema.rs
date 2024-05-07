@@ -3,7 +3,7 @@
 diesel::table! {
     accounts (id) {
         id -> Int4,
-        #[max_length = 10]
+        #[max_length = 16]
         code -> Varchar,
         description -> Text,
         #[max_length = 3]
@@ -49,6 +49,15 @@ diesel::table! {
 }
 
 diesel::table! {
+    sp_accounts (id) {
+        id -> Uuid,
+        #[max_length = 128]
+        wallet -> Varchar,
+        account_id -> Nullable<Int4>,
+    }
+}
+
+diesel::table! {
     sp_transactions (id) {
         id -> Uuid,
         date -> Varchar,
@@ -61,6 +70,8 @@ diesel::table! {
         note -> Varchar,
         labels -> Varchar,
         author -> Varchar,
+        transformed_transaction_id -> Nullable<Int4>,
+        sp_account_id -> Uuid,
     }
 }
 
@@ -82,12 +93,16 @@ diesel::table! {
 diesel::joinable!(ob_accounts -> accounts (account_id));
 diesel::joinable!(ob_transactions -> ob_accounts (ob_account_id));
 diesel::joinable!(ob_transactions -> transactions (transformed_transaction_id));
+diesel::joinable!(sp_accounts -> accounts (account_id));
+diesel::joinable!(sp_transactions -> sp_accounts (sp_account_id));
+diesel::joinable!(sp_transactions -> transactions (transformed_transaction_id));
 diesel::joinable!(transactions -> accounts (account_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     accounts,
     ob_accounts,
     ob_transactions,
+    sp_accounts,
     sp_transactions,
     transactions,
 );

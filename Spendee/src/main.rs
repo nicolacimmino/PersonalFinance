@@ -1,11 +1,14 @@
+extern crate alloc;
+
 use std::env;
 
-use diesel::{Connection, PgConnection, RunQueryDsl, ExpressionMethods, QueryDsl};
+use diesel::{Connection, PgConnection, RunQueryDsl, ExpressionMethods, QueryDsl, SelectableHelper};
 use dotenvy::dotenv;
 use log::{error, info};
 
-use crate::model::NewSpTransaction;
-use crate::schema::sp_transactions::{amount, date, note, type_, wallet};
+use crate::model::{NewSpTransaction, SpAccount};
+use crate::schema::sp_accounts::dsl::sp_accounts;
+use crate::schema::sp_transactions::{amount, date, note, type_};
 use crate::schema::sp_transactions::dsl::sp_transactions;
 use crate::spendee::Spendee;
 
@@ -34,7 +37,7 @@ fn main() {
             .filter(date.eq(&*transaction.date))
             .filter(amount.eq(&*transaction.amount))
             .filter(note.eq(&*transaction.note))
-            .filter(wallet.eq(&*transaction.wallet))
+            .filter(schema::sp_transactions::wallet.eq(&*transaction.wallet))
             .filter(type_.eq(&*transaction.type_))
             .count()
             .get_result(connection)
@@ -47,6 +50,13 @@ fn main() {
 
         info!("Found new transaction {:?}", transaction);
 
+        // TODO: this can be cached so we don't keep hammering the DB.
+        let sp_account = sp_accounts
+            .filter(crate::schema::sp_accounts::wallet.eq(&*transaction.wallet))
+            .select(SpAccount::as_select())
+            .get_result(connection)
+            .expect("Cannot find sp_account");
+
         diesel::insert_into(sp_transactions)
             .values(NewSpTransaction {
                 date: &*transaction.date,
@@ -58,7 +68,7 @@ fn main() {
                 note: &*transaction.note,
                 labels: &*transaction.labels,
                 author: &*transaction.author,
-
+                sp_account_id: &sp_account.id,
             })
             .execute(connection).expect("Cannot insert");
 

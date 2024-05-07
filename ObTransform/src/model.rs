@@ -1,7 +1,6 @@
 use chrono::NaiveDateTime;
 use diesel::{Associations, Insertable, Queryable, Selectable};
 use uuid::Uuid;
-use crate::schema::accounts::description;
 
 #[derive(Queryable, Selectable, Debug)]
 #[diesel(table_name = crate::schema::accounts)]

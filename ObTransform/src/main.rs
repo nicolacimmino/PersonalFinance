@@ -1,6 +1,6 @@
 use std::env;
 
-use chrono::{NaiveDate, NaiveDateTime, NaiveTime};
+use chrono::{NaiveDate, NaiveTime};
 use diesel::{Connection, ExpressionMethods, PgConnection, QueryDsl, SelectableHelper};
 use diesel::RunQueryDsl;
 use dotenvy::dotenv;
@@ -30,6 +30,8 @@ fn main() {
         .select((ObTransaction::as_select(), ObAccount::as_select(), Account::as_select()))
         .load::<(ObTransaction, ObAccount, Account)>(connection)
         .expect("Failed to get ob_transactions");
+
+    info!("Found {} records", to_transform.len());
 
     for item_to_transform in to_transform {
         let ob_transaction = item_to_transform.0;
@@ -63,6 +65,8 @@ fn main() {
 
         info!("Converted {}", ob_transaction.id)
     }
+
+    info!("Done");
 }
 
 pub fn establish_db_connection() -> PgConnection {

@@ -1,7 +1,7 @@
 CREATE TABLE accounts
 (
     id          SERIAL PRIMARY KEY,
-    code        VARCHAR(10) NOT NULL,
+    code        VARCHAR(16) NOT NULL,
     description TEXT        NOT NULL,
     currency    VARCHAR(3)  NOT NULL
 );
