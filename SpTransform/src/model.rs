@@ -1,5 +1,5 @@
 use chrono::NaiveDateTime;
-use diesel::{Associations, Insertable, Queryable, Selectable};
+use diesel::{Associations, Identifiable, Insertable, Queryable, Selectable};
 use uuid::Uuid;
 
 
@@ -13,7 +13,7 @@ pub struct SpAccount {
     pub account_id: Option<i32>,
 }
 
-#[derive(Queryable, PartialEq, Selectable, Associations, Debug)]
+#[derive(Queryable, Identifiable, PartialEq, Selectable, Associations, Debug)]
 #[diesel(belongs_to(SpAccount, foreign_key = sp_account_id))]
 #[diesel(table_name = crate::schema::sp_transactions)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
@@ -29,7 +29,7 @@ pub struct SpTransaction {
     pub labels: String,
     pub author: String,
     pub transformed_transaction_id: Option<i32>,
-    pub sp_account_id: Option<Uuid>
+    pub sp_account_id: Uuid
 }
 
 #[derive(Queryable, Selectable, Debug)]
