@@ -47,24 +47,26 @@ pub struct Account {
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Transaction {
     pub id: i32,
-    pub date: NaiveDateTime,
     pub type_: String,
     pub account_id: i32,
     pub amount_cents: i32,
     pub category: String,
     pub creditor_name: String,
     pub description: String,
+    pub booking_date: NaiveDateTime,
+    pub value_date: NaiveDateTime,
 }
 
 #[derive(Insertable)]
 #[diesel(table_name = crate::schema::transactions)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct NewTransaction<'a> {
-    pub date: &'a NaiveDateTime,
     pub type_: &'a str,
     pub account_id: i32,
     pub amount_cents: i32,
     pub category: &'a str,
     pub creditor_name: &'a str,
     pub description: &'a str,
+    pub booking_date: &'a NaiveDateTime,
+    pub value_date: &'a NaiveDateTime,
 }

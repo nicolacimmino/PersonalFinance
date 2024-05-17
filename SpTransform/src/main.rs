@@ -65,8 +65,8 @@ fn main() {
 
         let combined_category = categories.join(".");
 
-        let existing_transactions = transactions
-            .filter(schema::transactions::date.eq(sp_transaction_date))
+        let mut existing_transactions = transactions
+            .filter(schema::transactions::booking_date.eq(sp_transaction_date))
             .filter(schema::transactions::amount_cents.eq(sp_transaction_amount_cents))
             .filter(schema::transactions::account_id.eq(item_to_transform_account.id))
             .filter(schema::transactions::category.eq(""))
@@ -74,11 +74,22 @@ fn main() {
             .load(connection)
             .expect("Failed to search for matching transactions");
 
-        if existing_transactions.len() != 1 {
-            if existing_transactions.len() == 0 {
-                continue;
-            }
+        if existing_transactions.len() == 0 {
+            existing_transactions = transactions
+                .filter(schema::transactions::value_date.eq(sp_transaction_date))
+                .filter(schema::transactions::amount_cents.eq(sp_transaction_amount_cents))
+                .filter(schema::transactions::account_id.eq(item_to_transform_account.id))
+                .filter(schema::transactions::category.eq(""))
+                .select(Transaction::as_select())
+                .load(connection)
+                .expect("Failed to search for matching transactions");
+        }
 
+        if existing_transactions.len() == 0 {
+            continue;
+        }
+
+        if existing_transactions.len() > 1 {
             warn!("Multiple matches found. Proceeding with first.\r\n{:?}\r\n{:?}\r\n-------------------------------", sp_transaction, existing_transactions);
         }
 
