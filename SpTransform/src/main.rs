@@ -1,5 +1,6 @@
 use std::env;
-use chrono::{NaiveDate, NaiveTime};
+use std::ops::{Add, Sub};
+use chrono::{NaiveDate, NaiveTime, TimeDelta};
 
 use diesel::{Connection, ExpressionMethods, PgConnection, QueryDsl, SelectableHelper};
 use diesel::RunQueryDsl;
@@ -52,6 +53,8 @@ fn main() {
             "Interest" => "REV.INT",
             "Paper Capital Gain" => "REV.PCG",
             "Paper Capital Loss" => "PCL",
+            "DST.Refunds" => "DST.REF",
+            "ESS.Refunds" => "ESS.REF",
             _ => &*sp_transaction.category
         };
 
@@ -60,11 +63,17 @@ fn main() {
             continue;
         }
 
-        let categories: Vec<&str> = vec![&*sp_category, &*sp_transaction.labels]
+        let sp_label = match sp_transaction.labels.as_str() {
+            "Repeating" => "",
+            _ => &*sp_transaction.labels
+        };
+
+        let categories: Vec<&str> = vec![&*sp_category, &*sp_label]
             .iter().filter(|&val| !val.is_empty()).cloned().collect();
 
         let combined_category = categories.join(".");
 
+        // Attempt to find by booking_date
         let mut existing_transactions = transactions
             .filter(schema::transactions::booking_date.eq(sp_transaction_date))
             .filter(schema::transactions::amount_cents.eq(sp_transaction_amount_cents))
@@ -74,9 +83,25 @@ fn main() {
             .load(connection)
             .expect("Failed to search for matching transactions");
 
+        // If no exact match attempt by value date.
         if existing_transactions.len() == 0 {
             existing_transactions = transactions
                 .filter(schema::transactions::value_date.eq(sp_transaction_date))
+                .filter(schema::transactions::amount_cents.eq(sp_transaction_amount_cents))
+                .filter(schema::transactions::account_id.eq(item_to_transform_account.id))
+                .filter(schema::transactions::category.eq(""))
+                .select(Transaction::as_select())
+                .load(connection)
+                .expect("Failed to search for matching transactions");
+        }
+
+        // If still no match attempt a +/-4 days.
+        if existing_transactions.len() == 0 {
+            existing_transactions = transactions
+                .filter(schema::transactions::value_date.between(
+                    sp_transaction_date.sub(TimeDelta::days(7)),
+                    sp_transaction_date.add(TimeDelta::days(7)),
+                ))
                 .filter(schema::transactions::amount_cents.eq(sp_transaction_amount_cents))
                 .filter(schema::transactions::account_id.eq(item_to_transform_account.id))
                 .filter(schema::transactions::category.eq(""))
@@ -96,6 +121,12 @@ fn main() {
         let matching_transaction = existing_transactions.first()
             .expect("Something off, we have one transaction but can't get first!");
 
+        let transaction_type = match sp_transaction.type_.as_str() {
+            "Outgoing Transfer" => "TRANSFER",
+            "Incoming Transfer" => "TRANSFER",
+            _ => &*matching_transaction.type_
+        };
+
         let mut updated_description = matching_transaction.description.clone();
 
         if jaro(&*matching_transaction.description, &*sp_transaction.note) < 0.8 {
@@ -110,7 +141,8 @@ fn main() {
             .filter(schema::transactions::id.eq(matching_transaction.id))
             .set((
                 schema::transactions::category.eq(combined_category),
-                schema::transactions::description.eq(updated_description)
+                schema::transactions::description.eq(updated_description),
+                schema::transactions::type_.eq(transaction_type)
             ))
             .execute(connection).expect("Failed to update transaction");
 
