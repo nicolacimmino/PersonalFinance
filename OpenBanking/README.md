@@ -78,7 +78,7 @@ curl --location 'https://bankaccountdata.gocardless.com/api/v2/requisitions/' \
 ````
 `redirect` and `reference` can be anything, they are needed only if you were building an actual service and would serve to redirect the user to your website at the end of the process.
 
-In the response you will find an `id` field and a `link` field. **Write down the id** as there is no way to retrieve requisition IDs in GoCardless and you will need this later. Open the link in a browser and follow your bank OpenBanking login flow. Once you are redirected to "example.com" (or whatever you specified, it's irrelevant) the requisition is complete and you can test it.
+In the response you will find an `id` field and a `link` field. **Write down the id** you will need this later (you can also at any time get all your requistions with a GET on the `api/v2/requisitions/` endpoint).  Open the link from the create requisiotion response in a browser and follow your bank OpenBanking login flow. Once you are redirected to "example.com" (or whatever you specified, it's irrelevant) the requisition is complete and you can get the accounts and accounts data.
 
 ## Get the GoCardless account IDs
 
