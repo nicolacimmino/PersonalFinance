@@ -8,6 +8,7 @@ diesel::table! {
         description -> Text,
         #[max_length = 3]
         currency -> Varchar,
+        pri_transactions_src -> Text,
     }
 }
 

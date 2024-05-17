@@ -8,7 +8,7 @@ use dotenvy::dotenv;
 use log::{error, info, warn};
 use strsim::{jaro};
 
-use crate::model::{Account, SpTransaction, Transaction};
+use crate::model::{Account, NewTransaction, SpTransaction, Transaction};
 use crate::schema::accounts::dsl::accounts;
 use crate::schema::sp_accounts::dsl::sp_accounts;
 use crate::schema::sp_transactions::dsl::sp_transactions;
@@ -72,6 +72,38 @@ fn main() {
             .iter().filter(|&val| !val.is_empty()).cloned().collect();
 
         let combined_category = categories.join(".");
+
+        // If sp_transform is the primary source just create a new transaction, don't attempt to match.
+        if item_to_transform_account.pri_transactions_src == "SP_TRANSFORM" {
+            let sp_transaction_type = match sp_transaction.type_.as_str() {
+                "Outgoing Transfer" => "TRANSFER",
+                "Incoming Transfer" => "TRANSFER",
+                "Expense" => "EXPENSE",
+                "Income" => "INCOME",
+                _ => panic!("Cannot determine type for: {}", sp_transaction.type_)
+            };
+
+            let new_transaction: Transaction = diesel::insert_into(transactions)
+                .values(NewTransaction {
+                    type_: sp_transaction_type,
+                    account_id: item_to_transform_account.id,
+                    amount_cents: sp_transaction_amount_cents,
+                    category: &*combined_category,
+                    creditor_name: "",
+                    description: &*sp_transaction.note,
+                    booking_date: &sp_transaction_date,
+                    value_date: &sp_transaction_date,
+                })
+                .get_result(connection)
+                .unwrap();
+
+            diesel::update(sp_transactions)
+                .filter(schema::sp_transactions::id.eq(sp_transaction.id))
+                .set(schema::sp_transactions::transformed_transaction_id.eq(new_transaction.id))
+                .execute(connection).expect("Failed to update sp_transaction");
+
+            continue;
+        }
 
         // Attempt to find by booking_date
         let mut existing_transactions = transactions

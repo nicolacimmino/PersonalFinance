@@ -29,7 +29,7 @@ pub struct SpTransaction {
     pub labels: String,
     pub author: String,
     pub transformed_transaction_id: Option<i32>,
-    pub sp_account_id: Uuid
+    pub sp_account_id: Uuid,
 }
 
 #[derive(Queryable, Selectable, Debug)]
@@ -40,6 +40,7 @@ pub struct Account {
     pub code: String,
     pub description: String,
     pub currency: String,
+    pub pri_transactions_src: String,
 }
 
 #[derive(Queryable, PartialEq, Selectable, Debug)]
