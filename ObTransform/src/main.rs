@@ -42,18 +42,27 @@ fn main() {
             transaction_type = "EXPENSE";
         }
 
-        let transaction_date = NaiveDate::parse_from_str(&*ob_transaction.booking_date, "%Y-%m-%d")
-            .expect("Invalid date");
+        // Most institutions report a booking and a value date. However, should some report only one
+        //  we default the other to same.
+        let value_date = NaiveDate::parse_from_str(&*ob_transaction.value_date, "%Y-%m-%d")
+            .unwrap_or(
+                NaiveDate::parse_from_str(&*ob_transaction.booking_date, "%Y-%m-%d")
+                    .expect(&format!("Invalid booking_date{}", ob_transaction.booking_date))
+            );
+
+        let booking_date = NaiveDate::parse_from_str(&*ob_transaction.booking_date, "%Y-%m-%d")
+            .unwrap_or(value_date);
 
         let new_transaction: Transaction = diesel::insert_into(transactions)
             .values(NewTransaction {
-                date: &transaction_date.and_time(NaiveTime::default()),
                 type_: transaction_type,
                 account_id: account.id,
                 amount_cents: ob_transaction.transaction_amount_cents,
                 category: "",
                 creditor_name: &*ob_transaction.creditor_name,
                 description: &*ob_transaction.remittance_information_unstructured,
+                booking_date: &booking_date.and_time(NaiveTime::default()),
+                value_date: &value_date.and_time(NaiveTime::default()),
             })
             .get_result(connection)
             .unwrap();

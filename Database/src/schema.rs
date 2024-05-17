@@ -78,7 +78,6 @@ diesel::table! {
 diesel::table! {
     transactions (id) {
         id -> Int4,
-        date -> Timestamp,
         #[sql_name = "type"]
         #[max_length = 16]
         type_ -> Varchar,
@@ -87,6 +86,8 @@ diesel::table! {
         category -> Text,
         creditor_name -> Text,
         description -> Text,
+        booking_date -> Timestamp,
+        value_date -> Timestamp,
     }
 }
 

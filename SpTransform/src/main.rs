@@ -4,7 +4,7 @@ use chrono::{NaiveDate, NaiveTime};
 use diesel::{Connection, ExpressionMethods, PgConnection, QueryDsl, SelectableHelper};
 use diesel::RunQueryDsl;
 use dotenvy::dotenv;
-use log::{error, info};
+use log::{error, info, warn};
 use strsim::{jaro};
 
 use crate::model::{Account, SpTransaction, Transaction};
@@ -69,22 +69,21 @@ fn main() {
             .filter(schema::transactions::date.eq(sp_transaction_date))
             .filter(schema::transactions::amount_cents.eq(sp_transaction_amount_cents))
             .filter(schema::transactions::account_id.eq(item_to_transform_account.id))
+            .filter(schema::transactions::category.eq(""))
             .select(Transaction::as_select())
             .load(connection)
             .expect("Failed to search for matching transactions");
 
         if existing_transactions.len() != 1 {
-            info!("{:?}\r\n---------------------------------------", existing_transactions);
-            continue;
+            if existing_transactions.len() == 0 {
+                continue;
+            }
+
+            warn!("Multiple matches found. Proceeding with first.\r\n{:?}\r\n{:?}\r\n-------------------------------", sp_transaction, existing_transactions);
         }
 
         let matching_transaction = existing_transactions.first()
             .expect("Something off, we have one transaction but can't get first!");
-
-        if matching_transaction.category != "" {
-            error!("Matching transaction {} already has a category set!", matching_transaction.id);
-            continue;
-        }
 
         let mut updated_description = matching_transaction.description.clone();
 
