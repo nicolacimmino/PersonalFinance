@@ -1,25 +1,21 @@
 use std::env;
 
-use log::{error, info};
-use log4rs;
-
 use diesel::{Connection, QueryDsl, RunQueryDsl, SelectableHelper};
 use diesel::expression_methods::ExpressionMethods;
 use diesel::pg::PgConnection;
 use dotenvy::dotenv;
+use log::{error, info};
+use log4rs;
 use uuid::Uuid;
 
-use go_cardless_api::GoCardlessApi;
-pub use schema::ob_transactions::dsl::*;
-
-use crate::go_cardless_api::{Account, Amount, Balance};
-use crate::model::{NewObTransaction, ObAccount};
-use crate::schema::ob_accounts::dsl::ob_accounts;
-use crate::schema::ob_accounts::provider;
+use go_cardless::{Account, Amount, Balance};
+use go_cardless::GoCardlessApi;
+use model::{NewObTransaction, ObAccount};
+use schema::ob_accounts::dsl::ob_accounts;
+use schema::ob_transactions::dsl::ob_transactions;
 
 mod schema;
-
-mod go_cardless_api;
+mod go_cardless;
 mod model;
 
 fn main() {
@@ -31,7 +27,7 @@ fn main() {
     let connection = &mut establish_db_connection();
 
     let ob_accounts_to_sync: Vec<ObAccount> = ob_accounts
-        .filter(provider.eq("GOCARDLESS"))
+        .filter(schema::ob_accounts::provider.eq("GOCARDLESS"))
         .select(ObAccount::as_select())
         .load(connection)
         .expect("Error loading ob_accounts");
@@ -67,8 +63,8 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
 
     for transaction in transactions {
         let found_transactions: i64 = ob_transactions
-            .filter(internal_transaction_id.eq(&*transaction.internal_transaction_id))
-            .filter(ob_account_id.eq(account_id))
+            .filter(schema::ob_transactions::internal_transaction_id.eq(&*transaction.internal_transaction_id))
+            .filter(schema::ob_transactions::ob_account_id.eq(account_id))
             .count()
             .get_result(connection)
             .expect("Error loading transactions");
