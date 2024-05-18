@@ -8,12 +8,10 @@ use log::{error, info};
 use log4rs;
 use uuid::Uuid;
 
-use go_cardless::GoCardlessApi;
 use model::{NewObTransaction, ObAccount};
 use schema::ob_accounts::dsl::ob_accounts;
 use schema::ob_transactions::dsl::ob_transactions;
-use crate::go_cardless::GoCardlessTransaction;
-use crate::go_cardless::ConvertsToGoCardlessTransaction;
+
 
 mod schema;
 mod go_cardless;
@@ -44,22 +42,13 @@ fn main() {
 }
 
 fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
-    let go_cardless_secret_id = env::var("GOCARDLESS_SECRET_ID").expect("GOCARDLESS_SECRET_ID must be set");
-    let go_cardless_secret_key = env::var("GOCARDLESS_SECRET_KEY").expect("GOCARDLESS_SECRET_KEY must be set");
     let mut inserted_transactions = 0;
-
-    let mut go_cardless_api = GoCardlessApi::new();
+    let transactions_service = go_cardless::TransactionService::new();
 
     info!("Getting transactions");
 
-    // TODO: this is a concern of the API class
-    go_cardless_api.get_token(go_cardless_secret_id, go_cardless_secret_key);
-
-    // TODO: this is a concern of the API class
-    let transactions = go_cardless_api.get_transactions(provider_account_id)
-        .iter()
-        .map(|transaction_dto| transaction_dto.to_gocardless_transaction())
-        .collect::<Vec<GoCardlessTransaction>>();
+    let transactions = transactions_service
+        .get_transactions(provider_account_id);
 
     let found_transactions = &transactions.len();
 
