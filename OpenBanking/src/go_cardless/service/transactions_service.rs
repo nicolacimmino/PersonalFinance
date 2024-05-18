@@ -2,16 +2,16 @@ use std::env;
 use dotenvy::dotenv;
 use crate::go_cardless::{ConvertsToGoCardlessTransaction, GoCardlessApi, GoCardlessTransaction};
 
-pub struct TransactionService {
+pub struct TransactionsService {
     go_cardless_secret_id: String,
     go_cardless_secret_key: String,
 }
 
-impl TransactionService {
+impl TransactionsService {
     pub fn new() -> Self {
         dotenv().ok();
 
-        return TransactionService {
+        return TransactionsService {
             go_cardless_secret_key: env::var("GOCARDLESS_SECRET_ID").expect("GOCARDLESS_SECRET_ID must be set"),
             go_cardless_secret_id: env::var("GOCARDLESS_SECRET_KEY").expect("GOCARDLESS_SECRET_KEY must be set"),
         };

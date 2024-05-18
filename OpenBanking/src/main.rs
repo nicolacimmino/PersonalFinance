@@ -1,7 +1,6 @@
 use std::env;
 
-use diesel::{Connection, QueryDsl, RunQueryDsl, SelectableHelper};
-use diesel::expression_methods::ExpressionMethods;
+use diesel::{Connection};
 use diesel::pg::PgConnection;
 use dotenvy::dotenv;
 use log::{error, info};
@@ -9,27 +8,31 @@ use log4rs;
 use uuid::Uuid;
 
 use model::{NewObTransaction, ObAccount};
-use schema::ob_accounts::dsl::ob_accounts;
-use schema::ob_transactions::dsl::ob_transactions;
 
+use crate::go_cardless::TransactionsService as GoCardlessTransactionsService;
+use crate::service::AccountsService;
+use crate::service::TransactionsService;
 
 mod schema;
 mod go_cardless;
 mod model;
+mod service;
 
 fn main() {
     log4rs::init_file("log4rs.yaml", Default::default()).unwrap();
     info!("Starting");
 
-    dotenv().ok();
+    sync_all_accounts_transactions();
 
+    info!("Done");
+}
+
+fn sync_all_accounts_transactions() {
     let connection = &mut establish_db_connection();
 
-    let ob_accounts_to_sync: Vec<ObAccount> = ob_accounts
-        .filter(schema::ob_accounts::provider.eq("GOCARDLESS"))
-        .select(ObAccount::as_select())
-        .load(connection)
-        .expect("Error loading ob_accounts");
+    let mut accounts_service = AccountsService::new(connection);
+
+    let ob_accounts_to_sync = accounts_service.get_all_accounts();
 
     info!("Found {} accounts to sync", ob_accounts_to_sync.len());
 
@@ -37,17 +40,15 @@ fn main() {
         info!("Syncing account {} ({})", ob_account.name, ob_account.id);
         sync_account_transactions(&ob_account.id, &ob_account.provider_account_id)
     }
-
-    info!("Done");
 }
 
 fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
     let mut inserted_transactions = 0;
-    let transactions_service = go_cardless::TransactionService::new();
+    let go_cardless_transactions_service = GoCardlessTransactionsService::new();
 
     info!("Getting transactions");
 
-    let transactions = transactions_service
+    let transactions = go_cardless_transactions_service
         .get_transactions(provider_account_id);
 
     let found_transactions = &transactions.len();
@@ -56,22 +57,20 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
 
     let connection = &mut establish_db_connection();
 
-    for transaction in transactions {
-        let found_transactions: i64 = ob_transactions
-            .filter(schema::ob_transactions::internal_transaction_id.eq(&*transaction.internal_transaction_id))
-            .filter(schema::ob_transactions::ob_account_id.eq(account_id))
-            .count()
-            .get_result(connection)
-            .expect("Error loading transactions");
+    let mut transactions_service = TransactionsService::new(connection);
 
-        if found_transactions > 0 {
+    for transaction in transactions {
+        if transactions_service.matching_transaction_exists(
+            transaction.internal_transaction_id.clone(),
+            account_id,
+        ) {
             continue;
         }
 
-        info!("Found new transaction {}", transaction.transaction_id);
+        info!("Found new transaction {}", &*transaction.transaction_id);
 
-        diesel::insert_into(ob_transactions)
-            .values(NewObTransaction {
+        transactions_service.add_transaction(
+            NewObTransaction {
                 ob_account_id: account_id,
                 transaction_id: &*transaction.transaction_id,
                 booking_date: &*transaction.booking_date,
@@ -88,9 +87,7 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
                 balance_after_transaction_currency: &*transaction.transaction_amount_currency,
                 balance_after_transaction_type: &*transaction.balance_after_transaction_type,
                 internal_transaction_id: &*transaction.internal_transaction_id,
-            })
-            .execute(connection)
-            .expect("Cannot insert ob_transactions");
+            });
 
         inserted_transactions += 1;
     }
@@ -99,6 +96,8 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
 }
 
 pub fn establish_db_connection() -> PgConnection {
+    dotenv().ok();
+
     let database_url = env::var("DATABASE_URL")
         .map_err(|_e| error!("DATABASE_URL missing"))
         .expect("config");

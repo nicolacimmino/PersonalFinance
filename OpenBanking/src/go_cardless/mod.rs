@@ -5,7 +5,7 @@ mod service;
 
 pub use go_cardless_api::GoCardlessApi;
 pub use model::ConvertsToGoCardlessTransaction;
-pub use service::TransactionService;
+pub use service::TransactionsService;
 pub use model::GoCardlessTransaction;
 
 
