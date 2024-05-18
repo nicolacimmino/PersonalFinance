@@ -1,5 +1,8 @@
-use std::env;
+mod schema;
+mod go_cardless;
+mod open_banking;
 
+use std::env;
 use diesel::{Connection};
 use diesel::pg::PgConnection;
 use dotenvy::dotenv;
@@ -7,16 +10,8 @@ use log::{error, info};
 use log4rs;
 use uuid::Uuid;
 
-use model::{NewObTransaction, ObAccount};
-
-use crate::go_cardless::TransactionsService as GoCardlessTransactionsService;
-use crate::service::AccountsService;
-use crate::service::TransactionsService;
-
-mod schema;
-mod go_cardless;
-mod model;
-mod service;
+use go_cardless::TransactionsService as GoCardlessTransactionsService;
+use open_banking::{NewObTransaction, AccountsService, TransactionsService as OpenBankingTransactionsService};
 
 fn main() {
     log4rs::init_file("log4rs.yaml", Default::default()).unwrap();
@@ -57,7 +52,7 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
 
     let connection = &mut establish_db_connection();
 
-    let mut transactions_service = TransactionsService::new(connection);
+    let mut transactions_service = OpenBankingTransactionsService::new(connection);
 
     for transaction in transactions {
         if transactions_service.matching_transaction_exists(

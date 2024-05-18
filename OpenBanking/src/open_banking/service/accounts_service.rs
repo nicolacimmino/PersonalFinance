@@ -1,7 +1,7 @@
 use diesel::{PgConnection, QueryDsl, RunQueryDsl, SelectableHelper, ExpressionMethods};
 use crate::schema;
-use crate::ObAccount;
 use schema::ob_accounts::dsl::ob_accounts;
+use crate::open_banking::ObAccount;
 
 pub struct AccountsService<'a> {
     connection: &'a mut PgConnection,

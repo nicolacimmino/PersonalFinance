@@ -2,7 +2,7 @@ use diesel::{PgConnection, RunQueryDsl, QueryDsl, ExpressionMethods};
 use uuid::Uuid;
 use crate::schema;
 use schema::ob_transactions::dsl::ob_transactions;
-use crate::model::NewObTransaction;
+use crate::open_banking::NewObTransaction;
 
 pub struct TransactionsService<'a> {
     connection: &'a mut PgConnection,
