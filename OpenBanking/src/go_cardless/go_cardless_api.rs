@@ -1,82 +1,13 @@
 use std::env;
 use std::error::Error;
-use dotenvy::dotenv;
 
+use dotenvy::dotenv;
 use serde::{Deserialize, Serialize};
+use crate::go_cardless::dto::prelude::*;
 
 #[derive(Default)]
 pub struct GoCardlessApi {
     access_token: String,
-}
-
-#[derive(Serialize)]
-struct CreateTokenRequest {
-    secret_id: String,
-    secret_key: String,
-}
-
-#[derive(Deserialize)]
-pub struct CreateTokenResponse {
-    pub(crate) access: String,
-}
-
-#[derive(Deserialize)]
-pub struct GetTransactionsResponse {
-    transactions: Transactions,
-}
-
-#[derive(Deserialize)]
-pub struct Transactions {
-    booked: Vec<Transaction>,
-}
-
-#[derive(Deserialize)]
-pub struct Amount {
-    pub amount: String,
-    pub currency: String,
-}
-
-#[derive(Deserialize)]
-pub struct Account {
-    pub iban: String,
-}
-
-#[derive(Deserialize)]
-pub struct Balance {
-    #[serde(rename(deserialize = "balanceAmount"))]
-    pub balance_amount: Amount,
-    #[serde(rename(deserialize = "balanceType"))]
-    pub balance_type: String,
-}
-
-#[derive(Deserialize)]
-pub struct Transaction {
-    #[serde(rename(deserialize = "transactionId"))]
-    pub transaction_id: String,
-    #[serde(rename(deserialize = "bookingDate"))]
-    pub booking_date: String,
-    #[serde(rename(deserialize = "valueDate"))]
-    pub value_date: Option<String>,
-    #[serde(rename(deserialize = "bookingDateTime"))]
-    pub booking_date_time: Option<String>,
-    #[serde(rename(deserialize = "transactionAmount"))]
-    pub transaction_amount: Amount,
-    #[serde(default)]
-    #[serde(rename(deserialize = "creditorName"))]
-    pub creditor_name: String,
-    #[serde(default)]
-    #[serde(rename(deserialize = "debtorName"))]
-    pub debtor_name: String,
-    #[serde(rename(deserialize = "debtorAccount"))]
-    pub debtor_account: Option<Account>,
-    #[serde(rename(deserialize = "remittanceInformationUnstructured"))]
-    pub remittance_information_unstructured: Option<String>,
-    #[serde(rename(deserialize = "remittanceInformationUnstructuredArray"))]
-    pub remittance_information_unstructured_array: Option<Vec<String>>,
-    #[serde(rename(deserialize = "balanceAfterTransaction"))]
-    pub balance_after_transaction: Option<Balance>,
-    #[serde(rename(deserialize = "internalTransactionId"))]
-    pub internal_transaction_id: String,
 }
 
 impl GoCardlessApi {
@@ -91,9 +22,9 @@ impl GoCardlessApi {
 
         let gocardless_host = env::var("GOCARDLESS_HOST").expect("GOCARDLESS_HOST");
 
-        let response: CreateTokenResponse = self.make_post_request(
+        let response: CreateTokenResponseDto = self.make_post_request(
             &format!("{gocardless_host}/api/v2/token/new/"),
-            CreateTokenRequest {
+            CreateTokenRequestDto {
                 secret_id: secret_id.to_string(),
                 secret_key: secret_key.to_string(),
             }).unwrap();
@@ -101,11 +32,11 @@ impl GoCardlessApi {
         self.access_token = response.access;
     }
 
-    pub fn get_transactions(&mut self, account_id: &String) -> Vec<Transaction> {
+    pub fn get_transactions(&mut self, account_id: &String) -> Vec<TransactionDto> {
         dotenv().ok();
 
         let gocardless_host = env::var("GOCARDLESS_HOST").expect("GOCARDLESS_HOST");
-        let response: GetTransactionsResponse = self.make_get_request(
+        let response: GetTransactionsResponseDto = self.make_get_request(
             &format!("{gocardless_host}/api/v2/accounts/{account_id}/transactions/"),
         ).unwrap();
 

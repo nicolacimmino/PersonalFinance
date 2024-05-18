@@ -8,11 +8,12 @@ use log::{error, info};
 use log4rs;
 use uuid::Uuid;
 
-use go_cardless::{Account, Amount, Balance};
 use go_cardless::GoCardlessApi;
 use model::{NewObTransaction, ObAccount};
 use schema::ob_accounts::dsl::ob_accounts;
 use schema::ob_transactions::dsl::ob_transactions;
+use crate::go_cardless::GoCardlessTransaction;
+use crate::go_cardless::ConvertsToGoCardlessTransaction;
 
 mod schema;
 mod go_cardless;
@@ -51,15 +52,20 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
 
     info!("Getting transactions");
 
+    // TODO: this is a concern of the API class
     go_cardless_api.get_token(go_cardless_secret_id, go_cardless_secret_key);
-    let transactions = go_cardless_api.get_transactions(provider_account_id);
+
+    // TODO: this is a concern of the API class
+    let transactions = go_cardless_api.get_transactions(provider_account_id)
+        .iter()
+        .map(|transaction_dto| transaction_dto.to_gocardless_transaction())
+        .collect::<Vec<GoCardlessTransaction>>();
 
     let found_transactions = &transactions.len();
 
-    info!("Got {} transactions", found_transactions);
+    info!("Got {} transactions from GoCardless", found_transactions);
 
     let connection = &mut establish_db_connection();
-
 
     for transaction in transactions {
         let found_transactions: i64 = ob_transactions
@@ -75,39 +81,27 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
 
         info!("Found new transaction {}", transaction.transaction_id);
 
-        let balance_after_transaction = transaction.balance_after_transaction.unwrap_or(Balance {
-            balance_amount: Amount {
-                amount: "0".to_string(),
-                currency: "".to_string(),
-            },
-            balance_type: "".to_string(),
-        });
-
-        let test = transaction.remittance_information_unstructured_array.unwrap_or(vec!["".to_string()]).join(" ");
-
-        let remittance_information = transaction.remittance_information_unstructured.unwrap_or(test);
-
         diesel::insert_into(ob_transactions)
             .values(NewObTransaction {
                 ob_account_id: account_id,
                 transaction_id: &*transaction.transaction_id,
                 booking_date: &*transaction.booking_date,
-                value_date: &*transaction.value_date.unwrap_or("".to_string()),
-                booking_date_time: &*transaction.booking_date_time.unwrap_or("".to_string()),
-                transaction_amount_cents: (transaction.transaction_amount.amount.parse::<f64>().expect("Cannot parse transaction_amount") * 100f64) as i32,
-                transaction_amount_currency: &*transaction.transaction_amount.currency,
+                value_date: &*transaction.value_date,
+                // TODO: drop from model, it's seldom and inconsistently populated, date is enough
+                booking_date_time: "",
+                transaction_amount_cents: transaction.transaction_amount_cents,
+                transaction_amount_currency: &*transaction.transaction_amount_currency,
                 creditor_name: &*transaction.creditor_name,
                 debtor_name: &*transaction.debtor_name,
-                debtor_account_iban: &*transaction.debtor_account.unwrap_or(Account {
-                    iban: "".to_string()
-                }).iban,
-                remittance_information_unstructured: &*remittance_information,
-                balance_after_transaction_amount_cents: (balance_after_transaction.balance_amount.amount.parse::<f64>().expect("Cannot parse balance_amount") * 100f64) as i32,
-                balance_after_transaction_currency: &*balance_after_transaction.balance_amount.currency,
-                balance_after_transaction_type: &*balance_after_transaction.balance_type,
+                debtor_account_iban: &*transaction.debtor_account_iban,
+                remittance_information_unstructured: &*transaction.remittance_information_unstructured,
+                balance_after_transaction_amount_cents: transaction.balance_after_transaction_cents,
+                balance_after_transaction_currency: &*transaction.transaction_amount_currency,
+                balance_after_transaction_type: &*transaction.balance_after_transaction_type,
                 internal_transaction_id: &*transaction.internal_transaction_id,
             })
-            .execute(connection).expect("Cannot insert");
+            .execute(connection)
+            .expect("Cannot insert ob_transactions");
 
         inserted_transactions += 1;
     }
