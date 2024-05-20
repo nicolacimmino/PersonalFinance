@@ -1,19 +1,27 @@
 mod schema;
 mod transactions;
+mod guard;
+mod accounts;
 
 use std::env;
 use diesel::{Connection, PgConnection};
 use dotenv::dotenv;
 use rocket::{launch, routes};
 use rocket::log::private::error;
-use crate::transactions::get_transactions;
+use crate::accounts::get_accounts;
+use crate::transactions::{get_transactions, get_transactions_for_account};
 
 #[launch]
 fn launch() -> _ {
     dotenv().ok();
 
     rocket::build()
-        .mount("/", routes![get_transactions])
+        .configure(rocket::Config::figment().merge(("address", "0.0.0.0")))
+        .mount("/api", routes![
+            get_accounts,
+            get_transactions,
+            get_transactions_for_account
+        ])
 }
 
 pub fn establish_db_connection() -> PgConnection {
