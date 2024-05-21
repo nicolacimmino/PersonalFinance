@@ -7,4 +7,5 @@ pub struct AccountDto {
     pub code: String,
     pub description: String,
     pub currency: String,
+    pub balance_cents: Num,
 }

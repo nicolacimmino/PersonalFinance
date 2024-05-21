@@ -11,4 +11,5 @@ pub struct TransactionDto {
     pub creditor_name: String,
     pub description: String,
     pub amount_cents: Num,
+    pub currency: String
 }

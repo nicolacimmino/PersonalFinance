@@ -1,7 +1,6 @@
 mod controller;
-mod model;
+pub(crate) mod model;
 mod dto;
 mod service;
 
-use service::AccountsService;
 pub use controller::get_accounts;

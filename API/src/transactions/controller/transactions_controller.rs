@@ -2,7 +2,6 @@ use rocket::get;
 use rocket::figment::value::Num;
 use rocket::http::Status;
 use rocket::response::{content, status};
-use crate::schema::transactions::dsl::transactions;
 use crate::transactions::dto::TransactionDto;
 use crate::guard::ApiKey;
 use crate::transactions::service::TransactionsService;
@@ -14,7 +13,7 @@ pub fn get_transactions(_key: ApiKey<'_>) -> status::Custom<content::RawJson<Str
 
     let mut dtos: Vec<TransactionDto> = Vec::new();
 
-    for transaction in transactions_service.get_transactions() {
+    for (transaction, account) in transactions_service.get_transactions() {
         dtos.push(TransactionDto {
             id: Num::from(transaction.id),
             type_: transaction.type_.to_owned(),
@@ -24,6 +23,7 @@ pub fn get_transactions(_key: ApiKey<'_>) -> status::Custom<content::RawJson<Str
             creditor_name: transaction.creditor_name.to_owned(),
             description: transaction.description.to_owned(),
             amount_cents: Num::from(transaction.amount_cents),
+            currency: account.currency.to_owned(),
         })
     }
 
@@ -38,7 +38,7 @@ pub fn get_transactions_for_account(_key: ApiKey<'_>, account_id: i32) -> status
 
     let mut dtos: Vec<TransactionDto> = Vec::new();
 
-    for transaction in transactions_service.get_transactions_for_account(account_id) {
+    for (transaction, account) in transactions_service.get_transactions_for_account(account_id) {
         dtos.push(TransactionDto {
             id: Num::from(transaction.id),
             type_: transaction.type_.to_owned(),
@@ -48,6 +48,7 @@ pub fn get_transactions_for_account(_key: ApiKey<'_>, account_id: i32) -> status
             creditor_name: transaction.creditor_name.to_owned(),
             description: transaction.description.to_owned(),
             amount_cents: Num::from(transaction.amount_cents),
+            currency: account.currency.to_owned(),
         })
     }
 
