@@ -4,6 +4,7 @@ mod guard;
 mod accounts;
 mod categories;
 mod reports;
+mod common;
 
 use std::env;
 use diesel::{Connection, PgConnection};

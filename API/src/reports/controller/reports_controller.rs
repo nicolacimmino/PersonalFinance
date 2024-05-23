@@ -15,8 +15,8 @@ pub fn get_report_by_category(_key: ApiKey<'_>) -> status::Custom<content::RawJs
         dtos.push(ReportByCategoryEntryDto {
             category: report.category,
             currency: report.currency,
-            type_: report.type_,
-            total_cents: report.total_cents,
+            total_cents: report.amount_cents,
+            transactions_count: report.transactions_count,
         })
     }
 
