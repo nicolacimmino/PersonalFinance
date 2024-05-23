@@ -92,6 +92,17 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    valuta_conversion_rates (id) {
+        id -> Int4,
+        #[max_length = 3]
+        valuta_from -> Varchar,
+        #[max_length = 3]
+        valuta_to -> Varchar,
+        factor -> Numeric,
+    }
+}
+
 diesel::joinable!(ob_accounts -> accounts (account_id));
 diesel::joinable!(ob_transactions -> ob_accounts (ob_account_id));
 diesel::joinable!(ob_transactions -> transactions (transformed_transaction_id));
@@ -107,4 +118,5 @@ diesel::allow_tables_to_appear_in_same_query!(
     sp_accounts,
     sp_transactions,
     transactions,
+    valuta_conversion_rates,
 );

@@ -3,6 +3,7 @@ mod transactions;
 mod guard;
 mod accounts;
 mod categories;
+mod reports;
 
 use std::env;
 use diesel::{Connection, PgConnection};
@@ -11,6 +12,7 @@ use rocket::{launch, routes};
 use rocket::log::private::error;
 use crate::accounts::get_accounts;
 use crate::categories::get_categories;
+use crate::reports::get_report_by_category;
 use crate::transactions::{get_transactions, get_transactions_for_account};
 
 #[launch]
@@ -23,7 +25,8 @@ fn launch() -> _ {
             get_categories,
             get_accounts,
             get_transactions,
-            get_transactions_for_account
+            get_transactions_for_account,
+            get_report_by_category
         ])
 }
 

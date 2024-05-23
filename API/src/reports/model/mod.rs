@@ -1,0 +1,3 @@
+mod report_by_category_entry;
+
+pub use report_by_category_entry::ReportByCategoryEntry;
