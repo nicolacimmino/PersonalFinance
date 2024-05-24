@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 use bigdecimal::{BigDecimal, ToPrimitive};
 use chrono::{NaiveDate, NaiveTime};
-use diesel::{debug_query, PgConnection, RunQueryDsl, sql_query};
-use diesel::sql_types::{Text, Timestamp};
+use diesel::{PgConnection, RunQueryDsl, sql_query};
+use diesel::sql_types::{Timestamp};
 use rocket::log::private::info;
 
 use crate::common::ValutaConversionRate;
@@ -26,7 +26,7 @@ impl ReportsService {
         let conversion_factors = self.get_valuta_rates(connection);
 
         let reports = sql_query("
-           SELECT category, currency, sum(amount_cents) as amount_cents, count(*) as transactions_count
+           SELECT category, currency, CAST(sum(amount_cents) as int8) as amount_cents, CAST(count(*) AS int8) as transactions_count
            FROM transactions t
            INNER JOIN accounts a ON a.id=t.account_id
            WHERE t.type<>'TRANSFER' AND t.type<>'INITIAL' AND ( booking_date BETWEEN $1 AND $2 )
