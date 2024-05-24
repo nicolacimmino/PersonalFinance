@@ -1,7 +1,10 @@
 use std::collections::HashMap;
 
 use bigdecimal::{BigDecimal, ToPrimitive};
-use diesel::{PgConnection, RunQueryDsl, sql_query};
+use chrono::{NaiveDate, NaiveTime};
+use diesel::{debug_query, PgConnection, RunQueryDsl, sql_query};
+use diesel::sql_types::{Text, Timestamp};
+use rocket::log::private::info;
 
 use crate::common::ValutaConversionRate;
 use crate::establish_db_connection;
@@ -10,8 +13,15 @@ use crate::reports::{AggregatedReportByCategoryEntry, ReportByCategoryEntry};
 pub struct ReportsService {}
 
 impl ReportsService {
-    pub fn get_report_by_category(&mut self) -> Vec<AggregatedReportByCategoryEntry> {
+    pub fn get_report_by_category(
+        &mut self,
+        date_from: NaiveDate,
+        date_to: NaiveDate,
+    ) -> Vec<AggregatedReportByCategoryEntry> {
         let connection = &mut establish_db_connection();
+
+        info!("{}", date_from);
+        info!("{}", date_to);
 
         let conversion_factors = self.get_valuta_rates(connection);
 
@@ -19,9 +29,11 @@ impl ReportsService {
            SELECT category, currency, sum(amount_cents) as amount_cents, count(*) as transactions_count
            FROM transactions t
            INNER JOIN accounts a ON a.id=t.account_id
-           WHERE t.type<>'TRANSFER' AND t.type<>'INITIAL'
-           GROUP BY category, currency, type
-        ").load::<ReportByCategoryEntry>(connection)
+           WHERE t.type<>'TRANSFER' AND t.type<>'INITIAL' AND ( booking_date BETWEEN $1 AND $2 )
+           GROUP BY category, currency, type")
+            .bind::<Timestamp, _>(date_from.and_time(NaiveTime::default()))
+            .bind::<Timestamp, _>(date_to.and_time(NaiveTime::default()))
+            .load::<ReportByCategoryEntry>(connection)
             .expect("Error loading ReportByCategoryEntry");
 
         let mut categories = reports.iter().map(|category| category.category.to_string())
