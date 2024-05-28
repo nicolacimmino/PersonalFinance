@@ -19,7 +19,7 @@ impl AccountsService {
         return accounts
             .inner_join(transactions)
             .group_by(schema::accounts::id)
-            .select((schema::accounts::id, diesel::dsl::sql::<diesel::sql_types::Integer>("SUM(amount_cents)")))
+            .select((schema::accounts::id, diesel::dsl::sql::<diesel::sql_types::Integer>("CAST(sum(amount_cents) as int4)")))
             .load::<(i32, i32)>(&mut establish_db_connection())
             .expect("Error loading balances");
     }

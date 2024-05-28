@@ -2,6 +2,8 @@ use rocket::get;
 use rocket::figment::value::Num;
 use rocket::http::Status;
 use rocket::response::{content, status};
+use crate::common::ValutaConversionService;
+use crate::establish_db_connection;
 use crate::transactions::dto::TransactionDto;
 use crate::guard::ApiKey;
 use crate::transactions::service::TransactionsService;
@@ -10,6 +12,7 @@ use crate::transactions::service::TransactionsService;
 #[get("/transactions")]
 pub fn get_transactions(_key: ApiKey<'_>) -> status::Custom<content::RawJson<String>> {
     let mut transactions_service = TransactionsService {};
+    let mut valuta_conversion_service = ValutaConversionService::new(&mut establish_db_connection());
 
     let mut dtos: Vec<TransactionDto> = Vec::new();
 
@@ -24,6 +27,12 @@ pub fn get_transactions(_key: ApiKey<'_>) -> status::Custom<content::RawJson<Str
             description: transaction.description.to_owned(),
             amount_cents: Num::from(transaction.amount_cents),
             currency: account.currency.to_owned(),
+            amount_cents_in_ref_currency: Num::from(
+                valuta_conversion_service.convert(
+                    account.currency,
+                    "EUR",
+                    transaction.amount_cents)),
+            ref_currency: "EUR".to_string(),
         })
     }
 
@@ -35,6 +44,7 @@ pub fn get_transactions(_key: ApiKey<'_>) -> status::Custom<content::RawJson<Str
 #[get("/transactions/<account_id>")]
 pub fn get_transactions_for_account(_key: ApiKey<'_>, account_id: i32) -> status::Custom<content::RawJson<String>> {
     let mut transactions_service = TransactionsService {};
+    let mut valuta_conversion_service = ValutaConversionService::new(&mut establish_db_connection());
 
     let mut dtos: Vec<TransactionDto> = Vec::new();
 
@@ -49,6 +59,12 @@ pub fn get_transactions_for_account(_key: ApiKey<'_>, account_id: i32) -> status
             description: transaction.description.to_owned(),
             amount_cents: Num::from(transaction.amount_cents),
             currency: account.currency.to_owned(),
+            amount_cents_in_ref_currency: Num::from(
+                valuta_conversion_service.convert(
+                    account.currency,
+                    "EUR",
+                    transaction.amount_cents)),
+            ref_currency: "EUR".to_string(),
         })
     }
 

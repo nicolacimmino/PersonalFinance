@@ -4,11 +4,14 @@ use rocket::http::Status;
 use rocket::response::{content, status};
 use crate::accounts::dto::AccountDto;
 use crate::accounts::service::AccountsService;
+use crate::common::ValutaConversionService;
+use crate::establish_db_connection;
 use crate::guard::ApiKey;
 
 #[get("/accounts")]
 pub fn get_accounts(_key: ApiKey<'_>) -> status::Custom<content::RawJson<String>> {
     let mut accounts_service = AccountsService {};
+    let mut valuta_conversion_service = ValutaConversionService::new(&mut establish_db_connection());
 
     let mut dtos: Vec<AccountDto> = Vec::new();
 
@@ -24,6 +27,12 @@ pub fn get_accounts(_key: ApiKey<'_>) -> status::Custom<content::RawJson<String>
             description: account.description.to_owned(),
             currency: account.currency.to_owned(),
             balance_cents: Num::from(balance),
+            balance_cents_in_ref_currency: Num::from(valuta_conversion_service.convert(
+                account.currency,
+                "EUR",
+                balance
+            )),
+            ref_currency: "EUR".to_string()
         })
     }
 
