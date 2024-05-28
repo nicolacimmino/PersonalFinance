@@ -6,6 +6,6 @@ pub struct CategoryDto {
     #[serde(rename(serialize = "type"))]
     pub type_: String,
 
-    pub amount_cents: i64,
+    pub amount_cents: i32,
     pub currency: String,
 }

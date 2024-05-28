@@ -15,12 +15,12 @@ impl AccountsService {
             .expect("Error loading accounts");
     }
 
-    pub fn get_accounts_balances(&mut self) -> Vec<(i32, i64)> {
+    pub fn get_accounts_balances(&mut self) -> Vec<(i32, i32)> {
         return accounts
             .inner_join(transactions)
             .group_by(schema::accounts::id)
-            .select((schema::accounts::id, diesel::dsl::sql::<diesel::sql_types::BigInt>("SUM(amount_cents)")))
-            .load::<(i32, i64)>(&mut establish_db_connection())
+            .select((schema::accounts::id, diesel::dsl::sql::<diesel::sql_types::Integer>("SUM(amount_cents)")))
+            .load::<(i32, i32)>(&mut establish_db_connection())
             .expect("Error loading balances");
     }
 }

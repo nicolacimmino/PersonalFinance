@@ -4,6 +4,6 @@ use rocket::serde::Serialize;
 pub struct ReportByCategoryEntryDto {
     pub category: String,
     pub currency: String,
-    pub total_cents: i64,
-    pub transactions_count: i64,
+    pub total_cents: i32,
+    pub transactions_count: i32,
 }

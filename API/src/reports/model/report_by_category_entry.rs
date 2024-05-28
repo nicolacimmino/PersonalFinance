@@ -1,5 +1,5 @@
 use diesel::sql_types::Text;
-use diesel::sql_types::BigInt;
+use diesel::sql_types::Integer;
 use diesel::{QueryableByName};
 
 #[derive(QueryableByName, Clone)]
@@ -9,9 +9,9 @@ pub struct ReportByCategoryEntry {
     pub category: String,
     #[diesel(sql_type = Text)]
     pub currency: String,
-    #[diesel(sql_type = BigInt)]
-    pub amount_cents: i64,
-    #[diesel(sql_type = BigInt)]
-    pub transactions_count: i64,
+    #[diesel(sql_type = Integer)]
+    pub amount_cents: i32,
+    #[diesel(sql_type = Integer)]
+    pub transactions_count: i32,
 }
 

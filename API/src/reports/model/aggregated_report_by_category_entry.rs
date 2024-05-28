@@ -1,7 +1,7 @@
 pub struct AggregatedReportByCategoryEntry {
     pub category: String,
     pub currency: String,
-    pub amount_cents: i64,
-    pub transactions_count: i64,
+    pub amount_cents: i32,
+    pub transactions_count: i32,
 }
 

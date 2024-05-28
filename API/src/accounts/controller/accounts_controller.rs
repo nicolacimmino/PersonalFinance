@@ -16,7 +16,7 @@ pub fn get_accounts(_key: ApiKey<'_>) -> status::Custom<content::RawJson<String>
 
     for account in accounts_service.get_accounts() {
         let balance = balances.iter().find(|(key, _val)| *key == account.id)
-            .unwrap_or(&(0i32, 0i64)).1;
+            .unwrap_or(&(0i32, 0i32)).1;
 
         dtos.push(AccountDto {
             id: Num::from(account.id),
