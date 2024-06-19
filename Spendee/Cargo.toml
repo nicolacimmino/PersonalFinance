@@ -13,3 +13,4 @@ log = "0.4.21"
 log4rs = "1.3.0"
 dotenvy = "0.15.7"
 uuid = { version = "1.8.0", features = ["v4"] }
+bigdecimal = "0.4.5"

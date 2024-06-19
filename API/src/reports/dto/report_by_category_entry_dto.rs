@@ -1,6 +1,13 @@
 use rocket::serde::Serialize;
 
 #[derive(Serialize)]
+pub struct ReportByCategoryDto {
+    pub date_from: String,
+    pub date_to: String,
+    pub reports: Vec::<ReportByCategoryEntryDto>,
+}
+
+#[derive(Serialize)]
 pub struct ReportByCategoryEntryDto {
     pub category: String,
     pub currency: String,
