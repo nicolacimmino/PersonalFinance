@@ -1,13 +1,15 @@
 CREATE TABLE receipts
 (
-    id            SERIAL PRIMARY KEY,
-    date          TIMESTAMP  NOT NULL,
-    amount_cents  INT        NOT NULL,
-    currency      VARCHAR(3) NOT NULL,
-    ext_id        TEXT       NOT NULL,
-    original_data TEXT       NOT NULL
+    id               SERIAL PRIMARY KEY,
+    date             TIMESTAMP  NOT NULL,
+    amount_cents     INT        NOT NULL,
+    currency         VARCHAR(3) NOT NULL,
+    ext_id           TEXT       NOT NULL,
+    merchant_name    TEXT       NOT NULL,
+    merchant_address TEXT       NOT NULL,
+    original_data    TEXT       NOT NULL,
+    scan_file_name   TEXT       NOT NULL
 );
-
 
 CREATE TABLE receipts_line_items
 (

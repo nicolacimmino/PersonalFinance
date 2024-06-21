@@ -57,7 +57,10 @@ diesel::table! {
         #[max_length = 3]
         currency -> Varchar,
         ext_id -> Text,
+        merchant_name -> Text,
+        merchant_address -> Text,
         original_data -> Text,
+        scan_file_name -> Text,
     }
 }
 
