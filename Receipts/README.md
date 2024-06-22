@@ -7,7 +7,7 @@ the line items (semi-automatically) to provide richer expenditure reports.
 
 The diagram below shows a high level overview of the solution.
 
-![diagram](Receipts/docs/diagram.png)
+![diagram](docs/diagram.png)
 
 I've setup AWS SES to receive emails for a domain I control and set a processing rule to store the raw MIME message in an S3 bucket folder and to invoke
 a lamba function. The lambda will extract the attachment and store it in a different folder on the same bucket. Meanwhile a cron job running on the 
