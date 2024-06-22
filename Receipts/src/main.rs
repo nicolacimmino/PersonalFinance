@@ -39,6 +39,20 @@ fn main() -> ExitCode {
     //  to the file in S3 processed folder for instance.
     let scan_file_name = Path::new(&args[1]).file_name().unwrap().to_str().unwrap();
 
+    let found_scans: i64 = schema::receipts::dsl::receipts
+        .filter(schema::receipts::scan_file_name.eq(&scan_file_name))
+        .count()
+        .get_result(connection)
+        .expect("Error looking for existing scans");
+
+    if found_scans > 0 {
+        error!(
+            "Receipt from same scan file {} already imported.",
+            &scan_file_name
+        );
+        return ExitCode::FAILURE;
+    }
+
     let client = reqwest::blocking::Client::new();
     let response_text = client.post(format!("{}/api/receipt/v1/verbose/file", taggun_host))
         .multipart(form)
@@ -55,6 +69,8 @@ fn main() -> ExitCode {
     let date = NaiveDateTime::parse_and_remainder(&*response.date.data, "%Y-%m-%dT%H:%M:%S")
         .expect(&format!("Invalid receipt date{}", response.date.data)).0;
     let amount = (response.total_amount.data * 100.0).to_i32().unwrap();
+    let merchant_name = response.merchant_name.data.unwrap_or("".parse().unwrap());
+    let merchant_address = response.merchant_address.data.unwrap_or("".parse().unwrap());
 
     let found_receipts: i64 = schema::receipts::dsl::receipts
         .filter(schema::receipts::ext_id.eq(&ext_id))
@@ -81,8 +97,8 @@ fn main() -> ExitCode {
             date: &date,
             amount_cents: &amount,
             currency: &response.total_amount.currency_code,
-            merchant_name: &response.merchant_name.data,
-            merchant_address: &response.merchant_address.data,
+            merchant_name: &merchant_name,
+            merchant_address: &merchant_address,
             original_data: &*response_text,
             scan_file_name: &scan_file_name,
         })
@@ -119,9 +135,9 @@ fn main() -> ExitCode {
     }
 
     info!(
-        "Imported ext_id:'{}', merchant:'{}', total:{} {}",
+        "Imported ext_id:'{:?}', merchant:'{:?}', total:{:?} {:?}",
         &ext_id,
-        &response.merchant_name.data,
+        &merchant_name,
         &amount.to_f32().unwrap() / 100.0f32,
         &response.total_amount.currency_code
     );
@@ -194,12 +210,12 @@ struct TaggunTotalAmountDto {
 
 #[derive(Deserialize, Clone, Debug)]
 struct TaggunMerchantNameDto {
-    pub data: String,
+    pub data: Option<String>,
 }
 
 #[derive(Deserialize, Clone, Debug)]
 struct TaggunMerchantAddressDto {
-    pub data: String,
+    pub data: Option<String>,
 }
 
 #[derive(Deserialize, Clone, Debug)]

@@ -18,6 +18,7 @@ use crate::transactions::{get_transactions, get_transactions_for_account};
 
 #[launch]
 fn launch() -> _ {
+    log4rs::init_file("log4rs.yaml", Default::default()).unwrap();
     dotenv().ok();
 
     rocket::build()
