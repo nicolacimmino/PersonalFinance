@@ -2,6 +2,7 @@ use std::env;
 use std::error::Error;
 
 use dotenvy::dotenv;
+use log::info;
 use serde::{Deserialize, Serialize};
 use crate::go_cardless::dto::prelude::*;
 
@@ -59,7 +60,6 @@ impl GoCardlessApi {
             .header("Content-Type", "application/json")
             .body(json_body)
             .send().unwrap().text().unwrap();
-
 
         match serde_json::from_str(&*response_text) {
             Ok(response) => Ok(response),

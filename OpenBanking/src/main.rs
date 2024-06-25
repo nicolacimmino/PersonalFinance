@@ -2,7 +2,7 @@ mod schema;
 mod go_cardless;
 mod open_banking;
 
-use std::env;
+use std::{env, panic};
 use diesel::{Connection};
 use diesel::pg::PgConnection;
 use dotenvy::dotenv;
@@ -33,7 +33,13 @@ fn sync_all_accounts_transactions() {
 
     for ob_account in ob_accounts_to_sync {
         info!("Syncing account {} ({})", ob_account.name, ob_account.id);
-        sync_account_transactions(&ob_account.id, &ob_account.provider_account_id)
+        let result = panic::catch_unwind(|| {
+            sync_account_transactions(&ob_account.id, &ob_account.provider_account_id)
+        });
+
+        if result.is_err() {
+            error!("Error in account sync.");
+        }
     }
 }
 

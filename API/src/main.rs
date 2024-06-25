@@ -11,6 +11,8 @@ use diesel::{Connection, PgConnection};
 use dotenv::dotenv;
 use rocket::{launch, routes};
 use rocket::log::private::error;
+use rocket::http::Method;
+use rocket_cors::{AllowedOrigins, CorsOptions};
 use crate::accounts::get_accounts;
 use crate::categories::get_categories;
 use crate::reports::get_report_by_category;
@@ -21,6 +23,16 @@ fn launch() -> _ {
     log4rs::init_file("log4rs.yaml", Default::default()).unwrap();
     dotenv().ok();
 
+    let cors = CorsOptions::default()
+        .allowed_origins(AllowedOrigins::all())
+        .allowed_methods(
+            vec![Method::Get, Method::Post]
+                .into_iter()
+                .map(From::from)
+                .collect(),
+        )
+        .allow_credentials(true);
+
     rocket::build()
         .configure(rocket::Config::figment().merge(("address", "0.0.0.0")))
         .mount("/api", routes![
@@ -30,6 +42,7 @@ fn launch() -> _ {
             get_transactions_for_account,
             get_report_by_category
         ])
+        .attach(cors.to_cors().unwrap())
 }
 
 pub fn establish_db_connection() -> PgConnection {

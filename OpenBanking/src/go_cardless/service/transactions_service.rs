@@ -12,8 +12,8 @@ impl TransactionsService {
         dotenv().ok();
 
         return TransactionsService {
-            go_cardless_secret_key: env::var("GOCARDLESS_SECRET_ID").expect("GOCARDLESS_SECRET_ID must be set"),
-            go_cardless_secret_id: env::var("GOCARDLESS_SECRET_KEY").expect("GOCARDLESS_SECRET_KEY must be set"),
+            go_cardless_secret_id: env::var("GOCARDLESS_SECRET_ID").expect("GOCARDLESS_SECRET_ID must be set"),
+            go_cardless_secret_key: env::var("GOCARDLESS_SECRET_KEY").expect("GOCARDLESS_SECRET_KEY must be set"),
         };
     }
 
