@@ -1,10 +1,5 @@
 <template>
   <div class="transactionsTable">
-    <div class="transactionsHeader">
-      <div>Booked</div>
-      <div>Description</div>
-      <div>Amount</div>
-    </div>
     <div v-if="loading">
       Loading...
     </div>
