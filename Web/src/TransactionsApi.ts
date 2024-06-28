@@ -1,11 +1,10 @@
 import axios from "axios";
-import {useApiKeyStore} from "@/stores/apiKeyStore.ts";
 
 export default class TransactionApi {
     static async getAllTransactions() {
         return axios({
             headers: {
-                "X-API-KEY": useApiKeyStore().getApiKey()
+                "X-API-KEY": localStorage.getItem("pfinanceApiKey")
             },
             method: "get",
             url: "http://127.0.0.1:8000/api/transactions/",
@@ -18,7 +17,7 @@ export default class TransactionApi {
     static async getTransaction(id) {
         return axios({
             headers: {
-                "X-API-KEY": useApiKeyStore().getApiKey()
+                "X-API-KEY": localStorage.getItem("pfinanceApiKey")
             },
             method: "get",
             url: "http://127.0.0.1:8000/api/transactions/" + id,

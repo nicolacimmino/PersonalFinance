@@ -1,15 +1,10 @@
 <template>
-  <h1>Test</h1>
-  <p>
-    <strong>Current route path:</strong> {{ $route.fullPath }}<br>
-  </p>
-
   <nav>
     <RouterLink to="/">Home</RouterLink>
     <RouterLink to="/transactions">Transactions</RouterLink>
   </nav>
 
-  <main>
+  <main class="mainContainer">
     <RouterView/>
   </main>
 

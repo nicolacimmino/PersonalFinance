@@ -13,20 +13,16 @@
 
 <script>
 
-import {useApiKeyStore} from "@/stores/apiKeyStore.ts";
-
 export default {
   name: 'HomeView',
   methods: {
     saveApiKey() {
-      console.log("TEST")
-      console.log(this.newApiKey)
-      useApiKeyStore().setApiKey(this.newApiKey);
-      this.existingApiKey = this.newApiKey
+      localStorage.setItem("pfinanceApiKey", this.newApiKey)
+      this.existingApiKey = this.newApiKey;
     }
   },
   mounted() {
-    this.existingApiKey = useApiKeyStore().getApiKey();
+    this.existingApiKey = localStorage.getItem("pfinanceApiKey") || ""
   },
   data() {
     return {
