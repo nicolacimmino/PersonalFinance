@@ -1,3 +1,4 @@
+use std::ops::Deref;
 use diesel::{RunQueryDsl, QueryDsl, SelectableHelper, ExpressionMethods};
 use crate::{establish_db_connection, schema};
 use crate::schema::accounts::dsl::accounts;
@@ -26,5 +27,16 @@ impl TransactionsService {
             .select((Transaction::as_select(), Account::as_select()))
             .load::<(Transaction, Account)>(&mut establish_db_connection())
             .expect("Error loading transactions");
+    }
+
+    pub fn get_transaction(&mut self, transaction_id: i32) -> (Transaction, Account) {
+        return transactions
+            .inner_join(accounts)
+            .filter(schema::transactions::id.eq(transaction_id))
+            .select((Transaction::as_select(), Account::as_select()))
+            .load::<(Transaction, Account)>(&mut establish_db_connection())
+            .expect("Error loading transactions")
+            .into_iter().nth(0)
+            .expect("No transaction found");
     }
 }

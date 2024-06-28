@@ -9,7 +9,9 @@
           {{ moment(booking_date).format("DD/MM/YYYY") }}
         </div>
         <div v-for="transaction in transactions" :key="transaction.id">
-          <TransactionOverview :transaction=transaction></TransactionOverview>
+          <TransactionOverview :transaction=transaction
+                               v-on:click="onTransactionClick(transaction.id)">
+          </TransactionOverview>
         </div>
       </template>
     </div>
@@ -43,6 +45,9 @@ export default {
         this.loading = false;
       });
     },
+    onTransactionClick(id) {
+      this.$router.push({name: "transaction_details", params: {id: id}})
+    }
   },
   computed: {
     byDate() {

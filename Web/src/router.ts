@@ -6,9 +6,9 @@ import HomeView from './views/HomeView.vue'
 
 
 const routes = [
-    {path: '/', component: HomeView},
-    {path: '/transactions', component: TransactionsListView, props: true},
-    {path: '/transactions/:id', component: TransactionDetailsView, props: true},
+    {name: 'home', path: '/', component: HomeView},
+    {name: 'transactions', path: '/transactions', component: TransactionsListView, props: true},
+    {name: 'transaction_details', path: '/transactions/:id', component: TransactionDetailsView, props: true},
 ]
 
 export default createRouter({
