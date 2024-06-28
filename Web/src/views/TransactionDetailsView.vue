@@ -1,21 +1,40 @@
 <template>
-  Details<br>
-  Id: {{ id }}<br>
-  APIKEY: {{ apiKey }}<br>
-
+  <div v-if="loading">
+    Loading...
+  </div>
+  <div v-else>
+    <TransactionDetails :transaction=transaction></TransactionDetails>
+  </div>
 </template>
 
 <script>
-import {useApiKeyStore} from "@/stores/apiKeyStore.ts";
+import TransactionDetails from "@/components/TransactionDetails.vue";
+import TransactionApi from "@/TransactionsApi";
 
 export default {
-  props: {
-    id: String,
+  components: {
+    TransactionDetails
   },
-  computed: {
-    apiKey() {
-      return useApiKeyStore().getApiKey();
+  props: {
+    id: undefined
+  },
+  mounted() {
+    this.loadTransaction()
+  },
+  data() {
+    return {
+      transaction: Object,
+      loading: true
     }
+  },
+  methods: {
+    loadTransaction() {
+      this.loading = true;
+      TransactionApi.getTransaction(this.id).then(fetchedTransaction => {
+        this.transaction = fetchedTransaction;
+        this.loading = false;
+      });
+    },
   }
 }
 </script>

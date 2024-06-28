@@ -7,7 +7,7 @@
   <nav>
     <RouterLink to="/">Home</RouterLink>
     <RouterLink to="/transactions">Transactions</RouterLink>
-    <RouterLink to="/transactions/123">T123</RouterLink>
+    <RouterLink to="/transactions/2473">Tr 2473</RouterLink>
   </nav>
 
   <main>

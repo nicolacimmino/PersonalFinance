@@ -21,8 +21,6 @@ import TransactionOverview from "@/components/TransactionOverview.vue";
 import moment from "moment";
 import TransactionApi from "@/TransactionsApi.ts";
 
-import {useApiKeyStore} from "@/stores/apiKeyStore";
-
 export default {
   components: {
     TransactionOverview: TransactionOverview,
@@ -40,7 +38,7 @@ export default {
     moment: moment,
     loadAllTransactions() {
       this.loading = true;
-      TransactionApi.getAll().then(fetchedTransactions => {
+      TransactionApi.getAllTransactions().then(fetchedTransactions => {
         this.transactions = fetchedTransactions;
         this.loading = false;
       });

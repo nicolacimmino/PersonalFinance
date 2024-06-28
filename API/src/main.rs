@@ -16,7 +16,7 @@ use rocket_cors::{AllowedOrigins, CorsOptions};
 use crate::accounts::get_accounts;
 use crate::categories::get_categories;
 use crate::reports::get_report_by_category;
-use crate::transactions::{get_transactions, get_transactions_for_account};
+use crate::transactions::{get_transactions, get_transaction, get_transactions_for_account};
 
 #[launch]
 fn launch() -> _ {
@@ -39,6 +39,7 @@ fn launch() -> _ {
             get_categories,
             get_accounts,
             get_transactions,
+            get_transaction,
             get_transactions_for_account,
             get_report_by_category
         ])
