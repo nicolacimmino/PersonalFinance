@@ -1,12 +1,9 @@
-use std::collections::HashMap;
-
-use bigdecimal::{BigDecimal, ToPrimitive};
 use chrono::{NaiveDate, NaiveTime};
-use diesel::{PgConnection, RunQueryDsl, sql_query};
+use diesel::{RunQueryDsl, sql_query};
 use diesel::sql_types::{Timestamp};
 use rocket::log::private::info;
 
-use crate::common::{ValutaConversionRate, ValutaConversionService};
+use crate::common::{ValutaConversionService};
 use crate::establish_db_connection;
 use crate::reports::{AggregatedReportByCategoryEntry, ReportByCategoryEntry};
 

@@ -9,31 +9,42 @@
           {{ moment(booking_date).format("DD/MM/YYYY") }}
         </div>
         <div v-for="transaction in transactions" :key="transaction.id">
-          <Transaction :transaction=transaction></Transaction>
+          <TransactionOverview :transaction=transaction></TransactionOverview>
         </div>
       </template>
-
-
     </div>
-
   </div>
 </template>
 
 <script>
-import Transaction from "@/components/Transaction.vue";
+import TransactionOverview from "@/components/TransactionOverview.vue";
 import moment from "moment";
+import TransactionApi from "@/TransactionsApi.ts";
+
+import {useApiKeyStore} from "@/stores/apiKeyStore";
 
 export default {
   components: {
-    Transaction,
+    TransactionOverview: TransactionOverview,
   },
-  props: {
-    transactions: Array,
-    loading: Boolean,
-    lastPrintedDate: null,
+  mounted() {
+    this.loadAllTransactions()
+  },
+  data() {
+    return {
+      loading: false,
+      transactions: []
+    }
   },
   methods: {
-    moment: moment
+    moment: moment,
+    loadAllTransactions() {
+      this.loading = true;
+      TransactionApi.getAll().then(fetchedTransactions => {
+        this.transactions = fetchedTransactions;
+        this.loading = false;
+      });
+    },
   },
   computed: {
     byDate() {

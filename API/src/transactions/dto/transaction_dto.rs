@@ -4,6 +4,7 @@ use rocket::serde::Serialize;
 #[derive(Serialize)]
 pub struct TransactionDto {
     pub id: Num,
+    #[serde(rename(serialize = "type"))]
     pub type_: String,
     pub account_id: Num,
     pub booking_date: String,

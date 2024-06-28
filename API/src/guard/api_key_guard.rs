@@ -2,6 +2,8 @@ use std::env;
 use rocket::http::Status;
 use rocket::request::{Outcome, Request, FromRequest};
 
+
+#[allow(dead_code)]
 pub struct ApiKey<'r>(&'r str);
 
 #[derive(Debug)]

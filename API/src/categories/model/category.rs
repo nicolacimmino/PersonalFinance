@@ -1,5 +1,6 @@
 use diesel::{Queryable};
 
+#[allow(dead_code)]
 #[derive(Queryable)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Category {

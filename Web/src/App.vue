@@ -1,43 +1,26 @@
 <template>
-  <div class="mainContainer">
-    <TransactionsList :transactions=transactions :loading=loading></TransactionsList>
-  </div>
+  <h1>Test</h1>
+  <p>
+    <strong>Current route path:</strong> {{ $route.fullPath }}<br>
+  </p>
+
+  <nav>
+    <RouterLink to="/">Home</RouterLink>
+    <RouterLink to="/transactions">Transactions</RouterLink>
+    <RouterLink to="/transactions/123">T123</RouterLink>
+  </nav>
+
+  <main>
+    <RouterView/>
+  </main>
+
 </template>
 
 <script>
-import TransactionsList from "@/components/TransactionsList.vue";
-import TransactionApi from "./TransactionsApi.ts";
+
 
 export default {
-  name: 'App',
-  components: {
-    TransactionsList,
-  },
-  async created() {
-    await this.$router.isReady();
-    this.getQueryParams()
-    this.loadAllTransactions()
-  },
-  data() {
-    return {
-      transactions: [],
-      selectedExpense: undefined,
-      loading: false,
-      apiKey: null
-    }
-  },
-  methods: {
-    loadAllTransactions() {
-      this.loading = true;
-      TransactionApi.getAll(this.apiKey).then(transactions => {
-        this.transactions = transactions;
-        this.loading = false;
-      });
-    },
-    getQueryParams() {
-      this.apiKey = this.$route.query.apikey
-    }
-  }
+  name: 'App'
 }
 </script>
 
