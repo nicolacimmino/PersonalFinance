@@ -1,12 +1,11 @@
-use rocket::get;
+use rocket::{get, patch};
 use rocket::figment::value::Num;
 use rocket::http::Status;
 use rocket::response::{content, status};
 use crate::common::ValutaConversionService;
 use crate::establish_db_connection;
-use crate::transactions::dto::TransactionDto;
+use crate::transactions::dto::{PatchTransactionDto, TransactionDto};
 use crate::guard::ApiKey;
-use crate::schema::ob_transactions::transaction_id;
 use crate::transactions::service::TransactionsService;
 
 
@@ -102,4 +101,16 @@ pub fn get_transaction(_key: ApiKey<'_>, id: i32) -> status::Custom<content::Raw
     status::Custom(Status::Ok, content::RawJson(
         serde_json::to_string(&dto).expect("Serialization Failed")),
     )
+}
+
+#[patch("/transactions/<id>", format = "application/json", data = "<patch_transaction_dto>")]
+pub fn patch_transaction(_key: ApiKey<'_>, id: i32, patch_transaction_dto: rocket::serde::json::Json<PatchTransactionDto>) -> status::Custom<content::RawJson<String>> {
+    let mut transactions_service = TransactionsService {};
+
+    transactions_service.update_transaction_category(
+        id,
+        patch_transaction_dto.category.clone(),
+    );
+
+    return status::Custom(Status::Ok, content::RawJson("".parse().unwrap()));
 }

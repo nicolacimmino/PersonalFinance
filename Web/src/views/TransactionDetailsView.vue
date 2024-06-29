@@ -2,8 +2,12 @@
   <div v-if="loading">
     Loading...
   </div>
+  <div v-else-if="saving">
+    Saving...
+  </div>
   <div v-else>
-    <TransactionDetails :transaction=transaction></TransactionDetails>
+    <TransactionDetails :transaction=transaction
+                        @updateCategory="(newCategory) => updateTransactionCategory(newCategory)"></TransactionDetails>
   </div>
 </template>
 
@@ -24,7 +28,8 @@ export default {
   data() {
     return {
       transaction: Object,
-      loading: true
+      loading: true,
+      saving: false
     }
   },
   methods: {
@@ -35,6 +40,14 @@ export default {
         this.loading = false;
       });
     },
+    updateTransactionCategory(newCategory) {
+      this.saving = true;
+      TransactionApi.updateTransactionCategory(this.id, newCategory).then(() => {
+            this.saving = false;
+            this.loadTransaction();
+          }
+      )
+    }
   }
 }
 </script>

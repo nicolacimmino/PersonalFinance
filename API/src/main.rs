@@ -16,7 +16,7 @@ use rocket_cors::{AllowedOrigins, CorsOptions};
 use crate::accounts::get_accounts;
 use crate::categories::get_categories;
 use crate::reports::get_report_by_category;
-use crate::transactions::{get_transactions, get_transaction, get_transactions_for_account};
+use crate::transactions::{get_transactions, get_transaction, get_transactions_for_account, patch_transaction};
 
 #[launch]
 fn launch() -> _ {
@@ -26,7 +26,7 @@ fn launch() -> _ {
     let cors = CorsOptions::default()
         .allowed_origins(AllowedOrigins::all())
         .allowed_methods(
-            vec![Method::Get, Method::Post]
+            vec![Method::Get, Method::Post, Method::Patch, Method::Put, Method::Delete]
                 .into_iter()
                 .map(From::from)
                 .collect(),
@@ -40,6 +40,7 @@ fn launch() -> _ {
             get_accounts,
             get_transactions,
             get_transaction,
+            patch_transaction,
             get_transactions_for_account,
             get_report_by_category
         ])

@@ -1,11 +1,10 @@
-use std::ops::Deref;
-use diesel::{RunQueryDsl, QueryDsl, SelectableHelper, ExpressionMethods};
+use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper};
+
 use crate::{establish_db_connection, schema};
+use crate::accounts::model::Account;
 use crate::schema::accounts::dsl::accounts;
 use crate::schema::transactions::dsl::transactions;
 use crate::transactions::model::Transaction;
-use crate::accounts::model::Account;
-
 
 pub struct TransactionsService {}
 
@@ -38,5 +37,12 @@ impl TransactionsService {
             .expect("Error loading transactions")
             .into_iter().nth(0)
             .expect("No transaction found");
+    }
+
+    pub fn update_transaction_category(&mut self, transaction_id: i32, category: String) {
+        diesel::update(transactions)
+            .filter(schema::transactions::id.eq(transaction_id))
+            .set(schema::transactions::category.eq(category))
+            .execute(&mut establish_db_connection()).expect("Failed to update transaction category");
     }
 }

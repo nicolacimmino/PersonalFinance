@@ -1,7 +1,7 @@
-use diesel::{Queryable, Selectable};
+use diesel::{Identifiable, Queryable, Selectable};
 use chrono::NaiveDateTime;
 
-#[derive(Queryable, PartialEq, Selectable, Debug)]
+#[derive(Queryable, Identifiable, PartialEq, Selectable, Debug)]
 #[diesel(table_name = crate::schema::transactions)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Transaction {

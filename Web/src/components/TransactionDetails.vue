@@ -1,6 +1,6 @@
 <template>
   <div class="transactionDetails">
-    <div>
+    <div v-on:click="editDialog=true">
       {{ transaction.category }}
     </div>
     <div>
@@ -9,15 +9,37 @@
     <div>
       {{ transaction.description }}
     </div>
+
+    <transition name="modal">
+      <TransactionEdit :category="transaction.category" v-if="editDialog" @cancel="editDialog = false"
+                       @save="(newCategory) => onCategoryChange(newCategory)">
+      </TransactionEdit>
+    </transition>
   </div>
 </template>
 
 <script>
+import TransactionEdit from "@/components/CatgeoryEdit.vue";
 
 export default {
+  components: {
+    TransactionEdit: TransactionEdit,
+  },
   props: {
     transaction: Object
   },
+  data() {
+    return {
+      editDialog: false
+    }
+  },
+  methods: {
+    onCategoryChange(newCategory) {
+      this.editDialog = false;
+      console.log(newCategory);
+      this.$emit("updateCategory", newCategory);
+    }
+  }
 }
 </script>
 
