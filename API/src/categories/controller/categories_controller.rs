@@ -1,6 +1,7 @@
 use rocket::get;
 use rocket::http::Status;
 use rocket::response::{content, status};
+use crate::categories::dto::CategoryDto;
 use crate::categories::service::CategoriesService;
 use crate::guard::ApiKey;
 
@@ -8,10 +9,13 @@ use crate::guard::ApiKey;
 pub fn get_categories(_key: ApiKey<'_>) -> status::Custom<content::RawJson<String>> {
     let mut categories_service = CategoriesService {};
 
-    let mut dtos: Vec<String> = Vec::new();
+    let mut dtos: Vec<CategoryDto> = Vec::new();
 
     for category in categories_service.get_categories() {
-        dtos.push(category)
+        dtos.push(CategoryDto {
+            code: category.code,
+            color: category.color,
+        })
     }
 
     status::Custom(Status::Ok, content::RawJson(

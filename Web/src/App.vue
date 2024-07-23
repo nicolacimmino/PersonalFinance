@@ -2,6 +2,7 @@
   <nav>
     <RouterLink to="/">Home</RouterLink>
     <RouterLink to="/transactions">Transactions</RouterLink>
+    <RouterLink to="/category_report">Categories</RouterLink>
   </nav>
 
   <main class="mainContainer">

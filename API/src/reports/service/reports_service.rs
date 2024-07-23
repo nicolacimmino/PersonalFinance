@@ -23,11 +23,12 @@ impl ReportsService {
         info!("{}", date_to);
 
         let reports = sql_query("
-           SELECT category, currency, CAST(sum(amount_cents) as int4) as amount_cents, CAST(count(*) AS int4) as transactions_count
+           SELECT category, c.type as category_type, color, currency, CAST(sum(amount_cents) as int4) as amount_cents, CAST(count(*) AS int4) as transactions_count
            FROM transactions t
            INNER JOIN accounts a ON a.id=t.account_id
+           INNER JOIN categories c ON c.code=t.category
            WHERE t.type<>'TRANSFER' AND t.type<>'INITIAL' AND ( booking_date BETWEEN $1 AND $2 )
-           GROUP BY category, currency, type")
+           GROUP BY category, c.type, color, currency, t.type")
             .bind::<Timestamp, _>(date_from.and_time(NaiveTime::default()))
             .bind::<Timestamp, _>(date_to.and_time(NaiveTime::default()))
             .load::<ReportByCategoryEntry>(connection)
@@ -43,18 +44,26 @@ impl ReportsService {
         for category in categories {
             let mut amount_cents = 0i32;
             let mut transactions_count = 0i32;
+            let mut category_color = "";
+            let mut category_type = "";
+
             for report in reports.iter().filter(|&report| report.category == category) {
                 amount_cents = amount_cents + valuta_conversion_service.convert(
                     report.currency.clone(),
                     "EUR",
                     report.amount_cents,
                 );
+                category_color = &report.color;
+                category_type = &report.category_type;
 
                 transactions_count += report.transactions_count;
             }
 
+
             aggregated_reports.push(AggregatedReportByCategoryEntry {
                 category,
+                type_: category_type.parse().unwrap(),
+                color: category_color.parse().unwrap(),
                 currency: "EUR".to_string(),
                 amount_cents,
                 transactions_count,

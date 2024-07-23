@@ -1,5 +1,4 @@
 
-
 mkdir -p s3-pfinance-receipts/
 mkdir -p s3-pfinance-receipts-processed/
 mkdir -p s3-pfinance-receipts-failed/
@@ -12,10 +11,10 @@ shopt -s nullglob dotglob
 for file in s3-pfinance-receipts/*
 do
   echo "$file"
-  if ./receipts_import $file; then
-      mv $file s3-pfinance-receipts-processed/
+  if ./receipts_import "$file"; then
+      mv "$file" s3-pfinance-receipts-processed/
   else
-      mv $file s3-pfinance-receipts-failed/
+      mv "$file" s3-pfinance-receipts-failed/
   fi
 done
 

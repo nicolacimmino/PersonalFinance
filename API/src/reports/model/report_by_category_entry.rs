@@ -8,6 +8,10 @@ pub struct ReportByCategoryEntry {
     #[diesel(sql_type = Text)]
     pub category: String,
     #[diesel(sql_type = Text)]
+    pub category_type: String,
+    #[diesel(sql_type = Text)]
+    pub color: String,
+    #[diesel(sql_type = Text)]
     pub currency: String,
     #[diesel(sql_type = Integer)]
     pub amount_cents: i32,

@@ -10,6 +10,9 @@ pub struct ReportByCategoryDto {
 #[derive(Serialize)]
 pub struct ReportByCategoryEntryDto {
     pub category: String,
+    #[serde(rename(serialize = "type"))]
+    pub type_: String,
+    pub color: String,
     pub currency: String,
     pub total_cents: i32,
     pub transactions_count: i32,

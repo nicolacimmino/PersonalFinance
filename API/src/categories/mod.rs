@@ -4,3 +4,4 @@ mod dto;
 mod service;
 
 pub use controller::get_categories;
+pub use dto::CategoryDto;

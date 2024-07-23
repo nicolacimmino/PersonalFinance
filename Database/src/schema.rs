@@ -13,6 +13,19 @@ diesel::table! {
 }
 
 diesel::table! {
+    categories (id) {
+        id -> Uuid,
+        #[max_length = 128]
+        code -> Varchar,
+        #[max_length = 6]
+        color -> Varchar,
+        #[sql_name = "type"]
+        #[max_length = 16]
+        type_ -> Varchar,
+    }
+}
+
+diesel::table! {
     ob_accounts (id) {
         id -> Uuid,
         #[max_length = 128]
@@ -141,6 +154,7 @@ diesel::joinable!(transactions -> accounts (account_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     accounts,
+    categories,
     ob_accounts,
     ob_transactions,
     receipts,

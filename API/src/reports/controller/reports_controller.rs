@@ -28,6 +28,8 @@ pub fn get_report_by_category(
     for report in reports_service.get_report_by_category(date_from, date_to) {
         report_dtos.push(ReportByCategoryEntryDto {
             category: report.category,
+            type_ : report.type_,
+            color: report.color,
             currency: report.currency,
             total_cents: report.amount_cents,
             transactions_count: report.transactions_count,

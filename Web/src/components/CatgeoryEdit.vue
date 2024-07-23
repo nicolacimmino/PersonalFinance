@@ -59,7 +59,11 @@ export default {
     loadAllCategories() {
       this.loading = true;
       TransactionApi.getCategories().then(fetchedCategories => {
-        this.categories = fetchedCategories;
+        this.categories = fetchedCategories.map(
+            categoryInfo => {
+              return categoryInfo.code
+            }
+        );
         this.loading = false;
       });
     },
