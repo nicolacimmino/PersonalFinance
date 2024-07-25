@@ -11,22 +11,24 @@
       />
     </div>
   </div>
-    <div class="transactionsTable">
-      <div v-if="!loaded">
-        Loading...
-      </div>
-      <div v-else>
-        <template v-for="spendingEntry in categoriesSpending" v-bind:key="spendingEntry.category">
-          <CategorySpendingOverview :entry=spendingEntry>
-          </CategorySpendingOverview>
-        </template>
-      </div>
+  <div class="transactionsTable">
+    <div v-if="!loaded">
+      Loading...
     </div>
+    <div v-else>
+      <template v-for="spendingEntry in categoriesSpending" v-bind:key="spendingEntry.category">
+        <CategorySpendingOverview :entry=spendingEntry
+                                  v-on:click="loadByCategoryReport('EXPENSE',spendingEntry.category + '.')">
+        </CategorySpendingOverview>
+      </template>
+    </div>
+  </div>
 </template>
 
 <script>
 import CategorySpendingOverview from "@/components/CategorySpendingOverview.vue";
 import TransactionApi from "@/TransactionsApi.ts";
+import TransactionsDataTransformations from "@/TransactionsDataTransformations.ts";
 import {Pie} from 'vue-chartjs'
 import {Chart as ChartJS, ArcElement, Tooltip, Legend} from 'chart.js'
 
@@ -38,7 +40,7 @@ export default {
     Pie: Pie
   },
   mounted() {
-    this.loadByCategoryReport("EXPENSE")
+    this.loadByCategoryReport("EXPENSE", "")
   },
   data() {
     return {
@@ -58,11 +60,11 @@ export default {
     }
   },
   methods: {
-    loadByCategoryReport(type) {
-      TransactionApi.loadByCategoryReportAggregateFirstLevel().then(fetchedCategoriesSpending => {
-        this.categoriesSpending = fetchedCategoriesSpending.filter(item => {
-          return item.type === type
-        });
+    loadByCategoryReport(typeFilter, categoryFilter) {
+      TransactionApi.loadByCategoryReport().then(fetchedCategoriesReport => {
+        this.categoriesSpending = TransactionsDataTransformations.aggregateSubLevels(
+            fetchedCategoriesReport.reports, typeFilter, categoryFilter
+        );
 
         this.chartData = {
           labels: this.categoriesSpending.map(
@@ -78,7 +80,7 @@ export default {
             ),
             data: this.categoriesSpending.map(
                 item => {
-                  return item.total_cents
+                  return Math.abs(item.total_cents) / 100.00
                 }
             )
           }]

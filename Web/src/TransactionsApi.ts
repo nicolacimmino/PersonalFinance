@@ -40,39 +40,6 @@ export default class TransactionApi {
 
     }
 
-    static async loadByCategoryReportAggregateFirstLevel() {
-        const response = await this.loadByCategoryReport();
-
-        let result = [];
-
-        response.reports.reduce(function (res, report) {
-            const aggregation_category = report.category.substring(0, 3)
-
-            if (res[aggregation_category] === undefined) {
-                res[aggregation_category] = {
-                    category: aggregation_category,
-                    total_cents: 0,
-                    currency: report.currency,
-                    color: report.color,
-                    type: report.type
-                };
-                result.push(res[aggregation_category])
-            }
-
-            res[aggregation_category].total_cents += report.total_cents;
-
-            return res;
-        }, {});
-
-        result = Object.keys(result).map(function (k) {
-            return result[k];
-        });
-
-        console.log(result);
-
-        return result;
-    }
-
     static async updateTransactionCategory(id, category) {
         return axios({
             headers: {
