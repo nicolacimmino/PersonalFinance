@@ -59,8 +59,8 @@ export default {
   },
   methods: {
     loadByCategoryReport(type) {
-      TransactionApi.loadByCategoryReport().then(fetchedCategoriesSpending => {
-        this.categoriesSpending = fetchedCategoriesSpending.reports.filter(item => {
+      TransactionApi.loadByCategoryReportAggregateFirstLevel().then(fetchedCategoriesSpending => {
+        this.categoriesSpending = fetchedCategoriesSpending.filter(item => {
           return item.type === type
         });
 
@@ -78,7 +78,7 @@ export default {
             ),
             data: this.categoriesSpending.map(
                 item => {
-                  return Math.abs(item.total_cents / 100)
+                  return item.total_cents
                 }
             )
           }]
