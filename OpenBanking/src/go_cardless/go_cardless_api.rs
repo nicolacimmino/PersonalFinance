@@ -2,7 +2,7 @@ use std::env;
 use std::error::Error;
 
 use dotenvy::dotenv;
-use log::info;
+use log::{error, info};
 use serde::{Deserialize, Serialize};
 use crate::go_cardless::dto::prelude::*;
 
@@ -44,10 +44,21 @@ impl GoCardlessApi {
         return response.transactions.booked;
     }
 
+    pub fn get_account_info(&mut self, account_id: &String) -> AccountInfoResponseDto {
+        dotenv().ok();
+
+        let gocardless_host = env::var("GOCARDLESS_HOST").expect("GOCARDLESS_HOST");
+        let response: AccountInfoResponseDto = self.make_get_request(
+            &format!("{gocardless_host}/api/v2/accounts/{account_id}/"),
+        ).unwrap();
+
+        return response;
+    }
+
     fn make_post_request<RequestT, ResponseT>(&mut self, url: &str, request: RequestT) -> Result<ResponseT, &'static dyn Error>
-        where
-            RequestT: Serialize,
-            ResponseT: for<'a> Deserialize<'a> + Sized
+    where
+        RequestT: Serialize,
+        ResponseT: for<'a> Deserialize<'a> + Sized,
     {
         let json_body = match serde_json::to_string(&request) {
             Ok(json) => json,
@@ -68,8 +79,8 @@ impl GoCardlessApi {
     }
 
     fn make_get_request<ResponseT>(&mut self, url: &str) -> Result<ResponseT, &'static dyn Error>
-        where
-            ResponseT: for<'a> Deserialize<'a> + Sized
+    where
+        ResponseT: for<'a> Deserialize<'a> + Sized,
     {
         let client = reqwest::blocking::Client::new();
         let access_token = self.access_token.to_string();

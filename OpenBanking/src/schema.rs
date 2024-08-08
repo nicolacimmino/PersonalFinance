@@ -8,6 +8,22 @@ diesel::table! {
         description -> Text,
         #[max_length = 3]
         currency -> Varchar,
+        pri_transactions_src -> Text,
+        #[max_length = 34]
+        iban -> Varchar,
+    }
+}
+
+diesel::table! {
+    categories (id) {
+        id -> Uuid,
+        #[max_length = 128]
+        code -> Varchar,
+        #[max_length = 6]
+        color -> Varchar,
+        #[sql_name = "type"]
+        #[max_length = 16]
+        type_ -> Varchar,
     }
 }
 
@@ -21,6 +37,8 @@ diesel::table! {
         #[max_length = 128]
         name -> Varchar,
         account_id -> Int4,
+        #[max_length = 16]
+        req_status -> Varchar,
     }
 }
 
@@ -45,6 +63,33 @@ diesel::table! {
         balance_after_transaction_type -> Text,
         internal_transaction_id -> Text,
         transformed_transaction_id -> Nullable<Int4>,
+    }
+}
+
+diesel::table! {
+    receipts (id) {
+        id -> Int4,
+        date -> Timestamp,
+        amount_cents -> Int4,
+        #[max_length = 3]
+        currency -> Varchar,
+        ext_id -> Text,
+        merchant_name -> Text,
+        merchant_address -> Text,
+        original_data -> Text,
+        scan_file_name -> Text,
+    }
+}
+
+diesel::table! {
+    receipts_line_items (id) {
+        id -> Int4,
+        receipt_id -> Int4,
+        quantity -> Numeric,
+        unit_price_cents -> Int4,
+        amount_cents -> Int4,
+        description -> Text,
+        raw_text -> Text,
     }
 }
 
@@ -78,7 +123,6 @@ diesel::table! {
 diesel::table! {
     transactions (id) {
         id -> Int4,
-        date -> Timestamp,
         #[sql_name = "type"]
         #[max_length = 16]
         type_ -> Varchar,
@@ -87,12 +131,26 @@ diesel::table! {
         category -> Text,
         creditor_name -> Text,
         description -> Text,
+        booking_date -> Timestamp,
+        value_date -> Timestamp,
+    }
+}
+
+diesel::table! {
+    valuta_conversion_rates (id) {
+        id -> Int4,
+        #[max_length = 3]
+        valuta_from -> Varchar,
+        #[max_length = 3]
+        valuta_to -> Varchar,
+        factor -> Numeric,
     }
 }
 
 diesel::joinable!(ob_accounts -> accounts (account_id));
 diesel::joinable!(ob_transactions -> ob_accounts (ob_account_id));
 diesel::joinable!(ob_transactions -> transactions (transformed_transaction_id));
+diesel::joinable!(receipts_line_items -> receipts (receipt_id));
 diesel::joinable!(sp_accounts -> accounts (account_id));
 diesel::joinable!(sp_transactions -> sp_accounts (sp_account_id));
 diesel::joinable!(sp_transactions -> transactions (transformed_transaction_id));
@@ -100,9 +158,13 @@ diesel::joinable!(transactions -> accounts (account_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     accounts,
+    categories,
     ob_accounts,
     ob_transactions,
+    receipts,
+    receipts_line_items,
     sp_accounts,
     sp_transactions,
     transactions,
+    valuta_conversion_rates,
 );

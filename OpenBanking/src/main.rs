@@ -3,7 +3,7 @@ mod go_cardless;
 mod open_banking;
 
 use std::{env, panic};
-use diesel::{Connection};
+use diesel::{Connection, table};
 use diesel::pg::PgConnection;
 use dotenvy::dotenv;
 use log::{error, info};
@@ -12,6 +12,8 @@ use uuid::Uuid;
 
 use go_cardless::TransactionsService as GoCardlessTransactionsService;
 use open_banking::{NewObTransaction, AccountsService, TransactionsService as OpenBankingTransactionsService};
+use crate::schema::accounts::dsl::accounts;
+use crate::schema::ob_accounts::dsl::ob_accounts;
 
 fn main() {
     log4rs::init_file("log4rs.yaml", Default::default()).unwrap();
@@ -94,6 +96,8 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
     }
 
     info!("Added {} transactions, {} already in DB.", inserted_transactions, found_transactions);
+
+    info!("Syncing account info.");
 }
 
 pub fn establish_db_connection() -> PgConnection {

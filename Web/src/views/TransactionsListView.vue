@@ -4,8 +4,8 @@
       Loading...
     </div>
     <div v-else>
-      <template v-for="transactions, booking_date in byDate">
-        <div>
+      <template v-for="transactions, booking_date in byDate" v-bind:key="booking_date">
+        <div class="transactionsDateHeader">
           {{ moment(booking_date).format("DD/MM/YYYY") }}
         </div>
         <div v-for="transaction in transactions" :key="transaction.id">
@@ -41,7 +41,10 @@ export default {
     loadAllTransactions() {
       this.loading = true;
       TransactionApi.getAllTransactions().then(fetchedTransactions => {
-        this.transactions = fetchedTransactions;
+        this.transactions = fetchedTransactions.filter(item => {
+          return item.type === "EXPENSE"
+        });
+
         this.loading = false;
       });
     },
@@ -62,17 +65,14 @@ export default {
 
 <style scoped>
 .transactionsTable {
-  border-radius: 10px;
   background-color: white;
+  font-family: monospace;
+  font-size: medium;
 }
 
-.transactionsHeader {
-  border-radius: 10px 10px 0 0;
-  display: grid;
-  grid-template: 10px / 0.6fr 1.4fr 1fr;
+.transactionsDateHeader {
   text-align: left;
-  padding: 15px;
+  padding: 0px;
   background-color: lightsteelblue;
-  text-transform: uppercase;
 }
 </style>

@@ -1,0 +1,4 @@
+
+ALTER TABLE ob_accounts
+ADD COLUMN req_status VARCHAR(16) NOT NULL DEFAULT '';
+

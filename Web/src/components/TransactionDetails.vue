@@ -1,7 +1,7 @@
 <template>
   <div class="transactionDetails">
-    <div v-on:click="editDialog=true">
-      {{ transaction.category }}
+    <div>
+      <a v-on:click="editDialog=true">{{ transaction.category }}</a>
     </div>
     <div>
       {{ transaction.amount_cents / 100.0 }} {{ transaction.currency }}
@@ -46,8 +46,9 @@ export default {
 <style scoped>
 .transactionDetails {
   display: grid;
-  grid-template: 50px / 3fr 2fr;
+  grid-template: 200px / 1fr 1fr 3fr;
   text-align: left;
   padding: 15px;
+  font-family: "Courier New", monospace;
 }
 </style>

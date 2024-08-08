@@ -16,6 +16,9 @@
       Loading...
     </div>
     <div v-else>
+      <div v-if="currentCategoryFilter!==''">
+        <a v-on:click="loadPreviousCategoryReport()">Up</a>
+      </div>
       <template v-for="spendingEntry in categoriesSpending" v-bind:key="spendingEntry.category">
         <CategorySpendingOverview :entry=spendingEntry
                                   v-on:click="loadByCategoryReport('EXPENSE',spendingEntry.category + '.')">
@@ -45,6 +48,7 @@ export default {
   data() {
     return {
       loaded: false,
+      currentCategoryFilter: "",
       categoriesSpending: [],
       chartOptions: {
         responsive: true,
@@ -60,11 +64,28 @@ export default {
     }
   },
   methods: {
+    loadPreviousCategoryReport() {
+      if (this.currentCategoryFilter === "") {
+        return;
+      }
+
+      this.loadByCategoryReport("EXPENSE", this.currentCategoryFilter.substring(
+          0, this.currentCategoryFilter.length - 4
+      ));
+    },
     loadByCategoryReport(typeFilter, categoryFilter) {
       TransactionApi.loadByCategoryReport().then(fetchedCategoriesReport => {
-        this.categoriesSpending = TransactionsDataTransformations.aggregateSubLevels(
+        let aggregatedData = TransactionsDataTransformations.aggregateSubLevels(
             fetchedCategoriesReport.reports, typeFilter, categoryFilter
         );
+
+        if (aggregatedData.length === 0) {
+          return;
+        }
+
+        this.currentCategoryFilter = categoryFilter;
+
+        this.categoriesSpending = aggregatedData;
 
         this.chartData = {
           labels: this.categoriesSpending.map(
@@ -73,11 +94,14 @@ export default {
               }
           ),
           datasets: [{
-            backgroundColor: this.categoriesSpending.map(
-                item => {
-                  return "#" + item.color
-                }
-            ),
+            backgroundColor: [
+              "#CDDFA0",
+              "#7B9EA8",
+              "#E6C79C",
+              "#78586F",
+              "#6FD08C",
+              "#334139",
+            ],
             data: this.categoriesSpending.map(
                 item => {
                   return Math.abs(item.total_cents) / 100.00

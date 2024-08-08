@@ -9,6 +9,8 @@ diesel::table! {
         #[max_length = 3]
         currency -> Varchar,
         pri_transactions_src -> Text,
+        #[max_length = 34]
+        iban -> Varchar,
     }
 }
 
@@ -35,6 +37,8 @@ diesel::table! {
         #[max_length = 128]
         name -> Varchar,
         account_id -> Int4,
+        #[max_length = 16]
+        req_status -> Varchar,
     }
 }
 
