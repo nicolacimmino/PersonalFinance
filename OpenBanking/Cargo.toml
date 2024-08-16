@@ -3,12 +3,11 @@ workspace = { members = [] }
 name = "open_banking"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "Open Banking Import service."
 
 [dependencies]
 curl = "0.4.46"
-diesel = { version = "2.1.5", features = ["postgres_backend", "postgres", "uuid"] }
+diesel = { version = "2.1.5", features = ["postgres_backend", "postgres", "uuid", "chrono"] }
 dotenvy = "0.15.7"
 reqwest = { version = "0.12.2", features = ["blocking"] }
 serde = { version = "1.0.197", features = ["derive"] }
@@ -16,3 +15,4 @@ serde_json = "1.0.115"
 uuid = { version = "1.8.0", features = ["v4"] }
 log = "0.4.21"
 log4rs = "1.3.0"
+chrono = "0.4.38"

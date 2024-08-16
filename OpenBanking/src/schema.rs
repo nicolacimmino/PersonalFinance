@@ -39,6 +39,7 @@ diesel::table! {
         account_id -> Int4,
         #[max_length = 16]
         req_status -> Varchar,
+        last_sync -> Nullable<Timestamp>,
     }
 }
 

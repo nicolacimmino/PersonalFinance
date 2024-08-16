@@ -1,0 +1,2 @@
+ALTER TABLE ob_accounts
+ADD COLUMN last_sync TIMESTAMP DEFAULT NULL;

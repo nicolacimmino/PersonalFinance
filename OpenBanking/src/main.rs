@@ -3,12 +3,15 @@ mod go_cardless;
 mod open_banking;
 
 use std::{env, panic};
-use diesel::{Connection, table};
+use diesel::{Connection, RunQueryDsl, table};
 use diesel::pg::PgConnection;
 use dotenvy::dotenv;
 use log::{error, info};
 use log4rs;
 use uuid::Uuid;
+use chrono::{Local, NaiveDate, NaiveDateTime, NaiveTime, TimeDelta, Utc};
+use diesel::ExpressionMethods;
+use serde::de::Unexpected::Option;
 
 use go_cardless::TransactionsService as GoCardlessTransactionsService;
 use open_banking::{NewObTransaction, AccountsService, TransactionsService as OpenBankingTransactionsService};
@@ -97,7 +100,13 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
 
     info!("Added {} transactions, {} already in DB.", inserted_transactions, found_transactions);
 
-    info!("Syncing account info.");
+    info!("Updating last sync.");
+
+    diesel::update(ob_accounts)
+        .filter(schema::ob_accounts::id.eq(account_id))
+        .set(
+            schema::ob_accounts::last_sync.eq(Utc::now().naive_utc())
+        ).execute(connection).expect("Failed to update ob_account last sync");
 }
 
 pub fn establish_db_connection() -> PgConnection {

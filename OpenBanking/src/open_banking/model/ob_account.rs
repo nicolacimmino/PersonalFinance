@@ -1,3 +1,4 @@
+use chrono::{NaiveDateTime};
 use diesel::{Identifiable, Queryable, Selectable};
 use uuid::Uuid;
 
@@ -10,5 +11,6 @@ pub struct ObAccount {
     pub provider_account_id: String,
     pub name: String,
     pub req_status: String,
+    pub last_sync: Option<NaiveDateTime>
 }
 
