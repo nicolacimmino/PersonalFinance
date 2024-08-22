@@ -1,7 +1,7 @@
 import {createWebHistory, createRouter} from 'vue-router'
 
 import TransactionsListView from './views/TransactionsListView.vue'
-import ModalTransactionDetailsView from './views/ModalTransactionDetailsView.vue'
+import TransactionDetailsView from './views/TransactionDetailsView.vue'
 import CategoryReportView from './views/CategoryReportView.vue'
 import HomeView from './views/HomeView.vue'
 
@@ -22,7 +22,7 @@ const routes = [
     {
         name: 'transaction_details',
         path: '/transactions/:id',
-        component: ModalTransactionDetailsView,
+        component: TransactionDetailsView,
         props: true
     },
     {
