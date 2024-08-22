@@ -1,5 +1,5 @@
 <template>
-  <div class="transactionDetails">
+  <div class="transaction-details">
     <div>
       <a v-on:click="editDialog=true">{{ transaction.category }}</a>
     </div>
@@ -44,7 +44,7 @@ export default {
 </script>
 
 <style scoped>
-.transactionDetails {
+.transaction-details {
   display: grid;
   grid-template: 200px / 1fr 1fr 3fr;
   text-align: left;

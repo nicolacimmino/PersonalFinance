@@ -8,6 +8,7 @@ pub struct TransactionDto {
     #[serde(rename(serialize = "type"))]
     pub type_: String,
     pub account_id: Num,
+    pub account_name: String,
     pub booking_date: String,
     pub category: String,
     pub creditor_name: String,

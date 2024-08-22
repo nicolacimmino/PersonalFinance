@@ -1,11 +1,11 @@
 <template>
-  <div class="transactionsTable">
+  <div class="transactions-table">
     <div v-if="loading">
       Loading...
     </div>
     <div v-else>
       <template v-for="transactions, booking_date in byDate" v-bind:key="booking_date">
-        <div class="transactionsDateHeader">
+        <div class="transactions-date-header">
           {{ moment(booking_date).format("DD/MM/YYYY") }}
         </div>
         <div v-for="transaction in transactions" :key="transaction.id">
@@ -41,9 +41,11 @@ export default {
     loadAllTransactions() {
       this.loading = true;
       TransactionApi.getAllTransactions().then(fetchedTransactions => {
-        this.transactions = fetchedTransactions.filter(item => {
-          return item.type === "EXPENSE"
-        });
+        this.transactions = fetchedTransactions
+
+        //     .filter(item => {
+        //   return item.type === "EXPENSE"
+        // });
 
         this.loading = false;
       });
@@ -64,13 +66,13 @@ export default {
 </script>
 
 <style scoped>
-.transactionsTable {
+.transactions-table {
   background-color: white;
   font-family: monospace;
-  font-size: medium;
+  font-size: small;
 }
 
-.transactionsDateHeader {
+.transactions-date-header {
   text-align: left;
   padding: 0px;
   background-color: lightsteelblue;

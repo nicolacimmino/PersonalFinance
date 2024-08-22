@@ -34,9 +34,9 @@ export default {
 }
 
 .mainContainer {
-  background-color: whitesmoke;
-  padding: 20px;
-  width: 80%;
+  background-color: white;
+  padding: 10px;
+  width: 100%;
   display: grid;
   grid-template:
     'header'

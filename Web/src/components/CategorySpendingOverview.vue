@@ -5,7 +5,7 @@
         {{ entry.category }} {{ Math.abs(entry.total_cents / 100.0) }} {{ entry.currency }}
       </div>
     </div>
-    <div class="transactionDetails">
+    <div class="transaction-details">
       <div>
         Transactions: {{ entry.transactions_count }}
       </div>

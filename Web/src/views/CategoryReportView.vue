@@ -1,5 +1,5 @@
 <template>
-  <div class="transactionsTable">
+  <div class="transactions-table">
     <div v-if="!loaded">
       Loading...
     </div>
@@ -11,7 +11,7 @@
       />
     </div>
   </div>
-  <div class="transactionsTable">
+  <div class="transactions-table">
     <div v-if="!loaded">
       Loading...
     </div>
@@ -118,7 +118,7 @@ export default {
 </script>
 
 <style scoped>
-.transactionsTable {
+.transactions-table {
   border-radius: 10px;
   background-color: white;
 }
