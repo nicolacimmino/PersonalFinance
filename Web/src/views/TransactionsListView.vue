@@ -2,7 +2,8 @@
   <div class="transactions-table">
     <div v-if="editDialog">
       <transition name="modal">
-        <TransactionEdit :category="transaction.category"
+        <TransactionEdit :transaction="transaction"
+                         :categories="categories"
                          @cancel="editDialog = false"
                          @save="(newCategory) => onCategoryChange(newCategory)">
         </TransactionEdit>
@@ -29,7 +30,7 @@
 
 <script>
 import TransactionOverview from "@/components/TransactionOverview.vue";
-import TransactionEdit from "@/components/CatgeoryEdit.vue";
+import TransactionEdit from "@/components/TransactionDetailsEdit.vue";
 import moment from "moment";
 import TransactionApi from "@/TransactionsApi.ts";
 
@@ -38,7 +39,8 @@ export default {
     TransactionOverview: TransactionOverview, TransactionEdit
   },
   mounted() {
-    this.loadAllTransactions()
+    this.loadAllTransactions();
+    this.loadAllCategories();
   },
   data() {
     return {
@@ -46,6 +48,7 @@ export default {
       saving: false,
       editDialog: false,
       transactions: [],
+      categories: [],
       transaction: undefined,
     }
   },
@@ -55,6 +58,17 @@ export default {
       this.loading = true;
       TransactionApi.getAllTransactions().then(fetchedTransactions => {
         this.transactions = fetchedTransactions
+        this.loading = false;
+      });
+    },
+    loadAllCategories() {
+      this.loading = true;
+      TransactionApi.getCategories().then(fetchedCategories => {
+        this.categories = fetchedCategories.map(
+            categoryInfo => {
+              return categoryInfo.code
+            }
+        );
         this.loading = false;
       });
     },

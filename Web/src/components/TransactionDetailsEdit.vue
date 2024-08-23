@@ -1,21 +1,21 @@
 <template>
-  <div v-if="loading">
-    Loading...
-  </div>
-  <div v-else>
+  <div>
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
           <div class="modal-header">
             <slot name="header">
-              Edit Category
+              {{ transaction.booking_date }}
             </slot>
           </div>
 
           <div class="modal-body">
             <slot name="body">
               <select v-model="selectedCategory">
-                <option v-for="category in categories" v-bind:key="category" v-bind:value="category">{{ category }}</option>
+                <option v-for="category in categories" v-bind:key="category" v-bind:value="category">{{
+                    category
+                  }}
+                </option>
               </select>
             </slot>
           </div>
@@ -38,45 +38,17 @@
 </template>
 
 <script>
-import TransactionApi from "@/TransactionsApi.ts";
-
 export default {
   mounted() {
-    this.loadAllCategories()
-    this.selectedCategory = this.category
+    this.selectedCategory = this.transaction.category
   },
   props: {
-      category: String
+    transaction: undefined,
+    categories: undefined,
   },
   data() {
     return {
-      loading: false,
-      categories: [],
       selectedCategory: String
-    }
-  },
-  methods: {
-    loadAllCategories() {
-      this.loading = true;
-      TransactionApi.getCategories().then(fetchedCategories => {
-        this.categories = fetchedCategories.map(
-            categoryInfo => {
-              return categoryInfo.code
-            }
-        );
-        this.loading = false;
-      });
-    },
-    onTransactionClick(id) {
-      this.$router.push({name: "transaction_details", params: {id: id}})
-    }
-  },
-  computed: {
-    byDate() {
-      return this.transactions.reduce((acc, transaction) => {
-        (acc[transaction.booking_date] = acc[transaction.booking_date] || []).push(transaction)
-        return acc
-      }, {})
     }
   }
 }
@@ -122,28 +94,5 @@ export default {
 
 .modal-default-button {
   float: right;
-}
-
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
-
-.modal-enter {
-  opacity: 0;
-}
-
-.modal-leave-active {
-  opacity: 0;
-}
-
-.modal-enter .modal-container,
-.modal-leave-active .modal-container {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
 }
 </style>
