@@ -1,7 +1,6 @@
 import {createWebHistory, createRouter} from 'vue-router'
 
 import TransactionsListView from './views/TransactionsListView.vue'
-import TransactionDetailsView from './views/TransactionDetailsView.vue'
 import CategoryReportView from './views/CategoryReportView.vue'
 import HomeView from './views/HomeView.vue'
 
@@ -17,12 +16,6 @@ const routes = [
         path: '/transactions',
         query: { category: '' },
         component: TransactionsListView,
-        props: true
-    },
-    {
-        name: 'transaction_details',
-        path: '/transactions/:id',
-        component: TransactionDetailsView,
         props: true
     },
     {

@@ -22,7 +22,7 @@
 
           <div class="modal-footer">
             <slot name="footer">
-              Choose
+              &nbsp;
               <button class="modal-default-button" @click="$emit('save', selectedCategory)">
                 Save
               </button>

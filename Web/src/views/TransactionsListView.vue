@@ -1,9 +1,6 @@
 <template>
   <div class="transactions-table">
-    <div v-if="loading">
-      Loading...
-    </div>
-    <div v-else-if="editDialog">
+    <div v-if="editDialog">
       <transition name="modal">
         <TransactionEdit :category="transaction.category"
                          @cancel="editDialog = false"
@@ -11,13 +8,17 @@
         </TransactionEdit>
       </transition>
     </div>
+
+    <div v-if="loading">
+      Loading...
+    </div>
     <div v-else>
       <template v-for="(transactions, booking_date) in byDate" v-bind:key="booking_date">
         <div class="transactions-date-header">
           {{ moment(booking_date).format("DD/MM/YYYY") }}
         </div>
         <div v-for="transaction in transactions" :key="transaction.id">
-          <TransactionOverview :transaction=transaction
+          <TransactionOverview :transaction=transaction :id="transaction.id"
                                v-on:click="onTransactionClick(transaction)">
           </TransactionOverview>
         </div>
@@ -42,9 +43,10 @@ export default {
   data() {
     return {
       loading: false,
+      saving: false,
       editDialog: false,
       transactions: [],
-      transaction: undefined
+      transaction: undefined,
     }
   },
   methods: {
@@ -62,9 +64,13 @@ export default {
     },
     onCategoryChange(newCategory) {
       this.editDialog = false;
-      TransactionApi.updateTransactionCategory(this.transaction.id, newCategory).then(() => {
+      this.saving = true;
+      TransactionApi.updateTransactionCategory(this.transaction.id, newCategory).then(updatedTransaction => {
             this.saving = false;
-            this.loadAllTransactions();
+            this.transactions[this.transactions.findIndex(
+                transaction => transaction.id === updatedTransaction.id)] = updatedTransaction;
+            //document.getElementById(updatedTransaction.id).transaction = updatedTransaction;
+            //this.loadAllTransactions();
           }
       )
     }

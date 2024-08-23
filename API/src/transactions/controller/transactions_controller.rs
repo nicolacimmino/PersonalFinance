@@ -77,12 +77,20 @@ pub fn get_transactions_for_account(_key: ApiKey<'_>, account_id: i32) -> status
 
 #[get("/transactions/<id>")]
 pub fn get_transaction(_key: ApiKey<'_>, id: i32) -> status::Custom<content::RawJson<String>> {
+    let dto = build_transaction_dto(id);
+
+    status::Custom(Status::Ok, content::RawJson(
+        serde_json::to_string(&dto).expect("Serialization Failed")),
+    )
+}
+
+fn build_transaction_dto(id: i32) -> TransactionDto {
     let mut transactions_service = TransactionsService {};
     let mut valuta_conversion_service = ValutaConversionService::new(&mut establish_db_connection());
 
     let (transaction, account) = transactions_service.get_transaction(id);
 
-    let dto = TransactionDto {
+    return TransactionDto {
         id: Num::from(transaction.id),
         type_: transaction.type_.to_owned(),
         account_id: Num::from(transaction.account_id),
@@ -100,10 +108,6 @@ pub fn get_transaction(_key: ApiKey<'_>, id: i32) -> status::Custom<content::Raw
                 transaction.amount_cents)),
         ref_currency: "EUR".to_string(),
     };
-
-    status::Custom(Status::Ok, content::RawJson(
-        serde_json::to_string(&dto).expect("Serialization Failed")),
-    )
 }
 
 #[patch("/transactions/<id>", format = "application/json", data = "<patch_transaction_dto>")]
@@ -115,5 +119,9 @@ pub fn patch_transaction(_key: ApiKey<'_>, id: i32, patch_transaction_dto: rocke
         patch_transaction_dto.category.clone(),
     );
 
-    return status::Custom(Status::Ok, content::RawJson("".parse().unwrap()));
+    let dto = build_transaction_dto(id);
+
+    status::Custom(Status::Ok, content::RawJson(
+        serde_json::to_string(&dto).expect("Serialization Failed")),
+    )
 }
