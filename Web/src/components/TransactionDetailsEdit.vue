@@ -1,36 +1,53 @@
 <template>
   <div>
-    <div class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container">
-          <div class="modal-header">
-            <slot name="header">
-              {{ transaction.booking_date }}
-            </slot>
+    <div class="mask">
+      <div class="wrapper">
+        <div class="container">
+
+          <div class="creditor">
+            {{ transaction.creditor_name }}
+          </div>
+          <div :class="(transaction.amount_cents < 0) ? 'negative-price' : 'non-negative-price'">
+            {{ transaction.amount_cents / 100.0 }} {{ transaction.currency }}
+          </div>
+          <div v-if="this.editCategory" class="category">
+            <select v-model="selectedCategory" @change="this.editCategory=false">
+              <option v-for="category in categories" v-bind:key="category" v-bind:value="category">{{
+                  category
+                }}
+              </option>
+            </select>
+          </div>
+          <div v-else @click="this.editCategory=true" class="category">
+            {{ this.selectedCategory }}
+          </div>
+          <div class="account-name">
+            {{ transaction.account_name }}
+          </div>
+          <div class="amount-in-ref-currency">
+            {{ transaction.amount_cents_in_ref_currency / 100.0 }} {{ transaction.ref_currency }}
+          </div>
+          <div class="booking-date">
+            {{ moment(transaction.booking_date).format("DD-MM-YYYY") }}
           </div>
 
-          <div class="modal-body">
-            <slot name="body">
-              <select v-model="selectedCategory">
-                <option v-for="category in categories" v-bind:key="category" v-bind:value="category">{{
-                    category
-                  }}
-                </option>
-              </select>
-            </slot>
+          <div class="description">
+            {{ transaction.description }}
           </div>
 
-          <div class="modal-footer">
-            <slot name="footer">
-              &nbsp;
-              <button class="modal-default-button" @click="$emit('save', selectedCategory)">
-                Save
-              </button>
-              <button class="modal-default-button" @click="$emit('cancel')">
-                Cancel
-              </button>
-            </slot>
+
+          <div class="footer">
+            <button class="button-cancel"
+                    @click="$emit('cancel')">
+              Cancel
+            </button>
+            <button class="button-save"
+                    @click="$emit('save', selectedCategory)"
+                    :disabled="selectedCategory==transaction.category" >
+              Save
+            </button>
           </div>
+
         </div>
       </div>
     </div>
@@ -38,6 +55,8 @@
 </template>
 
 <script>
+import moment from "moment/moment.js";
+
 export default {
   mounted() {
     this.selectedCategory = this.transaction.category
@@ -48,14 +67,18 @@ export default {
   },
   data() {
     return {
-      selectedCategory: String
+      selectedCategory: String,
+      editCategory: false
     }
+  },
+  methods: {
+    moment: moment,
   }
 }
 </script>
 
 <style scoped>
-.modal-mask {
+.mask {
   position: fixed;
   z-index: 9998;
   top: 0;
@@ -67,32 +90,118 @@ export default {
   transition: opacity 0.3s ease;
 }
 
-.modal-wrapper {
+.wrapper {
   display: table-cell;
-  vertical-align: middle;
+  vertical-align: center;
+  padding: 20px;
 }
 
-.modal-container {
-  width: 300px;
+.container {
   margin: 0px auto;
-  padding: 20px 30px;
-  background-color: #fff;
+  padding: 30px;
+  background-color: mintcream;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
-  font-family: Helvetica, Arial, sans-serif;
+  display: grid;
+  grid-template:
+    'booking-date booking-date'
+    'creditor creditor'
+    'category amount'
+    'account-name amount-ref'
+    'description description'
+    'none footer';
 }
 
-.modal-header h3 {
-  margin-top: 0;
-  color: #42b983;
+.creditor {
+  grid-area: creditor;
+  background-color: #28282822;
+  padding: 0 0 0 5px;
 }
 
-.modal-body {
-  margin: 20px 0;
+.description {
+  grid-area: description;
+  font-size: smaller;
+  padding: 10px 0 10px 0;
 }
 
-.modal-default-button {
+.booking-date {
+  grid-area: booking-date;
+  text-align: left;
+  padding: 0 5px 0 0;
+  font-size: smaller;
+}
+
+.account-name {
+  grid-area: account-name;
+  text-align: left;
+  font-size: xx-small;
+  color: grey;
+  background-color: #28282822;
+  padding: 0 0 0 5px;
+}
+
+.amount-in-ref-currency {
+  grid-area: amount-ref;
+  text-align: right;
+  font-size: xx-small;
+  color: grey;
+  background-color: #28282822;
+  padding: 0 5px 0 0;
+}
+
+.negative-price {
+  grid-area: amount;
+  text-align: right;
+  vertical-align: bottom;
+  font-size: medium;
+  font-weight: bold;
+  color: #A63D40;
+  background-color: #28282822;
+  padding: 0 5px 0 0;
+}
+
+.non-negative-price {
+  grid-area: amount;
+  text-align: right;
+  font-size: medium;
+  font-weight: bold;
+  color: #90A959;
+  background-color: #28282822;
+  padding: 0 5px 0 0;
+}
+
+.category {
+  grid-area: category;
+  text-align: left;
+  font-size: medium;
+  font-weight: bold;
+  background-color: #28282822;
+  padding: 0 0 0 5px;
+}
+
+.footer {
+  grid-area: footer;
+}
+
+.button-save {
   float: right;
+  margin: 5px;
+  padding: 5px;
+  background-color: lightgrey;
+  border: 1px;
+  border-radius: 5px;
+  font-family: monospace;
 }
+
+.button-cancel {
+  float: right;
+  margin: 5px;
+  padding: 5px;
+  background-color: lightgreen;
+  border: 1px;
+  border-radius: 5px;
+  font-family: monospace;
+}
+
 </style>

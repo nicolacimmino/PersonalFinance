@@ -16,7 +16,7 @@
     <div v-else>
       <template v-for="(transactions, booking_date) in byDate" v-bind:key="booking_date">
         <div class="transactions-date-header">
-          {{ moment(booking_date).format("DD/MM/YYYY") }}
+          {{ moment(booking_date).format("DD-MM-YYYY") }}
         </div>
         <div v-for="transaction in transactions" :key="transaction.id">
           <TransactionOverview :transaction=transaction :id="transaction.id"
@@ -103,13 +103,15 @@ export default {
 <style scoped>
 .transactions-table {
   background-color: white;
+  /*font-family: Roboto, Arial, sans-serif;*/
   font-family: monospace;
   font-size: small;
 }
 
 .transactions-date-header {
   text-align: left;
-  padding: 0px;
-  background-color: lightsteelblue;
+  padding: 0 0 0 5px;
+  background-color: #6494AA;
+  color: white;
 }
 </style>

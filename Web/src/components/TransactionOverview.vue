@@ -36,7 +36,7 @@ export default {
     'description description';
   padding: 0px;
   margin-bottom: 2px;
-  background-color: #F3F3F3;
+  background-color: #E9B87222;
 }
 
 .description {
@@ -63,7 +63,7 @@ export default {
   vertical-align: bottom;
   font-size: medium;
   font-weight: bold;
-  color: red;
+  color: #A63D40;
 }
 
 .non-negative-price {
@@ -71,7 +71,7 @@ export default {
   text-align: right;
   font-size: medium;
   font-weight: bold;
-  color: green;
+  color: #90A959;
 }
 
 .category {
