@@ -34,7 +34,9 @@
           <div class="description">
             {{ transaction.description }}
           </div>
-
+          <div class="transaction-id">
+            {{ transaction.id }}
+          </div>
 
           <div class="footer">
             <button class="button-cancel"
@@ -105,7 +107,7 @@ export default {
   transition: all 0.3s ease;
   display: grid;
   grid-template:
-    'booking-date booking-date'
+    'booking-date transaction-id'
     'creditor creditor'
     'category amount'
     'account-name amount-ref'
@@ -125,10 +127,17 @@ export default {
   padding: 10px 0 10px 0;
 }
 
+.transaction-id {
+  grid-area: transaction-id;
+  text-align: right;
+  padding: 0 5px 0 0;
+  font-size: smaller;
+}
+
 .booking-date {
   grid-area: booking-date;
   text-align: left;
-  padding: 0 5px 0 0;
+  padding: 0 0px 0 5px;
   font-size: smaller;
 }
 
