@@ -6,11 +6,11 @@ pub struct GoCardlessAccountInfo {
 }
 
 pub trait ConvertsToGoCardlessAccountInfo {
-    fn to_gocardless_requisition(&self) -> GoCardlessAccountInfo;
+    fn to_gocardless_account_info(&self) -> GoCardlessAccountInfo;
 }
 
 impl ConvertsToGoCardlessAccountInfo for &AccountInfoResponseDto {
-    fn to_gocardless_requisition(&self) -> GoCardlessAccountInfo {
+    fn to_gocardless_account_info(&self) -> GoCardlessAccountInfo {
         let status = match self.status.as_str() {
             "READY" => "READY",
             "EXPIRED" => "EXPIRED",

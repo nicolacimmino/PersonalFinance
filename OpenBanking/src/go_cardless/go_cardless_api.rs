@@ -2,7 +2,6 @@ use std::env;
 use std::error::Error;
 
 use dotenvy::dotenv;
-use log::{error, info};
 use serde::{Deserialize, Serialize};
 use crate::go_cardless::dto::prelude::*;
 
