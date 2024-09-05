@@ -5,6 +5,7 @@
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/transactions">Transactions</RouterLink>
         <RouterLink to="/category_report">Categories</RouterLink>
+        <RouterLink to="/accounts">Accounts</RouterLink>
       </nav>
     </div>
     <div class="main">

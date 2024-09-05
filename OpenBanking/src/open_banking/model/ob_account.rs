@@ -11,6 +11,7 @@ pub struct ObAccount {
     pub provider_account_id: String,
     pub name: String,
     pub req_status: String,
-    pub last_sync: Option<NaiveDateTime>
+    pub last_sync: Option<NaiveDateTime>,
+    pub account_id: i32
 }
 

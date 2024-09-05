@@ -73,8 +73,9 @@ fn main() {
 
         let combined_category = categories.join(".");
 
-        // If sp_transform is the primary source just create a new transaction, don't attempt to match.
-        if item_to_transform_account.pri_transactions_src == "SP_TRANSFORM" {
+        // If Spendee Transform is the primary source just create a new transaction,
+        //  don't attempt to match.
+        if item_to_transform_account.pri_transactions_src == "SPT" {
             let sp_transaction_type = match sp_transaction.type_.as_str() {
                 "Outgoing Transfer" => "TRANSFER",
                 "Incoming Transfer" => "TRANSFER",

@@ -30,9 +30,11 @@ pub fn get_accounts(_key: ApiKey<'_>) -> status::Custom<content::RawJson<String>
             balance_cents_in_ref_currency: Num::from(valuta_conversion_service.convert(
                 account.currency,
                 "EUR",
-                balance
+                balance,
             )),
-            ref_currency: "EUR".to_string()
+            ref_currency: "EUR".to_string(),
+            iban: account.iban,
+            status: account.status,
         })
     }
 

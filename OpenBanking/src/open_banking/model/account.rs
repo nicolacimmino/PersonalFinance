@@ -10,5 +10,6 @@ pub struct Account {
     pub description: String,
     pub currency: String,
     pub pri_transactions_src: String,
+    pub status: String,
     pub iban: String,
 }

@@ -14,6 +14,7 @@ use diesel::ExpressionMethods;
 use go_cardless::TransactionsService as GoCardlessTransactionsService;
 use go_cardless::AccountsService as GoCardlessAccountsService;
 use open_banking::{NewObTransaction, AccountsService as OpenBankingAccountsSerice, TransactionsService as OpenBankingTransactionsService};
+use crate::schema::accounts::dsl::accounts;
 use crate::schema::ob_accounts::dsl::ob_accounts;
 
 fn main() {
@@ -37,7 +38,7 @@ fn sync_all_accounts_transactions() {
     for ob_account in ob_accounts_to_sync {
         info!("Syncing account {} ({})", ob_account.name, ob_account.id);
         let result = panic::catch_unwind(|| {
-            sync_account_transactions(&ob_account.id, &ob_account.provider_account_id)
+            sync_account_transactions(&ob_account.id, &ob_account.provider_account_id, &ob_account.account_id)
         });
 
         if result.is_err() {
@@ -46,7 +47,7 @@ fn sync_all_accounts_transactions() {
     }
 }
 
-fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
+fn sync_account_transactions(ob_account_id: &Uuid, provider_account_id: &String, account_id: &i32) {
     let connection = &mut establish_db_connection();
 
     info!("Syncing account status");
@@ -55,10 +56,27 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
     let account_info = go_cardless_accounts_service.get_account(provider_account_id);
 
     diesel::update(ob_accounts)
-        .filter(schema::ob_accounts::id.eq(account_id))
+        .filter(schema::ob_accounts::id.eq(ob_account_id))
         .set(
-            schema::ob_accounts::req_status.eq(account_info.status)
+            schema::ob_accounts::req_status.eq(&account_info.status)
         ).execute(connection).expect("Failed to update ob_account connection status");
+
+    // If the OB account is "READY" it means the requisition is done and still valid.
+    //  Anything else means we need to fix something.
+    let account_status = if &account_info.status == "READY" { "OK" } else { "ERROR" };
+
+    diesel::update(accounts)
+        .filter(schema::accounts::id.eq(account_id))
+        .set((
+            schema::accounts::status.eq(&account_status),
+            schema::accounts::iban.eq(&account_info.iban)
+        ))
+        .execute(connection).expect("Failed to update account status");
+
+    if account_status != "OK" {
+        error!("Account link not ready. Skipping");
+        return;
+    }
 
     info!("Getting transactions");
 
@@ -77,7 +95,7 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
     for transaction in transactions {
         if transactions_service.matching_transaction_exists(
             transaction.internal_transaction_id.clone(),
-            account_id,
+            ob_account_id,
         ) {
             continue;
         }
@@ -86,7 +104,7 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
 
         transactions_service.add_transaction(
             NewObTransaction {
-                ob_account_id: account_id,
+                ob_account_id,
                 transaction_id: &*transaction.transaction_id,
                 booking_date: &*transaction.booking_date,
                 value_date: &*transaction.value_date,
@@ -112,7 +130,7 @@ fn sync_account_transactions(account_id: &Uuid, provider_account_id: &String) {
     info!("Updating last sync.");
 
     diesel::update(ob_accounts)
-        .filter(schema::ob_accounts::id.eq(account_id))
+        .filter(schema::ob_accounts::id.eq(ob_account_id))
         .set(
             schema::ob_accounts::last_sync.eq(Utc::now().naive_utc())
         ).execute(connection).expect("Failed to update ob_account last sync");

@@ -10,4 +10,6 @@ pub struct AccountDto {
     pub balance_cents: Num,
     pub balance_cents_in_ref_currency: Num,
     pub ref_currency: String,
+    pub iban: String,
+    pub status: String,
 }

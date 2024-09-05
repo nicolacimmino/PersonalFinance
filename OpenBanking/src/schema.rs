@@ -11,6 +11,8 @@ diesel::table! {
         pri_transactions_src -> Text,
         #[max_length = 34]
         iban -> Varchar,
+        #[max_length = 20]
+        status -> Varchar,
     }
 }
 

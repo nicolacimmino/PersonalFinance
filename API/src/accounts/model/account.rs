@@ -8,4 +8,6 @@ pub struct Account {
     pub code: String,
     pub description: String,
     pub currency: String,
+    pub iban: String,
+    pub status: String,
 }

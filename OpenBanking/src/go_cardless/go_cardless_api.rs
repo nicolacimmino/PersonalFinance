@@ -90,7 +90,7 @@ impl GoCardlessApi {
 
         match serde_json::from_str(&*response_text) {
             Ok(response) => Ok(response),
-            Err(e) => panic!("{}", e.to_string()),
+            Err(e) => panic!("{} {}", &response_text, e.to_string()),
         }
     }
 }

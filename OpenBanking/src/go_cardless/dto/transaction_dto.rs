@@ -8,6 +8,7 @@ pub struct TransactionsDto {
     pub(crate) booked: Vec<TransactionDto>,
 }
 
+#[allow(dead_code)]
 #[derive(Deserialize)]
 pub struct TransactionDto {
     #[serde(rename(deserialize = "transactionId"))]
