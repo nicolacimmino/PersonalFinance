@@ -14,6 +14,7 @@ use rocket::log::private::error;
 use rocket::http::Method;
 use rocket_cors::{AllowedOrigins, CorsOptions};
 use crate::accounts::get_accounts;
+use crate::accounts::get_account;
 use crate::categories::get_categories;
 use crate::reports::get_report_by_category;
 use crate::transactions::{get_transactions, get_transaction, get_transactions_for_account, patch_transaction};
@@ -38,6 +39,7 @@ fn launch() -> _ {
         .mount("/api", routes![
             get_categories,
             get_accounts,
+            get_account,
             get_transactions,
             get_transaction,
             patch_transaction,

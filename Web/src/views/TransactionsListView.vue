@@ -1,4 +1,7 @@
 <template>
+  <div v-if="account_description">
+    Account: {{ account_description }}
+  </div>
   <div class="transactions-table">
     <div v-if="editDialog">
       <transition name="modal">
@@ -38,8 +41,18 @@ export default {
   components: {
     TransactionOverview: TransactionOverview, TransactionEdit
   },
+  props: {
+    account_id: String
+  },
+  watch: {
+    $route: function () {
+      this.loadAllTransactions(this.account_id);
+      this.getAccountDescription(this.account_id);
+    }
+  },
   mounted() {
-    this.loadAllTransactions();
+    this.loadAllTransactions(this.account_id);
+    this.getAccountDescription(this.account_id);
     this.loadAllCategories();
   },
   data() {
@@ -50,13 +63,14 @@ export default {
       transactions: [],
       categories: [],
       transaction: undefined,
+      account_description: undefined
     }
   },
   methods: {
     moment: moment,
-    loadAllTransactions() {
+    loadAllTransactions(account_id) {
       this.loading = true;
-      TransactionApi.getAllTransactions().then(fetchedTransactions => {
+      TransactionApi.getAllTransactions(account_id).then(fetchedTransactions => {
         this.transactions = fetchedTransactions
         this.loading = false;
       });
@@ -71,6 +85,15 @@ export default {
         );
         this.loading = false;
       });
+    },
+    getAccountDescription(account_id) {
+      if (account_id) {
+        TransactionApi.getAccount(account_id).then(account => {
+          this.account_description = account.description;
+        });
+      }
+
+      this.account_description = ""
     },
     onTransactionClick(transaction) {
       this.transaction = transaction;

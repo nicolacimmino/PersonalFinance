@@ -15,6 +15,16 @@ impl AccountsService {
             .expect("Error loading accounts");
     }
 
+    pub fn get_account(&mut self, account_id: i32) -> Account {
+        return accounts
+            .filter(schema::accounts::id.eq(account_id))
+            .select(Account::as_select())
+            .load::<Account>(&mut establish_db_connection())
+            .expect("Cannot load accounts")
+            .into_iter().nth(0)
+            .expect("Account not found");
+    }
+
     pub fn get_accounts_balances(&mut self) -> Vec<(i32, i32)> {
         return accounts
             .inner_join(transactions)
