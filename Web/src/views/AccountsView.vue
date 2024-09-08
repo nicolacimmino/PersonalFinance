@@ -5,7 +5,7 @@
     </div>
     <div v-else>
       <template v-for="account in accounts" v-bind:key="account.id">
-        <AccountOverview :account=account>
+        <AccountOverview :account=account :privacy=privacy>
         </AccountOverview>
       </template>
     </div>
@@ -26,6 +26,7 @@ export default {
   data() {
     return {
       loaded: false,
+      privacy: true,
       currentCategoryFilter: "",
       accounts: [],
       chartOptions: {

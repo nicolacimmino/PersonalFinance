@@ -22,7 +22,8 @@
           {{ moment(booking_date).format("DD-MM-YYYY") }}
         </div>
         <div v-for="transaction in transactions" :key="transaction.id">
-          <TransactionOverview :transaction=transaction :id="transaction.id"
+          <TransactionOverview :transaction=transaction
+                               :id=transaction.id
                                v-on:click="onTransactionClick(transaction)">
           </TransactionOverview>
         </div>
@@ -63,7 +64,7 @@ export default {
       transactions: [],
       categories: [],
       transaction: undefined,
-      account_description: undefined
+      account_description: undefined,
     }
   },
   methods: {

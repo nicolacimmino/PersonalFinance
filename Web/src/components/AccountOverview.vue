@@ -8,9 +8,10 @@
       {{ account.code }}
     </div>
     <div :class="(account.balance_cents < 0) ? 'negative-balance' : 'non-negative-balance'">
-      {{ account.balance_cents / 100.0 }} {{ account.currency }}
+      <span v-if="privacy" class="pi pi-eye">&nbsp;{{ account.currency }}</span>
+      <span v-else>{{ account.balance_cents / 100.0 }} {{ account.currency }}</span>
     </div>
-    <div class="balance-in-ref-currency">
+    <div v-if="!privacy" class="balance-in-ref-currency">
       {{ account.balance_cents_in_ref_currency / 100.0 }} {{ account.ref_currency }}
     </div>
     <div class="iban">
@@ -25,10 +26,12 @@
 </template>
 
 <script>
+import 'primeicons/primeicons.css'
 
 export default {
   props: {
-    account: Object
+    account: Object,
+    privacy: Boolean
   },
   data() {
     return {
@@ -95,6 +98,7 @@ export default {
 .negative-balance {
   grid-area: balance;
   text-align: right;
+  vertical-align: middle;
   font-size: medium;
   font-weight: bold;
   color: #A63D40;
@@ -103,6 +107,7 @@ export default {
 .non-negative-balance {
   grid-area: balance;
   text-align: right;
+  vertical-align: middle;
   font-size: medium;
   font-weight: bold;
   color: #90A959;

@@ -1,11 +1,12 @@
 import axios from "axios";
 
+const HOST = import.meta.env.VITE_HOST;
+
 export default class TransactionApi {
     static async getAllTransactions(account_id) {
-        console.log("HERE" + account_id)
-        let url = "http://127.0.0.1:8000/api/transactions/";
+        let url = `${HOST}/api/transactions/`;
         if (account_id) {
-            url = `http://127.0.0.1:8000/api/accounts/${account_id}/transactions/`;
+            url = `${HOST}/api/accounts/${account_id}/transactions/`;
         }
 
         return axios({
@@ -26,7 +27,7 @@ export default class TransactionApi {
                 "X-API-KEY": localStorage.getItem("pfinanceApiKey")
             },
             method: "get",
-            url: "http://127.0.0.1:8000/api/accounts/" + id,
+            url: `${HOST}/api/accounts/${id}`,
         }).then((response) => {
             return response.data;
         });
@@ -38,7 +39,7 @@ export default class TransactionApi {
                 "X-API-KEY": localStorage.getItem("pfinanceApiKey")
             },
             method: "get",
-            url: "http://127.0.0.1:8000/api/transactions/" + id,
+            url: `${HOST}/api/transactions/${id}`,
         }).then((response) => {
             return response.data;
         });
@@ -51,7 +52,7 @@ export default class TransactionApi {
                 "X-API-KEY": localStorage.getItem("pfinanceApiKey")
             },
             method: "get",
-            url: "http://127.0.0.1:8000/api/reports/by_category/",
+            url: `${HOST}/api/reports/by_category/`,
         }).then((response) => {
             return response.data;
         });
@@ -64,7 +65,7 @@ export default class TransactionApi {
                 "X-API-KEY": localStorage.getItem("pfinanceApiKey")
             },
             method: "get",
-            url: "http://127.0.0.1:8000/api/accounts/",
+            url: `${HOST}/api/accounts/`,
         }).then((response) => {
             return response.data;
         });
@@ -77,7 +78,7 @@ export default class TransactionApi {
                 "X-API-KEY": localStorage.getItem("pfinanceApiKey")
             },
             method: "patch",
-            url: "http://127.0.0.1:8000/api/transactions/" + id,
+            url: `${HOST}/api/transactions/${id}`,
             data: {
                 category: category
             }
@@ -93,7 +94,7 @@ export default class TransactionApi {
                 "X-API-KEY": localStorage.getItem("pfinanceApiKey")
             },
             method: "get",
-            url: "http://127.0.0.1:8000/api/categories/",
+            url: `${HOST}/api/categories/`,
         }).then((response) => {
             return response.data;
         });

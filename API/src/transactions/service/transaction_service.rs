@@ -45,4 +45,11 @@ impl TransactionsService {
             .set(schema::transactions::category.eq(category))
             .execute(&mut establish_db_connection()).expect("Failed to update transaction category");
     }
+
+    pub fn update_transaction_description(&mut self, transaction_id: i32, description: String) {
+        diesel::update(transactions)
+            .filter(schema::transactions::id.eq(transaction_id))
+            .set(schema::transactions::description.eq(description))
+            .execute(&mut establish_db_connection()).expect("Failed to update transaction description");
+    }
 }

@@ -21,5 +21,6 @@ pub struct TransactionDto {
 
 #[derive(Deserialize, Serialize)]
 pub struct PatchTransactionDto {
-    pub category: String,
+    pub category: Option<String>,
+    pub description: Option<String>,
 }

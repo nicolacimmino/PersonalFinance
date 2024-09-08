@@ -1,5 +1,5 @@
 <template>
-  <div class="transactions-table">
+  <div class="pie-chart">
     <div v-if="!loaded">
       Loading...
     </div>
@@ -11,13 +11,15 @@
       />
     </div>
   </div>
-  <div class="transactions-table">
+
+  <div class="category-table">
     <div v-if="!loaded">
       Loading...
     </div>
     <div v-else>
-      <div v-if="currentCategoryFilter!==''">
-        <a v-on:click="loadPreviousCategoryReport()">Up</a>
+      <div v-if="currentCategoryFilter!==''"
+           class="pi pi-arrow-up"
+           @click="loadPreviousCategoryReport()">
       </div>
       <template v-for="spendingEntry in categoriesSpending" v-bind:key="spendingEntry.category">
         <CategorySpendingOverview :entry=spendingEntry
@@ -34,6 +36,7 @@ import TransactionApi from "@/TransactionsApi.ts";
 import TransactionsDataTransformations from "@/TransactionsDataTransformations.ts";
 import {Pie} from 'vue-chartjs'
 import {Chart as ChartJS, ArcElement, Tooltip, Legend} from 'chart.js'
+import 'primeicons/primeicons.css'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -118,9 +121,12 @@ export default {
 </script>
 
 <style scoped>
-.transactions-table {
-  border-radius: 10px;
-  background-color: white;
+
+.pie-chart {
+  display: grid;
+  padding: 0px;
+  margin-bottom: 2px;
+  background-color: #E9B87222;
 }
 
 .transactionsHeader {

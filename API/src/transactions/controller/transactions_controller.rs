@@ -1,3 +1,4 @@
+use log::info;
 use rocket::{get, patch};
 use rocket::figment::value::Num;
 use rocket::http::Status;
@@ -114,10 +115,19 @@ fn build_transaction_dto(id: i32) -> TransactionDto {
 pub fn patch_transaction(_key: ApiKey<'_>, id: i32, patch_transaction_dto: rocket::serde::json::Json<PatchTransactionDto>) -> status::Custom<content::RawJson<String>> {
     let mut transactions_service = TransactionsService {};
 
-    transactions_service.update_transaction_category(
-        id,
-        patch_transaction_dto.category.clone(),
-    );
+    if patch_transaction_dto.category.is_some() {
+        transactions_service.update_transaction_category(
+            id,
+            patch_transaction_dto.category.clone().unwrap(),
+        );
+    }
+
+    if patch_transaction_dto.description.is_some() {
+        transactions_service.update_transaction_description(
+            id,
+            patch_transaction_dto.description.clone().unwrap(),
+        );
+    }
 
     let dto = build_transaction_dto(id);
 
