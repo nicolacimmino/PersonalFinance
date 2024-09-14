@@ -83,8 +83,9 @@ export default {
   display: grid;
   grid-template: "none none none none none none none none none none none eye";
   padding: 0px;
-  margin-bottom: 2px;
-  background-color: #307cc722;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  background-color: white;
 }
 
 .toolbar-arrow {

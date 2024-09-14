@@ -5,6 +5,9 @@
             class="pi pi-arrow-up"
             @click="loadPreviousCategoryReport()">
       </span>
+      <span v-else class="pi">
+
+      </span>
     </div>
     <div class="toolbar-eye">
       <span :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
@@ -12,6 +15,7 @@
       </span>
     </div>
   </div>
+
   <div class="pie-chart">
     <div v-if="!loaded">
       Loading...
@@ -186,8 +190,9 @@ export default {
   display: grid;
   grid-template: "none none none none none none none none none none arrow eye";
   padding: 0px;
-  margin-bottom: 2px;
-  background-color: #E9B87222;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  background-color: white;
 }
 
 .toolbar-arrow {

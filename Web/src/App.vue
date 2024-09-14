@@ -18,7 +18,6 @@
 
 <script>
 
-
 export default {
   name: 'App'
 }
@@ -44,4 +43,6 @@ export default {
     'header'
     'main';
 }
+
+
 </style>

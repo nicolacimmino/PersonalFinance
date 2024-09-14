@@ -1,6 +1,13 @@
 <template>
-  <div v-if="account_description">
-    Account: {{ account_description }}
+  <div class="toolbar">
+    <div class="toolbar-filter">
+      {{ filter_description }}
+    </div>
+    <div class="toolbar-eye">
+        <span :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
+              @click="togglePrivacy()">
+      </span>
+    </div>
   </div>
   <div class="transactions-table">
     <div v-if="editDialog">
@@ -24,6 +31,7 @@
         <div v-for="transaction in transactions" :key="transaction.id">
           <TransactionOverview :transaction=transaction
                                :id=transaction.id
+                               :privacy="privacy"
                                v-on:click="onTransactionClick(transaction)">
           </TransactionOverview>
         </div>
@@ -49,12 +57,12 @@ export default {
   watch: {
     $route: function () {
       this.loadAllTransactions(this.account_id, this.category_filter);
-      this.getAccountDescription(this.account_id);
+      this.updateFilterDescription();
     }
   },
   mounted() {
     this.loadAllTransactions(this.account_id, this.category_filter);
-    this.getAccountDescription(this.account_id);
+    this.updateFilterDescription();
     this.loadAllCategories();
   },
   data() {
@@ -65,16 +73,20 @@ export default {
       transactions: [],
       categories: [],
       transaction: undefined,
-      account_description: undefined,
+      filter_description: "All",
+      privacy: Boolean
     }
   },
   methods: {
     moment: moment,
+    togglePrivacy() {
+      this.privacy = !this.privacy;
+    },
     loadAllTransactions(account_id, category) {
       this.loading = true;
 
-      if(!category) category = ""
-      if(!account_id) account_id = ""
+      if (!category) category = ""
+      if (!account_id) account_id = ""
 
       TransactionApi.getAllTransactions(account_id, category).then(fetchedTransactions => {
         this.transactions = fetchedTransactions
@@ -92,14 +104,20 @@ export default {
         this.loading = false;
       });
     },
-    getAccountDescription(account_id) {
-      if (account_id) {
-        TransactionApi.getAccount(account_id).then(account => {
-          this.account_description = account.description;
+    updateFilterDescription() {
+      if (this.account_id) {
+        TransactionApi.getAccount(this.account_id).then(account => {
+          this.filter_description = account.description;
         });
+        return;
       }
 
-      this.account_description = ""
+      if (this.category_filter) {
+        this.filter_description = this.category_filter;
+        return;
+      }
+
+      this.filter_description = "All"
     },
     onTransactionClick(transaction) {
       this.transaction = transaction;
@@ -112,8 +130,6 @@ export default {
             this.saving = false;
             this.transactions[this.transactions.findIndex(
                 transaction => transaction.id === updatedTransaction.id)] = updatedTransaction;
-            //document.getElementById(updatedTransaction.id).transaction = updatedTransaction;
-            //this.loadAllTransactions();
           }
       )
     }
@@ -130,6 +146,7 @@ export default {
 </script>
 
 <style scoped>
+
 .transactions-table {
   background-color: white;
   /*font-family: Roboto, Arial, sans-serif;*/
@@ -142,5 +159,23 @@ export default {
   padding: 0 0 0 5px;
   background-color: #6494AA;
   color: white;
+}
+
+.toolbar {
+  display: grid;
+  grid-template: "filter filter filter filter filter none none none none none none eye";
+  padding: 0px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  background-color: white;
+}
+
+.toolbar-eye {
+  grid-area: eye;
+}
+
+.toolbar-filter {
+  padding-left: 5px;
+  font-size: small;
 }
 </style>

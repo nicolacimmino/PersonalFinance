@@ -4,7 +4,10 @@
       {{ transaction.category }}
     </div>
     <div :class="(transaction.amount_cents < 0) ? 'negative-price' : 'non-negative-price'">
-      {{ transaction.amount_cents / 100.0 }} {{ transaction.currency }}
+      <span v-if="privacy">--- &nbsp;{{ transaction.currency }}</span>
+      <span v-else>
+            {{ transaction.amount_cents / 100.0 }} {{ transaction.currency }}
+        </span>
     </div>
     <div class="account-name">
       {{ transaction.account_name }}
@@ -22,7 +25,8 @@
 
 export default {
   props: {
-    transaction: Object
+    transaction: Object,
+    privacy: Boolean
   },
 }
 </script>

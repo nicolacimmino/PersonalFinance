@@ -33,9 +33,8 @@ export default {
 <style scoped>
 .category-details {
   display: grid;
-  grid-template:
-'category total'
-'transactions-n transactions-n';
+  grid-template: 'category total'
+                 'transactions-n transactions-n';
   padding: 5px;
   margin-bottom: 5px;
   background-color: #E9B87222;
