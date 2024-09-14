@@ -10,14 +10,14 @@ use crate::guard::ApiKey;
 use crate::transactions::service::TransactionsService;
 
 
-#[get("/transactions")]
-pub fn get_transactions(_key: ApiKey<'_>) -> status::Custom<content::RawJson<String>> {
+#[get("/transactions?<category>")]
+pub fn get_transactions(_key: ApiKey<'_>, category: Option<String>) -> status::Custom<content::RawJson<String>> {
     let mut transactions_service = TransactionsService {};
     let mut valuta_conversion_service = ValutaConversionService::new(&mut establish_db_connection());
 
     let mut dtos: Vec<TransactionDto> = Vec::new();
 
-    for (transaction, account) in transactions_service.get_transactions() {
+    for (transaction, account) in transactions_service.get_transactions(category) {
         dtos.push(TransactionDto {
             id: Num::from(transaction.id),
             type_: transaction.type_.to_owned(),

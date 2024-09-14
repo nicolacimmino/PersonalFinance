@@ -3,8 +3,8 @@ import axios from "axios";
 const HOST = import.meta.env.VITE_HOST;
 
 export default class TransactionApi {
-    static async getAllTransactions(account_id) {
-        let url = `${HOST}/api/transactions/`;
+    static async getAllTransactions(account_id, category) {
+        let url = `${HOST}/api/transactions/?category=${category}`;
         if (account_id) {
             url = `${HOST}/api/accounts/${account_id}/transactions/`;
         }

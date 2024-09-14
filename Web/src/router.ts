@@ -14,9 +14,15 @@ const routes = [
     {
         name: 'transactions',
         path: '/transactions',
-        query: { account_id: '' },
+        query: {
+            account_id: '',
+            category: ''
+        },
         component: TransactionsListView,
-        props: route => ({ account_id: route.query.account_id})
+        props: route => ({
+            account_id: route.query.account_id,
+            category_filter: route.query.category
+        })
     },
     {
         name: 'category_report',

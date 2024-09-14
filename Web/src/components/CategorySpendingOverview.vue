@@ -1,13 +1,17 @@
 <template>
   <div>
     <div class="category-details">
-      <div class="category">
+      <div class="category" @click="$emit('categoryClick', entry.category)">
         {{ entry.category }}
       </div>
       <div class="total">
-        {{ Math.abs(entry.total_cents / 100.0) }} {{ entry.currency }}
+        <span v-if="privacy">--- &nbsp;{{ entry.currency }}</span>
+        <span v-else>
+            {{ Math.abs(entry.total_cents / 100.0) }} {{ entry.currency }}
+        </span>
+
       </div>
-      <div class="transactions-n">
+      <div class="transactions-n" @click="$emit('transactionsClick', entry.category)">
         Transactions: {{ entry.transactions_count }}
       </div>
     </div>
@@ -20,8 +24,9 @@ import 'primeicons/primeicons.css'
 
 export default {
   props: {
-    entry: Object
-  },
+    entry: Object,
+    privacy: Boolean
+  }
 };
 </script>
 
@@ -55,7 +60,6 @@ export default {
   grid-area: transactions-n;
   text-align: left;
   font-size: medium;
-  font-weight: bold;
 }
 
 </style>

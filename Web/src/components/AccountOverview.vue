@@ -8,7 +8,7 @@
       {{ account.code }}
     </div>
     <div :class="(account.balance_cents < 0) ? 'negative-balance' : 'non-negative-balance'">
-      <span v-if="privacy" class="pi pi-eye">&nbsp;{{ account.currency }}</span>
+      <span v-if="privacy">---  {{ account.currency }}</span>
       <span v-else>{{ account.balance_cents / 100.0 }} {{ account.currency }}</span>
     </div>
     <div v-if="!privacy" class="balance-in-ref-currency">

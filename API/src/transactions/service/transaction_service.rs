@@ -1,4 +1,4 @@
-use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper, TextExpressionMethods};
 
 use crate::{establish_db_connection, schema};
 use crate::accounts::model::Account;
@@ -9,9 +9,12 @@ use crate::transactions::model::Transaction;
 pub struct TransactionsService {}
 
 impl TransactionsService {
-    pub fn get_transactions(&mut self) -> Vec<(Transaction, Account)> {
+    pub fn get_transactions(&mut self, category: Option<String>) -> Vec<(Transaction, Account)> {
         return transactions
             .inner_join(accounts)
+            .filter(
+                schema::transactions::category.like(format!("{}%", category.unwrap_or("".to_string())))
+            )
             .order(schema::transactions::booking_date.desc())
             .select((Transaction::as_select(), Account::as_select()))
             .load::<(Transaction, Account)>(&mut establish_db_connection())

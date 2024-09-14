@@ -1,4 +1,11 @@
 <template>
+  <div class="toolbar">
+    <div class="toolbar-eye">
+      <span :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
+            @click="togglePrivacy()">
+      </span>
+    </div>
+  </div>
   <div class="accounts-table">
     <div v-if="!loaded">
       Loading...
@@ -43,6 +50,9 @@ export default {
     }
   },
   methods: {
+    togglePrivacy() {
+      this.privacy = !this.privacy;
+    },
     loadAllAccounts() {
       TransactionApi.loadAllAccounts().then(accounts => {
         this.accounts = accounts
@@ -68,4 +78,21 @@ export default {
   background-color: lightsteelblue;
   text-transform: uppercase;
 }
+
+.toolbar {
+  display: grid;
+  grid-template: "none none none none none none none none none none none eye";
+  padding: 0px;
+  margin-bottom: 2px;
+  background-color: #307cc722;
+}
+
+.toolbar-arrow {
+  grid-area: arrow;
+}
+
+.toolbar-eye {
+  grid-area: eye;
+}
+
 </style>

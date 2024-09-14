@@ -43,16 +43,17 @@ export default {
     TransactionOverview: TransactionOverview, TransactionEdit
   },
   props: {
-    account_id: String
+    account_id: String,
+    category_filter: String
   },
   watch: {
     $route: function () {
-      this.loadAllTransactions(this.account_id);
+      this.loadAllTransactions(this.account_id, this.category_filter);
       this.getAccountDescription(this.account_id);
     }
   },
   mounted() {
-    this.loadAllTransactions(this.account_id);
+    this.loadAllTransactions(this.account_id, this.category_filter);
     this.getAccountDescription(this.account_id);
     this.loadAllCategories();
   },
@@ -69,9 +70,13 @@ export default {
   },
   methods: {
     moment: moment,
-    loadAllTransactions(account_id) {
+    loadAllTransactions(account_id, category) {
       this.loading = true;
-      TransactionApi.getAllTransactions(account_id).then(fetchedTransactions => {
+
+      if(!category) category = ""
+      if(!account_id) account_id = ""
+
+      TransactionApi.getAllTransactions(account_id, category).then(fetchedTransactions => {
         this.transactions = fetchedTransactions
         this.loading = false;
       });
