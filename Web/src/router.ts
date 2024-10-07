@@ -2,6 +2,7 @@ import {createWebHistory, createRouter} from 'vue-router'
 
 import TransactionsListView from './views/TransactionsListView.vue'
 import CategoryReportView from './views/CategoryReportView.vue'
+import BudgetReportView from './views/BudgetReportView.vue'
 import HomeView from './views/HomeView.vue'
 import AccountsView from './views/AccountsView.vue'
 
@@ -28,6 +29,12 @@ const routes = [
         name: 'category_report',
         path: '/category_report',
         component: CategoryReportView,
+        props: true
+    },
+    {
+        name: 'budgets',
+        path: '/budgets',
+        component: BudgetReportView,
         props: true
     },
     {

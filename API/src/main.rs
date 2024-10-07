@@ -1,10 +1,12 @@
 mod schema;
+mod manual_schema;
 mod transactions;
 mod guard;
 mod accounts;
 mod categories;
 mod reports;
 mod common;
+mod budgets;
 
 use std::env;
 use diesel::{Connection, PgConnection};
@@ -17,6 +19,7 @@ use crate::accounts::get_accounts;
 use crate::accounts::get_account;
 use crate::categories::get_categories;
 use crate::reports::get_report_by_category;
+use crate::budgets::get_budgets;
 use crate::transactions::{get_transactions, get_transaction, get_transactions_for_account, patch_transaction};
 
 #[launch]
@@ -44,7 +47,8 @@ fn launch() -> _ {
             get_transaction,
             patch_transaction,
             get_transactions_for_account,
-            get_report_by_category
+            get_report_by_category,
+            get_budgets
         ])
         .attach(cors.to_cors().unwrap())
 }

@@ -13,6 +13,9 @@ diesel::table! {
         iban -> Varchar,
         #[max_length = 20]
         status -> Varchar,
+        #[sql_name = "type"]
+        #[max_length = 20]
+        type_ -> Varchar,
     }
 }
 

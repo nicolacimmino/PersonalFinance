@@ -36,6 +36,7 @@ pub fn get_accounts(_key: ApiKey<'_>) -> status::Custom<content::RawJson<String>
             ref_currency: "EUR".to_string(),
             iban: account.iban,
             status: account.status,
+            type_: account.type_,
         })
     }
 
@@ -70,6 +71,7 @@ pub fn get_account(_key: ApiKey<'_>, id: i32) -> status::Custom<content::RawJson
         ref_currency: "EUR".to_string(),
         iban: account.iban,
         status: account.status,
+        type_: account.type_,
     };
 
     status::Custom(Status::Ok, content::RawJson(

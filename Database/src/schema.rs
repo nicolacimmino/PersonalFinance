@@ -13,6 +13,27 @@ diesel::table! {
         iban -> Varchar,
         #[max_length = 20]
         status -> Varchar,
+        #[sql_name = "type"]
+        #[max_length = 20]
+        type_ -> Varchar,
+    }
+}
+
+diesel::table! {
+    budgets (id) {
+        id -> Int4,
+        #[max_length = 16]
+        code -> Varchar,
+        description -> Text,
+        #[max_length = 32]
+        category_prefix -> Varchar,
+        #[max_length = 3]
+        currency -> Varchar,
+        amount_cents -> Int4,
+        from_date -> Date,
+        to_date -> Date,
+        created_at -> Timestamp,
+        from_date2 -> Date,
     }
 }
 
@@ -161,6 +182,7 @@ diesel::joinable!(transactions -> accounts (account_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     accounts,
+    budgets,
     categories,
     ob_accounts,
     ob_transactions,

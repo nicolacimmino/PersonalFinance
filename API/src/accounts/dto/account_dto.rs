@@ -12,4 +12,6 @@ pub struct AccountDto {
     pub ref_currency: String,
     pub iban: String,
     pub status: String,
+    #[serde(rename(serialize = "type"))]
+    pub type_: String
 }

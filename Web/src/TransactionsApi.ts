@@ -59,6 +59,19 @@ export default class TransactionApi {
 
     }
 
+    static async loadBudgets() {
+        return axios({
+            headers: {
+                "X-API-KEY": localStorage.getItem("pfinanceApiKey")
+            },
+            method: "get",
+            url: `${HOST}/api/budgets/`,
+        }).then((response) => {
+            return response.data;
+        });
+
+    }
+
     static async loadAllAccounts() {
         return axios({
             headers: {
