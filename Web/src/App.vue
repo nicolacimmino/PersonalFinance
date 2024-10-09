@@ -37,9 +37,7 @@ export default {
 .mainContainer {
   background-color: white;
   font-family: monospace;
-  padding: 10px;
   width: 100%;
-  display: grid;
   grid-template:
     'header'
     'main';

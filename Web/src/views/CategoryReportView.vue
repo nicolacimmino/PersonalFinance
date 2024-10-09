@@ -5,9 +5,7 @@
             class="pi pi-arrow-up"
             @click="loadPreviousCategoryReport()">
       </span>
-      <span v-else class="pi">
-
-      </span>
+      <span v-else class="pi pi-arrow-up" style="color: lightgrey" ></span>
     </div>
     <div class="toolbar-eye">
       <span :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"

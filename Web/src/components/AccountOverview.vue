@@ -7,7 +7,7 @@
     <div class="code">
       {{ account.code }}
     </div>
-    <div :class="(account.balance_cents < 0) ? 'negative-balance' : 'non-negative-balance'">
+    <div :class="['balance', 'balance-style', (account.balance_cents < 0) ? 'negative-balance' : 'non-negative-balance']">
       <span v-if="privacy">---  {{ account.currency }}</span>
       <span v-else>{{ account.balance_cents / 100.0 }} {{ account.currency }}</span>
     </div>
@@ -18,11 +18,11 @@
       IBAN: {{ (account.iban != "") ? account.iban : "-" }}
     </div>
     <div class="status">
-      Status: {{ (account.status != "") ? account.status : "???" }}
+       <span :class="(account.status == 'OK') ? 'pi' : 'pi pi-exclamation-triangle'"
+             :style="{color:'red'}"></span>
+      Status: {{ account.status }}
     </div>
-
   </div>
-
 </template>
 
 <script>
@@ -31,7 +31,8 @@ import 'primeicons/primeicons.css'
 export default {
   props: {
     account: Object,
-    privacy: Boolean
+    privacy: Boolean,
+    compact: Boolean
   },
   data() {
     return {
@@ -65,11 +66,6 @@ export default {
   background-color: #E9B87222;
 }
 
-.nothing {
-  grid-area: nothing;
-  font-size: smaller;
-}
-
 .description {
   grid-area: description;
   font-size: smaller;
@@ -95,21 +91,26 @@ export default {
   color: grey;
 }
 
-.negative-balance {
+.balance {
   grid-area: balance;
+  text-align: right;
+}
+
+.balance-ref {
+  grid-area: balance-ref;
+}
+
+.balance-style {
   text-align: right;
   vertical-align: middle;
   font-size: medium;
   font-weight: bold;
+}
+.negative-balance {
   color: #A63D40;
 }
 
 .non-negative-balance {
-  grid-area: balance;
-  text-align: right;
-  vertical-align: middle;
-  font-size: medium;
-  font-weight: bold;
   color: #90A959;
 }
 

@@ -1,7 +1,10 @@
 <template>
   <div class="transaction-details">
-    <div class="category">
-      {{ transaction.category }}
+    <div v-if="transaction.type === 'TRANSFER'" class="category">
+      Transfer
+    </div>
+    <div v-else class="category">
+      {{ (transaction.category) ? transaction.category : "-" }}
     </div>
     <div :class="(transaction.amount_cents < 0) ? 'negative-price' : 'non-negative-price'">
       <span v-if="privacy">--- &nbsp;{{ transaction.currency }}</span>
@@ -61,6 +64,7 @@ export default {
   font-size: xx-small;
   color: grey;
 }
+
 .negative-price {
   grid-area: amount;
   text-align: right;

@@ -120,6 +120,10 @@ export default {
       this.filter_description = "All"
     },
     onTransactionClick(transaction) {
+      if (transaction.type === "TRANSFER") {
+        return
+      }
+
       this.transaction = transaction;
       this.editDialog = true;
     },
