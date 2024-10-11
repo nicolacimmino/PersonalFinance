@@ -3,7 +3,6 @@
     <div class="mask">
       <div class="wrapper">
         <div class="container">
-
           <div class="creditor">
             {{ transaction.creditor_name }}
           </div>
@@ -45,7 +44,7 @@
             </button>
             <button class="button-save"
                     @click="$emit('save', selectedCategory)"
-                    :disabled="selectedCategory==transaction.category" >
+                    :disabled="selectedCategory==transaction.category">
               Save
             </button>
           </div>
@@ -119,32 +118,30 @@ export default {
   grid-area: creditor;
   background-color: #28282822;
   padding: 0 0 0 5px;
+  font-size: medium;
 }
 
 .description {
   grid-area: description;
-  font-size: smaller;
-  padding: 10px 0 10px 0;
+  font-size: small;
 }
 
 .transaction-id {
   grid-area: transaction-id;
   text-align: right;
-  padding: 0 5px 0 0;
-  font-size: smaller;
+  font-size: small;
 }
 
 .booking-date {
   grid-area: booking-date;
   text-align: left;
-  padding: 0 0px 0 5px;
-  font-size: smaller;
+  font-size: small;
 }
 
 .account-name {
   grid-area: account-name;
   text-align: left;
-  font-size: xx-small;
+  font-size: small;
   color: grey;
   background-color: #28282822;
   padding: 0 0 0 5px;
@@ -153,7 +150,7 @@ export default {
 .amount-in-ref-currency {
   grid-area: amount-ref;
   text-align: right;
-  font-size: xx-small;
+  font-size: small;
   color: grey;
   background-color: #28282822;
   padding: 0 5px 0 0;
@@ -163,7 +160,7 @@ export default {
   grid-area: amount;
   text-align: right;
   vertical-align: bottom;
-  font-size: medium;
+  font-size: large;
   font-weight: bold;
   color: #A63D40;
   background-color: #28282822;
@@ -173,7 +170,7 @@ export default {
 .non-negative-price {
   grid-area: amount;
   text-align: right;
-  font-size: medium;
+  font-size: large;
   font-weight: bold;
   color: #90A959;
   background-color: #28282822;
@@ -183,7 +180,7 @@ export default {
 .category {
   grid-area: category;
   text-align: left;
-  font-size: medium;
+  font-size: large;
   font-weight: bold;
   background-color: #28282822;
   padding: 0 0 0 5px;

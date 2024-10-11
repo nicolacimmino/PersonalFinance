@@ -1,13 +1,23 @@
 <template>
   <div class="mainContainer">
-    <div class="header">
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/transactions">Transactions</RouterLink>
-        <RouterLink to="/category_report">Categories</RouterLink>
-        <RouterLink to="/budgets">Budgets</RouterLink>
-        <RouterLink to="/accounts">Accounts</RouterLink>
-      </nav>
+    <div class="navigation">
+      <div class="navbar">
+        <div>
+          <RouterLink to="/">Home</RouterLink>
+        </div>
+        <div>
+          <RouterLink to="/transactions">Transactions</RouterLink>
+        </div>
+        <div>
+          <RouterLink to="/category_report">Categories</RouterLink>
+        </div>
+        <div>
+          <RouterLink to="/budgets">Budgets</RouterLink>
+        </div>
+        <div>
+          <RouterLink to="/accounts">Accounts</RouterLink>
+        </div>
+      </div>
     </div>
     <div class="main">
       <main>
@@ -26,8 +36,14 @@ export default {
 
 <style>
 
-.header {
-  grid-area: header;
+.navbar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  font-size: small;
+  text-align: center;
+}
+.navigation {
+  grid-area: navigation;
 }
 
 .main {
@@ -37,11 +53,15 @@ export default {
 .mainContainer {
   background-color: white;
   font-family: monospace;
-  width: 100%;
   grid-template:
-    'header'
+    'navigation'
     'main';
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
 
 </style>

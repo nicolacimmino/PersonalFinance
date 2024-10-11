@@ -1,22 +1,18 @@
 <template>
-  <div>
-    <div class="category-details">
-      <div class="category" @click="$emit('categoryClick', entry.category)">
-        {{ entry.category }}
-      </div>
-      <div class="total">
-        <span v-if="privacy">--- &nbsp;{{ entry.currency }}</span>
-        <span v-else>
+  <div class="category-details">
+    <div class="category" @click="$emit('categoryClick', entry.category)">
+      {{ entry.category }}
+    </div>
+    <div class="total">
+      <span v-if="privacy">--- &nbsp;{{ entry.currency }}</span>
+      <span v-else>
             {{ Math.abs(entry.total_cents / 100.0) }} {{ entry.currency }}
         </span>
-
-      </div>
-      <div class="transactions-n" @click="$emit('transactionsClick', entry.category)">
-        Transactions: {{ entry.transactions_count }}
-      </div>
+    </div>
+    <div class="transactions-n" @click="$emit('transactionsClick', entry.category)">
+      Transactions: {{ entry.transactions_count }}
     </div>
   </div>
-
 </template>
 
 <script>

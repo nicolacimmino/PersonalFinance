@@ -27,7 +27,7 @@
     </div>
   </div>
 
-  <div class="category-table">
+  <div>
     <div v-if="!loaded">
       Loading...
     </div>
@@ -168,7 +168,6 @@ export default {
 <style scoped>
 
 .pie-chart {
-  display: grid;
   padding: 0px;
   margin-bottom: 2px;
   background-color: #E9B87222;

@@ -44,7 +44,7 @@ export default {
       return {
         responsive: true,
         layout: {
-          padding: 0,
+          padding: 10,
         },
         plugins: {
           datalabels: {
@@ -108,6 +108,7 @@ export default {
                  'budget_spent budget_graph'
                  'budget_dates budget_graph'
                  'budget_transactions budget_graph';
+  grid-template-columns: 6fr 2fr;
   padding: 5px;
   margin-bottom: 5px;
   background-color: #E9B87222;
@@ -140,7 +141,7 @@ export default {
 .budget_graph {
   grid-area: budget_graph;
   width: 90px;
-  align-content: center;
+  padding: 0px;
 }
 
 </style>
