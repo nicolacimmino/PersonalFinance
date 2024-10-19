@@ -33,6 +33,18 @@ export default class TransactionApi {
         });
     }
 
+    static async getAccounts() {
+        return axios({
+            headers: {
+                "X-API-KEY": localStorage.getItem("pfinanceApiKey")
+            },
+            method: "get",
+            url: `${HOST}/api/accounts/`,
+        }).then((response) => {
+            return response.data;
+        });
+    }
+
     static async getTransaction(id) {
         return axios({
             headers: {
@@ -85,7 +97,7 @@ export default class TransactionApi {
 
     }
 
-    static async updateTransactionCategory(id, category) {
+    static async updateTransactionCategory(id, category, type) {
         return axios({
             headers: {
                 "X-API-KEY": localStorage.getItem("pfinanceApiKey")
@@ -93,7 +105,25 @@ export default class TransactionApi {
             method: "patch",
             url: `${HOST}/api/transactions/${id}`,
             data: {
+                type: type,
                 category: category
+            }
+        }).then((response) => {
+            return response.data;
+        });
+
+    }
+
+    static async updateTransactionAccountTo(id, account_to) {
+        return axios({
+            headers: {
+                "X-API-KEY": localStorage.getItem("pfinanceApiKey")
+            },
+            method: "patch",
+            url: `${HOST}/api/transactions/${id}`,
+            data: {
+                type: "TRANSFER",
+                account_to: account_to
             }
         }).then((response) => {
             return response.data;

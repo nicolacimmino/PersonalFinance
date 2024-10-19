@@ -13,14 +13,15 @@
     <div v-if="editDialog">
       <transition name="modal">
         <TransactionEdit :transaction="transaction"
+                         :accounts="accounts"
                          :categories="categories"
                          @cancel="editDialog = false"
-                         @save="(newCategory) => onCategoryChange(newCategory)">
+                         @save="(newCategory, newAccountTo, isTransfer) => onCategoryChange(newCategory, newAccountTo, isTransfer)">
         </TransactionEdit>
       </transition>
     </div>
 
-    <div v-if="loading">
+    <div v-if="loading > 0">
       Loading...
     </div>
     <div v-else>
@@ -30,6 +31,7 @@
         </div>
         <div v-for="transaction in transactions" :key="transaction.id">
           <TransactionOverview :transaction=transaction
+                               :accounts=accounts
                                :id=transaction.id
                                :privacy="privacy"
                                v-on:click="onTransactionClick(transaction)">
@@ -42,7 +44,7 @@
 
 <script>
 import TransactionOverview from "@/components/TransactionOverview.vue";
-import TransactionEdit from "@/components/TransactionDetailsEdit.vue";
+import TransactionEdit from "@/components/TransactionEdit.vue";
 import moment from "moment";
 import TransactionApi from "@/TransactionsApi.ts";
 
@@ -64,14 +66,16 @@ export default {
     this.loadAllTransactions(this.account_id, this.category_filter);
     this.updateFilterDescription();
     this.loadAllCategories();
+    this.loadAllAccounts();
   },
   data() {
     return {
-      loading: false,
+      loading: 0,
       saving: false,
       editDialog: false,
       transactions: [],
       categories: [],
+      accounts: [],
       transaction: undefined,
       filter_description: "All",
       privacy: Boolean
@@ -83,25 +87,32 @@ export default {
       this.privacy = !this.privacy;
     },
     loadAllTransactions(account_id, category) {
-      this.loading = true;
+      this.loading++;
 
       if (!category) category = ""
       if (!account_id) account_id = ""
 
       TransactionApi.getAllTransactions(account_id, category).then(fetchedTransactions => {
         this.transactions = fetchedTransactions
-        this.loading = false;
+        this.loading--;
       });
     },
     loadAllCategories() {
-      this.loading = true;
+      this.loading++;
       TransactionApi.getCategories().then(fetchedCategories => {
         this.categories = fetchedCategories.map(
             categoryInfo => {
               return categoryInfo.code
             }
         );
-        this.loading = false;
+        this.loading--;
+      });
+    },
+    loadAllAccounts() {
+      this.loading++;
+      TransactionApi.getAccounts().then(fetchedAccounts => {
+        this.accounts = fetchedAccounts;
+        this.loading--;
       });
     },
     updateFilterDescription() {
@@ -120,22 +131,29 @@ export default {
       this.filter_description = "All"
     },
     onTransactionClick(transaction) {
-      if (transaction.type === "TRANSFER") {
-        return
-      }
-
       this.transaction = transaction;
       this.editDialog = true;
     },
-    onCategoryChange(newCategory) {
+    onCategoryChange(newCategory, newAccountTo, isTransfer) {
       this.editDialog = false;
       this.saving = true;
-      TransactionApi.updateTransactionCategory(this.transaction.id, newCategory).then(updatedTransaction => {
-            this.saving = false;
-            this.transactions[this.transactions.findIndex(
-                transaction => transaction.id === updatedTransaction.id)] = updatedTransaction;
-          }
-      )
+      if (!isTransfer) {
+        let type = (this.transaction.amount_cents <= 0) ? "EXPENSE" : "INCOME";
+
+        TransactionApi.updateTransactionCategory(this.transaction.id, newCategory, type).then(updatedTransaction => {
+              this.saving = false;
+              this.transactions[this.transactions.findIndex(
+                  transaction => transaction.id === updatedTransaction.id)] = updatedTransaction;
+            }
+        )
+      } else {
+        TransactionApi.updateTransactionAccountTo(this.transaction.id, newAccountTo).then(updatedTransaction => {
+              this.saving = false;
+              this.transactions[this.transactions.findIndex(
+                  transaction => transaction.id === updatedTransaction.id)] = updatedTransaction;
+            }
+        )
+      }
     }
   },
   computed: {

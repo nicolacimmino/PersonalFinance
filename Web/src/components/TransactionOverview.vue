@@ -1,7 +1,8 @@
 <template>
   <div class="transaction-details">
     <div v-if="transaction.type === 'TRANSFER'" class="category">
-      Transfer
+      <span :class="(transaction.amount_cents < 0) ? 'pi pi-arrow-right' : 'pi pi-arrow-left'" style="font-size: 0.5rem"></span>
+      {{ (transaction.account_to) ? accounts.find((account) => account.id === transaction.account_to).description : "-" }}
     </div>
     <div v-else class="category">
       {{ (transaction.category) ? transaction.category : "-" }}
@@ -29,6 +30,7 @@
 export default {
   props: {
     transaction: Object,
+    accounts: Array,
     privacy: Boolean
   },
 }

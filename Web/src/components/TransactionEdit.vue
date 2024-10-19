@@ -9,17 +9,34 @@
           <div :class="(transaction.amount_cents < 0) ? 'negative-price' : 'non-negative-price'">
             {{ transaction.amount_cents / 100.0 }} {{ transaction.currency }}
           </div>
-          <div v-if="this.editCategory" class="category">
-            <select v-model="selectedCategory" @change="this.editCategory=false">
-              <option v-for="category in categories" v-bind:key="category" v-bind:value="category">{{
-                  category
-                }}
-              </option>
-            </select>
+          <!--          Edit category or destiantion account-->
+          <div v-if="!this.isTransfer">
+            <div v-if="this.editCategory" class="category">
+              <select v-model="selectedCategory" @change="this.editCategory=false">
+                <option v-for="category in categories" v-bind:key="category" v-bind:value="category">{{
+                    category
+                  }}
+                </option>
+              </select>
+            </div>
+            <div v-else @click="this.editCategory=true" class="category">
+              {{ (selectedCategory) ? selectedCategory : "-" }}
+            </div>
           </div>
-          <div v-else @click="this.editCategory=true" class="category">
-            {{ this.selectedCategory }}
+          <div v-else>
+            <div v-if="this.editDestinationAccount" class="destinationAccount">
+              <select v-model="selectedDestinationAccount" @change="this.editDestinationAccount=false">
+                <option v-for="account in accounts" v-bind:key="account" v-bind:value="account">{{
+                    account.description
+                  }}
+                </option>
+              </select>
+            </div>
+            <div v-else @click="this.editDestinationAccount=true" class="destinationAccount">
+              {{ (selectedDestinationAccount) ? selectedDestinationAccount.description : "???" }}
+            </div>
           </div>
+
           <div class="account-name">
             {{ transaction.account_name }}
           </div>
@@ -29,9 +46,21 @@
           <div class="booking-date">
             {{ moment(transaction.booking_date).format("DD-MM-YYYY") }}
           </div>
-
           <div class="description">
             {{ transaction.description }}
+          </div>
+          <div class="transfer">
+            <label for="transfer-toggle">Transfer</label>
+            <VueToggle id="transfer-toggle"
+                       :value="this.transaction.type==='TRANSFER'"
+                       :height="20"
+                       :width="30"
+                       checkedText=""
+                       uncheckedText=""
+                       checkedBg="#b4d455"
+                       uncheckedBg="lightgrey"
+                       @click="isTransfer = !isTransfer"/>
+
           </div>
           <div class="transaction-id">
             {{ transaction.id }}
@@ -43,12 +72,11 @@
               Cancel
             </button>
             <button class="button-save"
-                    @click="$emit('save', selectedCategory)"
-                    :disabled="selectedCategory==transaction.category">
+                    @click="$emit('save', selectedCategory, (selectedDestinationAccount) ? selectedDestinationAccount.id : null, isTransfer)"
+                    :disabled="!saveEnabled()">
               Save
             </button>
           </div>
-
         </div>
       </div>
     </div>
@@ -57,23 +85,48 @@
 
 <script>
 import moment from "moment/moment.js";
+import {VueToggles} from "vue-toggles";
 
 export default {
   mounted() {
-    this.selectedCategory = this.transaction.category
+    this.selectedCategory = this.transaction.category;
+    this.selectedDestinationAccount = this.accounts.find((account) => account.id === this.transaction.account_to);
+    this.isTransfer = this.transaction.type === "TRANSFER";
   },
   props: {
     transaction: undefined,
     categories: undefined,
+    accounts: undefined
   },
   data() {
     return {
       selectedCategory: String,
-      editCategory: false
+      editCategory: false,
+      isTransfer: Boolean,
+      selectedDestinationAccount: Object,
+      editDestinationAccount: false
     }
+  },
+  components: {
+    VueToggle: VueToggles,
   },
   methods: {
     moment: moment,
+    saveEnabled() {
+      if (this.selectedCategory !== this.transaction.category) {
+        return true;
+      }
+
+      if (this.selectedDestinationAccount && this.selectedDestinationAccount.id !== this.transaction.account_to) {
+        return true
+      }
+
+      if (this.isTransfer && this.isTransfer !== (this.transaction.type === "TRANSFER")) {
+        return true
+      }
+
+      return false
+    }
   }
 }
 </script>
@@ -111,7 +164,17 @@ export default {
     'category amount'
     'account-name amount-ref'
     'description description'
+    'transfer transfer'
     'none footer';
+}
+
+.transfer {
+  padding-top: 5px;
+}
+
+.transfer label {
+  padding-right: 5px;
+  float: left;
 }
 
 .creditor {
@@ -178,6 +241,15 @@ export default {
 }
 
 .category {
+  grid-area: category;
+  text-align: left;
+  font-size: large;
+  font-weight: bold;
+  background-color: #28282822;
+  padding: 0 0 0 5px;
+}
+
+.destinationAccount {
   grid-area: category;
   text-align: left;
   font-size: large;
