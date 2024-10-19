@@ -3,14 +3,13 @@
     Loading...
   </div>
   <div v-else>
-    <div class="toolbar">
-      <div class="toolbar-arrow">
+    <div class="crw-toolbar">
+      <div class="crw-toolbar-arrow">
         <i class="pi pi-arrow-up"
-           :style="(currentCategoryFilter!=='') ? 'color:black' : 'color:grey'"
            @click="loadPreviousCategoryReport()">
         </i>
       </div>
-      <div class="toolbar-eye">
+      <div class="crw-toolbar-eye">
         <i :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
            @click="togglePrivacy()">
         </i>
@@ -98,6 +97,7 @@ export default {
     },
     loadPreviousCategoryReport() {
       if (this.currentCategoryFilter === "") {
+        this.loaded = true;
         return;
       }
 
@@ -114,12 +114,14 @@ export default {
       });
     },
     loadByCategoryReport(typeFilter, categoryFilter) {
+      this.loaded = false;
       TransactionApi.loadByCategoryReport().then(fetchedCategoriesReport => {
         let aggregatedData = TransactionsDataTransformations.aggregateSubLevels(
             fetchedCategoriesReport.reports, typeFilter, categoryFilter
         );
 
         if (aggregatedData.length === 0) {
+          this.loaded = true;
           return;
         }
 
@@ -165,17 +167,7 @@ export default {
   background-color: #E9B87222;
 }
 
-.transactionsHeader {
-  border-radius: 10px 10px 0 0;
-  display: grid;
-  grid-template: 10px / 0.6fr 1.4fr 1fr;
-  text-align: left;
-  padding: 15px;
-  background-color: lightsteelblue;
-  text-transform: uppercase;
-}
-
-.toolbar {
+.crw-toolbar {
   display: grid;
   grid-template: "none arrow eye";
   grid-template-columns: [none] 8fr [arrow] 1fr [eye] 1fr;
@@ -186,11 +178,11 @@ export default {
   font-size: 1em;
 }
 
-.toolbar-arrow {
+.crw-toolbar-arrow {
   grid-area: arrow;
 }
 
-.toolbar-eye {
+.crw-toolbar-eye {
   grid-area: eye;
 }
 

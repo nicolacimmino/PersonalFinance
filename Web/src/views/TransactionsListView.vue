@@ -3,8 +3,8 @@
     Loading...
   </div>
   <div v-else>
-    <div class="toolbar">
-      <div class="toolbar-eye">
+    <div class="tlw-toolbar">
+      <div class="tlw-toolbar-eye">
         <i :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
            @click="togglePrivacy()">
         </i>
@@ -181,7 +181,7 @@ export default {
   font-size: small;
 }
 
-.toolbar {
+.tlw-toolbar {
   display: grid;
   grid-template: "none eye";
   grid-template-columns: [none] 9fr [eye] 1fr;
@@ -192,7 +192,7 @@ export default {
   font-size: 1em;
 }
 
-.toolbar-eye {
+.tlw-toolbar-eye {
   grid-area: eye;
 }
 </style>
