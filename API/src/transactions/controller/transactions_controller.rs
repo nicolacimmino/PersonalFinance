@@ -7,6 +7,7 @@ use crate::common::ValutaConversionService;
 use crate::establish_db_connection;
 use crate::transactions::dto::{PatchTransactionDto, TransactionDto};
 use crate::guard::ApiKey;
+use crate::schema::transactions::dsl::transactions;
 use crate::transactions::service::TransactionsService;
 
 
@@ -35,6 +36,7 @@ pub fn get_transactions(_key: ApiKey<'_>, category: Option<String>) -> status::C
                     "EUR",
                     transaction.amount_cents)),
             ref_currency: "EUR".to_string(),
+            account_to: transaction.account_to,
         })
     }
 
@@ -68,6 +70,7 @@ pub fn get_transactions_for_account(_key: ApiKey<'_>, account_id: i32) -> status
                     "EUR",
                     transaction.amount_cents)),
             ref_currency: "EUR".to_string(),
+            account_to: transaction.account_to,
         })
     }
 
@@ -108,12 +111,36 @@ fn build_transaction_dto(id: i32) -> TransactionDto {
                 "EUR",
                 transaction.amount_cents)),
         ref_currency: "EUR".to_string(),
+        account_to: transaction.account_to,
     };
 }
 
 #[patch("/transactions/<id>", format = "application/json", data = "<patch_transaction_dto>")]
 pub fn patch_transaction(_key: ApiKey<'_>, id: i32, patch_transaction_dto: rocket::serde::json::Json<PatchTransactionDto>) -> status::Custom<content::RawJson<String>> {
     let mut transactions_service = TransactionsService {};
+
+    if patch_transaction_dto.type_.is_some() {
+        let new_type = patch_transaction_dto.type_.clone().unwrap_or("".to_string());
+
+        if !vec!["TRANSFER".to_string(), "INCOME".to_string(), "EXPENSE".to_string()].contains(&new_type) {
+            panic!("Invalid type.")
+        }
+
+        if !new_type.eq(&"TRANSFER".to_string()) {
+            let (transaction, _) = transactions_service.get_transaction(id);
+            if transaction.amount_cents > 0 && new_type != "INCOME".to_string() {
+                panic!("Positive amount is INCOME")
+            }
+            if transaction.amount_cents <= 0 && new_type != "EXPENSE".to_string() {
+                panic!("Negative or zero amount is  EXPENSE")
+            }
+        }
+
+        transactions_service.update_transaction_type(
+            id,
+            &new_type,
+        );
+    }
 
     if patch_transaction_dto.category.is_some() {
         transactions_service.update_transaction_category(
@@ -126,6 +153,13 @@ pub fn patch_transaction(_key: ApiKey<'_>, id: i32, patch_transaction_dto: rocke
         transactions_service.update_transaction_description(
             id,
             patch_transaction_dto.description.clone().unwrap(),
+        );
+    }
+
+    if patch_transaction_dto.account_to.is_some() {
+        transactions_service.update_transaction_account_to(
+            id,
+            patch_transaction_dto.account_to.clone().unwrap(),
         );
     }
 

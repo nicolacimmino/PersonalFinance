@@ -14,4 +14,5 @@ pub struct Transaction {
     pub description: String,
     pub booking_date: NaiveDateTime,
     pub value_date: NaiveDateTime,
+    pub account_to: Option<i32>,
 }

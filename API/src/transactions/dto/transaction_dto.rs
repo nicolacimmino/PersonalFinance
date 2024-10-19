@@ -17,10 +17,14 @@ pub struct TransactionDto {
     pub currency: String,
     pub amount_cents_in_ref_currency: Num,
     pub ref_currency: String,
+    pub account_to: Option<i32>,
 }
 
 #[derive(Deserialize, Serialize)]
 pub struct PatchTransactionDto {
     pub category: Option<String>,
     pub description: Option<String>,
+    pub account_to: Option<i32>,
+    #[serde(rename(deserialize = "type"))]
+    pub type_: Option<String>
 }

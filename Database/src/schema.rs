@@ -33,7 +33,6 @@ diesel::table! {
         from_date -> Date,
         to_date -> Date,
         created_at -> Timestamp,
-        from_date2 -> Date,
     }
 }
 
@@ -157,6 +156,7 @@ diesel::table! {
         description -> Text,
         booking_date -> Timestamp,
         value_date -> Timestamp,
+        account_to -> Nullable<Int4>,
     }
 }
 

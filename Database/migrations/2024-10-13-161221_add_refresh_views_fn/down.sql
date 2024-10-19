@@ -1,0 +1,1 @@
+DROP FUNCTION pfinance_refresh_all_views;
