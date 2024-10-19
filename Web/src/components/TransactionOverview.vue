@@ -7,7 +7,7 @@
     <div v-else class="category">
       {{ (transaction.category) ? transaction.category : "-" }}
     </div>
-    <div :class="(transaction.amount_cents < 0) ? 'negative-price' : 'non-negative-price'">
+    <div :class="(transaction.amount_cents < 0) ? negativePriceClass : nonNegativePriceClass">
       <span v-if="privacy">--- &nbsp;{{ transaction.currency }}</span>
       <span v-else>
             {{ transaction.amount_cents / 100.0 }} {{ transaction.currency }}
@@ -26,12 +26,23 @@
 </template>
 
 <script>
+import { ref } from 'vue'
+
+const negativePriceClass = ref("negative-price");
+const nonNegativePriceClass = ref('non-negative-price');
+
 export default {
   props: {
     transaction: Object,
     accounts: Array,
     privacy: Boolean
   },
+  data() {
+    return {
+      negativePriceClass,
+      nonNegativePriceClass
+    }
+  }
 }
 </script>
 

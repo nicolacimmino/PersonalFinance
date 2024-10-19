@@ -1,30 +1,27 @@
 <template>
-  <div class="toolbar">
-    <div class="toolbar-filter">
-      {{ filter_description }}
-    </div>
-    <div class="toolbar-eye">
-        <span :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
-              @click="togglePrivacy()">
-      </span>
-    </div>
+  <div v-if="loading > 0">
+    Loading...
   </div>
-  <div class="transactions-table">
-    <div v-if="editDialog">
-      <transition name="modal">
-        <TransactionEdit :transaction="transaction"
-                         :accounts="accounts"
-                         :categories="categories"
-                         @cancel="editDialog = false"
-                         @save="(newCategory, newAccountTo, isTransfer) => onCategoryChange(newCategory, newAccountTo, isTransfer)">
-        </TransactionEdit>
-      </transition>
+  <div v-else>
+    <div class="toolbar">
+      <div class="toolbar-eye">
+        <i :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
+           @click="togglePrivacy()">
+        </i>
+      </div>
     </div>
+    <div class="transactions-table">
+      <div v-if="editDialog">
+        <transition name="modal">
+          <TransactionEdit :transaction="transaction"
+                           :accounts="accounts"
+                           :categories="categories"
+                           @cancel="editDialog = false"
+                           @save="(newCategory, newAccountTo, isTransfer) => onCategoryChange(newCategory, newAccountTo, isTransfer)">
+          </TransactionEdit>
+        </transition>
+      </div>
 
-    <div v-if="loading > 0">
-      Loading...
-    </div>
-    <div v-else>
       <template v-for="(transactions, booking_date) in byDate" v-bind:key="booking_date">
         <div class="transactions-date-header">
           {{ moment(booking_date).format("DD-MM-YYYY") }}
@@ -47,6 +44,7 @@ import TransactionOverview from "@/components/TransactionOverview.vue";
 import TransactionEdit from "@/components/TransactionEdit.vue";
 import moment from "moment";
 import TransactionApi from "@/TransactionsApi.ts";
+import 'primeicons/primeicons.css'
 
 export default {
   components: {
@@ -185,22 +183,16 @@ export default {
 
 .toolbar {
   display: grid;
-  grid-template: "filter eye";
-  grid-template-columns: [filter] 9fr [eye] 1fr;
+  grid-template: "none eye";
+  grid-template-columns: [none] 9fr [eye] 1fr;
   padding: 0px;
   margin-bottom: 10px;
   margin-top: 10px;
   background-color: white;
-  font-size: large;
+  font-size: 1em;
 }
 
 .toolbar-eye {
   grid-area: eye;
-}
-
-.toolbar-filter {
-  padding-left: 5px;
-  font-size: small;
-  text-align: left;
 }
 </style>

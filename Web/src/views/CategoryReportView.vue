@@ -1,37 +1,29 @@
 <template>
-  <div class="toolbar">
-    <div class="toolbar-arrow">
-      <span v-if="currentCategoryFilter!==''"
-            class="pi pi-arrow-up"
-            @click="loadPreviousCategoryReport()">
-      </span>
-      <span v-else class="pi pi-arrow-up" style="color: lightgrey" ></span>
-    </div>
-    <div class="toolbar-eye">
-      <span :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
-            @click="togglePrivacy()">
-      </span>
-    </div>
+  <div v-if="!loaded">
+    Loading...
   </div>
-
-  <div class="pie-chart">
-    <div v-if="!loaded">
-      Loading...
+  <div v-else>
+    <div class="toolbar">
+      <div class="toolbar-arrow">
+        <i class="pi pi-arrow-up"
+           :style="(currentCategoryFilter!=='') ? 'color:black' : 'color:grey'"
+           @click="loadPreviousCategoryReport()">
+        </i>
+      </div>
+      <div class="toolbar-eye">
+        <i :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
+           @click="togglePrivacy()">
+        </i>
+      </div>
     </div>
-    <div v-else>
-      <Pie v-if="loaded "
-           id="report-by-category"
-           :options="chartOptions"
-           :data="chartData"
+    <div class="pie-chart">
+      <Pie
+          id="report-by-category"
+          :options="chartOptions"
+          :data="chartData"
       />
     </div>
-  </div>
-
-  <div>
-    <div v-if="!loaded">
-      Loading...
-    </div>
-    <div v-else>
+    <div>
       <template v-for="spendingEntry in categoriesSpending" v-bind:key="spendingEntry.category">
         <CategorySpendingOverview :entry=spendingEntry
                                   :privacy=privacy
@@ -185,11 +177,13 @@ export default {
 
 .toolbar {
   display: grid;
-  grid-template: "none none none none none none none none none none arrow eye";
+  grid-template: "none arrow eye";
+  grid-template-columns: [none] 8fr [arrow] 1fr [eye] 1fr;
   padding: 0px;
   margin-bottom: 10px;
   margin-top: 10px;
   background-color: white;
+  font-size: 1em;
 }
 
 .toolbar-arrow {
@@ -199,4 +193,5 @@ export default {
 .toolbar-eye {
   grid-area: eye;
 }
+
 </style>

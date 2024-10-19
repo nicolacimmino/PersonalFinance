@@ -4,10 +4,9 @@
       {{ entry.category }}
     </div>
     <div class="total">
-      <span v-if="privacy">--- &nbsp;{{ entry.currency }}</span>
-      <span v-else>
-            {{ Math.abs(entry.total_cents / 100.0) }} {{ entry.currency }}
-        </span>
+      <i>
+        {{ (privacy) ? "---" : Math.abs(entry.total_cents / 100.0) }} {{ entry.currency }}
+      </i>
     </div>
     <div class="transactions-n" @click="$emit('transactionsClick', entry.category)">
       Transactions: {{ entry.transactions_count }}
@@ -39,14 +38,14 @@ export default {
 .category {
   grid-area: category;
   text-align: left;
-  font-size: medium;
+  font-size: 1em;
   font-weight: bold;
 }
 
 .total {
   grid-area: total;
   text-align: right;
-  font-size: medium;
+  font-size: 1em;
   font-weight: bold;
   color: #90A959;
 }
@@ -54,7 +53,7 @@ export default {
 .transactions-n {
   grid-area: transactions-n;
   text-align: left;
-  font-size: medium;
+  font-size: 1em;
 }
 
 </style>
