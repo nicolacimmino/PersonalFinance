@@ -20,13 +20,12 @@
       {{ transaction.amount_cents_in_ref_currency / 100.0 }} {{ transaction.ref_currency }}
     </div>
     <div class="description">
-      {{ (transaction.description) ? transaction.description : "-" }}
+      {{ (transaction.creditor_name) ? transaction.creditor_name : transaction.description }}
     </div>
   </div>
 </template>
 
 <script>
-
 export default {
   props: {
     transaction: Object,
@@ -40,9 +39,9 @@ export default {
 .transaction-details {
   display: grid;
   grid-template:
-    'category amount'
-    'account-name amount-ref'
-    'description description';
+    'category amount amount'
+    'account-name account-name amount-ref'
+    'description description description';
   padding: 0px;
   margin-bottom: 2px;
   background-color: #E9B87222;
@@ -50,13 +49,14 @@ export default {
 
 .description {
   grid-area: description;
-  font-size: smaller;
+  font-size: xx-small;
 }
 
 .account-name {
   grid-area: account-name;
   text-align: left;
   font-size: xx-small;
+  overflow: clip;
   color: grey;
 }
 
@@ -71,7 +71,7 @@ export default {
   grid-area: amount;
   text-align: right;
   vertical-align: bottom;
-  font-size: medium;
+  font-size: small;
   font-weight: bold;
   color: #A63D40;
 }
@@ -79,7 +79,7 @@ export default {
 .non-negative-price {
   grid-area: amount;
   text-align: right;
-  font-size: medium;
+  font-size: small;
   font-weight: bold;
   color: #90A959;
 }
@@ -87,7 +87,7 @@ export default {
 .category {
   grid-area: category;
   text-align: left;
-  font-size: medium;
+  font-size: small;
   font-weight: bold;
 }
 

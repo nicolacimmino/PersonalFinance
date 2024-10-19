@@ -171,7 +171,6 @@ export default {
 
 .transactions-table {
   background-color: white;
-  /*font-family: Roboto, Arial, sans-serif;*/
   font-family: monospace;
   font-size: small;
 }
@@ -181,15 +180,18 @@ export default {
   padding: 0 0 0 5px;
   background-color: #6494AA;
   color: white;
+  font-size: small;
 }
 
 .toolbar {
   display: grid;
-  grid-template: "filter filter filter filter filter none none none none none none eye";
+  grid-template: "filter eye";
+  grid-template-columns: [filter] 9fr [eye] 1fr;
   padding: 0px;
   margin-bottom: 10px;
   margin-top: 10px;
   background-color: white;
+  font-size: large;
 }
 
 .toolbar-eye {
@@ -199,5 +201,6 @@ export default {
 .toolbar-filter {
   padding-left: 5px;
   font-size: small;
+  text-align: left;
 }
 </style>
