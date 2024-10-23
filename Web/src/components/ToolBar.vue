@@ -1,24 +1,30 @@
 <template>
   <div class="toolbar-container">
     <div class="ref-currency">
-      <i :class="(refCurrency) ? 'pi pi-euro' : 'pi pi-money-bill'"
-         @click="$emit('ref-currency')">
+      <i :class="(refCurrency) ? 'pi pi-money-bill' : 'pi pi-euro'"
+         :style="(refCurrencyEnabled) ? 'color:black' : 'color:#EEEEEE'"
+         @click="toggleRefCurrency(); $emit('ref-currency', this.refCurrency)"
+      >
       </i>
     </div>
     <div class="arrow-up">
       <i class="pi pi-arrow-up"
+         :style="(upEnabled) ? 'color:black' : 'color:#EEEEEE'"
          @click="$emit('arrow-up')"
-         :style="(up) ? 'color:black' : 'color:grey'">
+      >
       </i>
     </div>
     <div class="maximize">
-      <i :class="(maximize) ? 'pi pi-window-maximize' : 'pi pi-window-minimize'"
-         @click="$emit('maximize')">
+      <i :class="(compact) ? 'pi pi-window-maximize' : 'pi pi-window-minimize'"
+         :style="(compactEnabled) ? 'color:black' : 'color:#EEEEEE'"
+         @click="toggleCompact(); $emit('compact', this.compact)"
+      >
       </i>
     </div>
     <div class="eye">
       <i :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
-         @click="$emit('privacy')">
+         @click="togglePrivacy(); $emit('privacy', this.privacy);"
+      >
       </i>
     </div>
   </div>
@@ -29,10 +35,39 @@ import 'primeicons/primeicons.css'
 
 export default {
   props: {
-    privacy: Boolean,
-    maximize: Boolean,
-    up: Boolean,
-    refCurrency: Boolean
+    upEnabled: Boolean,
+    compactEnabled: Boolean,
+    refCurrencyEnabled: Boolean
+
+  },
+  data() {
+    return {
+      privacy: (localStorage.getItem("privacy") === "true"),
+      compact: (localStorage.getItem("compact") === "true"),
+      refCurrency: (localStorage.getItem("refCurrency") === "true"),
+    }
+  },
+  methods: {
+    togglePrivacy() {
+      this.privacy = !this.privacy
+      localStorage.setItem("privacy", this.privacy.toString());
+    },
+    toggleCompact() {
+      if (!this.compactEnabled) {
+        return
+      }
+
+      this.compact = !this.compact
+      localStorage.setItem("compact", this.compact.toString());
+    },
+    toggleRefCurrency() {
+      if (!this.refCurrencyEnabled) {
+        return;
+      }
+
+      this.refCurrency = !this.refCurrency
+      localStorage.setItem("refCurrency", this.refCurrency.toString());
+    },
   }
 }
 </script>

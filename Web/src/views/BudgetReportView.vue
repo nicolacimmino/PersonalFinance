@@ -4,13 +4,16 @@
       Loading...
     </div>
     <div v-else>
+      <ToolBar
+          @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
+      />
       Active
       <template v-for="budget in activeBudgets" v-bind:key="budget.id">
-        <BudgetOverview :budget=budget></BudgetOverview>
+        <BudgetOverview :budget=budget :privacy=privacy></BudgetOverview>
       </template>
       Past
       <template v-for="budget in pastBudgets" v-bind:key="budget.id">
-        <BudgetOverview :budget=budget></BudgetOverview>
+        <BudgetOverview :budget=budget :privacy=privacy></BudgetOverview>
       </template>
     </div>
   </div>
@@ -20,12 +23,15 @@
 import TransactionApi from "@/TransactionsApi.ts";
 import BudgetOverview from "@/components/BudgetOverview.vue";
 import moment from "moment";
+import ToolBar from "@/components/ToolBar.vue";
 
 export default {
   mounted() {
+    this.privacy = (localStorage.getItem("privacy") === "true");
     this.loadBudgets()
   },
   components: {
+    ToolBar,
     BudgetOverview,
   },
   data() {
@@ -33,9 +39,14 @@ export default {
       loaded: false,
       activeBudgets: [],
       pastBudgets: [],
+      privacy: Boolean,
+      upEnabled: Boolean
     }
   },
   methods: {
+    onPrivacyChange(newPrivacy) {
+      this.privacy = newPrivacy;
+    },
     loadBudgets() {
       TransactionApi.loadBudgets().then(fetchedBudgets => {
         this.activeBudgets = fetchedBudgets.filter(item => {

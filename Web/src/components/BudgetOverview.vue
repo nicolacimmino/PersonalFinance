@@ -3,7 +3,10 @@
     <div class="description">
       {{ budget.description }}
     </div>
-    <div class="budget_spent">
+    <div v-if="privacy" class="budget_spent">
+      Spent: {{ Math.floor((100.0 * Math.abs(budget.spent_cents)) / budget.amount_cents) }}%
+    </div>
+    <div v-else class="budget_spent">
       Spent: {{ Math.floor(Math.abs(budget.spent_cents / 100.0)) }} {{ budget.currency }}
       ( of {{ Math.floor(Math.abs(budget.amount_cents / 100.0)) }} )
     </div>
@@ -38,6 +41,7 @@ export default {
   },
   props: {
     budget: Object,
+    privacy: Boolean
   },
   methods: {
     chartOptions(budget) {
@@ -49,7 +53,7 @@ export default {
         plugins: {
           datalabels: {
             formatter: (value, ctx) => {
-              if(ctx.chart.data.datasets[0].data.length === 1) {
+              if (ctx.chart.data.datasets[0].data.length === 1) {
                 return null
               }
               let sum = 0;

@@ -1,22 +1,11 @@
 <template>
-  <div class="toolbar">
-    <div class="toolbar-eye">
-      <span :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
-            @click="togglePrivacy()">
-      </span>
-    </div>
-    <div class="toolbar-compact">
-      <span :class="(compact) ? 'pi pi-window-maximize' : 'pi pi-window-minimize'"
-            @click="toggleCompact()">
-      </span>
-    </div>
-    <div class="toolbar-currency">
-      <span :class="(refCurrencyActive) ? 'pi pi-money-bill' : 'pi pi-euro'"
-            :style="(!compact) ? {color:'#AAAAAA'}: {color:'#000000'}"
-            @click="toggleRefCurrencyActive()">
-      </span>
-    </div>
-  </div>
+  <ToolBar
+      @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
+      @compact="(newCompact) => onCompactChange(newCompact)"
+      @ref-currency="(newRefCurrency) => onRefCurrencyChange(newRefCurrency)"
+      compact-enabled="true"
+      v-bind:ref-currency-enabled="this.compact && !this.privacy"
+  />
   <div class="accounts-table">
     <div v-if="!loaded">
       Loading...
@@ -28,7 +17,7 @@
                                 :account=account
                                 :privacy=privacy
                                 :compact=compact
-                                :ref-currency-active=refCurrencyActive
+                                :ref-currency-active=refCurrency
         ></CompactAccountOverview>
       </template>
     </div>
@@ -39,21 +28,26 @@
 import AccountOverview from "@/components/AccountOverview.vue";
 import TransactionApi from "@/TransactionsApi.ts";
 import CompactAccountOverview from "@/components/CompactAccountOverview.vue";
+import ToolBar from "@/components/ToolBar.vue";
 
 export default {
   components: {
+    ToolBar,
     CompactAccountOverview,
     AccountOverview: AccountOverview,
   },
   mounted() {
     this.loadAllAccounts()
+    this.privacy = (localStorage.getItem("privacy") === "true")
+    this.compact = (localStorage.getItem("compact") === "true")
+    this.refCurrency = (localStorage.getItem("refCurrency") === "true")
   },
   data() {
     return {
       loaded: false,
       privacy: true,
       compact: true,
-      refCurrencyActive: false,
+      refCurrency: false,
       currentCategoryFilter: "",
       accounts: [],
       chartOptions: {
@@ -70,16 +64,14 @@ export default {
     }
   },
   methods: {
-    togglePrivacy() {
-      this.privacy = !this.privacy;
+    onPrivacyChange(newPrivacy) {
+      this.privacy = newPrivacy;
     },
-    toggleCompact() {
-      this.compact = !this.compact;
+    onCompactChange(newCompact) {
+      this.compact = newCompact;
     },
-    toggleRefCurrencyActive() {
-      if (this.compact) {
-        this.refCurrencyActive = !this.refCurrencyActive
-      }
+    onRefCurrencyChange(newRefCurrency) {
+      this.refCurrency = newRefCurrency;
     },
     loadAllAccounts() {
       TransactionApi.loadAllAccounts().then(accounts => {

@@ -3,13 +3,9 @@
     Loading...
   </div>
   <div v-else>
-    <div class="tlw-toolbar">
-      <div class="tlw-toolbar-eye">
-        <i :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
-           @click="togglePrivacy()">
-        </i>
-      </div>
-    </div>
+    <ToolBar
+        @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
+    />
     <div class="transactions-table">
       <div v-if="editDialog">
         <transition name="modal">
@@ -30,7 +26,7 @@
           <TransactionOverview :transaction=transaction
                                :accounts=accounts
                                :id=transaction.id
-                               :privacy="privacy"
+                               :privacy=privacy
                                v-on:click="onTransactionClick(transaction)">
           </TransactionOverview>
         </div>
@@ -42,13 +38,16 @@
 <script>
 import TransactionOverview from "@/components/TransactionOverview.vue";
 import TransactionEdit from "@/components/TransactionEdit.vue";
+import ToolBar from "@/components/ToolBar.vue";
 import moment from "moment";
 import TransactionApi from "@/TransactionsApi.ts";
 import 'primeicons/primeicons.css'
 
 export default {
   components: {
-    TransactionOverview: TransactionOverview, TransactionEdit
+    ToolBar,
+    TransactionOverview,
+    TransactionEdit
   },
   props: {
     account_id: String,
@@ -61,6 +60,7 @@ export default {
     }
   },
   mounted() {
+    this.privacy = (localStorage.getItem("privacy") === "true")
     this.loadAllTransactions(this.account_id, this.category_filter);
     this.updateFilterDescription();
     this.loadAllCategories();
@@ -81,8 +81,8 @@ export default {
   },
   methods: {
     moment: moment,
-    togglePrivacy() {
-      this.privacy = !this.privacy;
+    onPrivacyChange(newPrivacy) {
+      this.privacy = newPrivacy;
     },
     loadAllTransactions(account_id, category) {
       this.loading++;

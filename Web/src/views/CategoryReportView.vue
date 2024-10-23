@@ -3,18 +3,11 @@
     Loading...
   </div>
   <div v-else>
-    <div class="crw-toolbar">
-      <div class="crw-toolbar-arrow">
-        <i class="pi pi-arrow-up"
-           @click="loadPreviousCategoryReport()">
-        </i>
-      </div>
-      <div class="crw-toolbar-eye">
-        <i :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
-           @click="togglePrivacy()">
-        </i>
-      </div>
-    </div>
+    <ToolBar
+        v-bind:upEnabled="upArrowEnabled"
+        @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
+        @arrow-up="loadPreviousCategoryReport()"
+    />
     <div class="pie-chart">
       <Pie
           id="report-by-category"
@@ -37,6 +30,7 @@
 
 <script>
 import CategorySpendingOverview from "@/components/CategorySpendingOverview.vue";
+import ToolBar from "@/components/ToolBar.vue";
 import TransactionApi from "@/TransactionsApi.ts";
 import TransactionsDataTransformations from "@/TransactionsDataTransformations.ts";
 import {Pie} from 'vue-chartjs'
@@ -48,11 +42,18 @@ ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels)
 
 export default {
   components: {
+    ToolBar,
     CategorySpendingOverview: CategorySpendingOverview,
     Pie: Pie
   },
   mounted() {
+    this.privacy = (localStorage.getItem("privacy") === "true")
     this.loadByCategoryReport("EXPENSE", "")
+  },
+  computed: {
+    upArrowEnabled() {
+      return (this.currentCategoryFilter !== "");
+    }
   },
   data() {
     return {
@@ -92,8 +93,8 @@ export default {
     }
   },
   methods: {
-    togglePrivacy() {
-      this.privacy = !this.privacy;
+    onPrivacyChange(newPrivacy) {
+      this.privacy = newPrivacy
     },
     loadPreviousCategoryReport() {
       if (this.currentCategoryFilter === "") {
@@ -166,24 +167,4 @@ export default {
   margin-bottom: 2px;
   background-color: #E9B87222;
 }
-
-.crw-toolbar {
-  display: grid;
-  grid-template: "none arrow eye";
-  grid-template-columns: [none] 8fr [arrow] 1fr [eye] 1fr;
-  padding: 0px;
-  margin-bottom: 10px;
-  margin-top: 10px;
-  background-color: white;
-  font-size: 1em;
-}
-
-.crw-toolbar-arrow {
-  grid-area: arrow;
-}
-
-.crw-toolbar-eye {
-  grid-area: eye;
-}
-
 </style>
