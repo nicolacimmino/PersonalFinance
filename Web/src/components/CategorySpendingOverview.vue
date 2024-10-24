@@ -38,14 +38,14 @@ export default {
 .cso-category {
   grid-area: category;
   text-align: left;
-  font-size: 1em;
+  font-size: 15px;
   font-weight: bold;
 }
 
 .cso-total {
   grid-area: total;
   text-align: right;
-  font-size: 1em;
+  font-size: 15px;
   font-weight: bold;
   color: #90A959;
 }
@@ -53,7 +53,7 @@ export default {
 .cso-transactions-n {
   grid-area: transactions-n;
   text-align: left;
-  font-size: 1em;
+  font-size: 15px;
 }
 
 </style>

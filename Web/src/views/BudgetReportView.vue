@@ -1,12 +1,12 @@
 <template>
+  <ToolBar
+      @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
+  />
   <div class="budgets-table">
     <div v-if="!loaded">
       Loading...
     </div>
     <div v-else>
-      <ToolBar
-          @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
-      />
       Active
       <template v-for="budget in activeBudgets" v-bind:key="budget.id">
         <BudgetOverview :budget=budget :privacy=privacy></BudgetOverview>

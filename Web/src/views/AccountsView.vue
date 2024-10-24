@@ -85,31 +85,6 @@ export default {
 
 <style scoped>
 .accounts-table {
-  border-radius: 10px;
-  background-color: white;
+  height: 20px;
 }
-
-.toolbar {
-  display: grid;
-  grid-template: "none currency compact eye";
-  grid-template-columns: [none] 7fr [currency] 1fr [compact] 1fr [compact] 1fr;
-  padding: 0px;
-  margin-bottom: 10px;
-  margin-top: 10px;
-  background-color: white;
-  text-align: right;
-}
-
-.toolbar-compact {
-  grid-area: compact;
-}
-
-.toolbar-currency {
-  grid-area: currency;
-}
-
-.toolbar-eye {
-  grid-area: eye;
-}
-
 </style>

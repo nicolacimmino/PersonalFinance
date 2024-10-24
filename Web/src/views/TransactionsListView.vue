@@ -1,11 +1,11 @@
 <template>
+  <ToolBar
+      @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
+  />
   <div v-if="loading > 0">
     Loading...
   </div>
   <div v-else>
-    <ToolBar
-        @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
-    />
     <div class="transactions-table">
       <div v-if="editDialog">
         <transition name="modal">
@@ -179,20 +179,6 @@ export default {
   background-color: #6494AA;
   color: white;
   font-size: small;
-}
-
-.tlw-toolbar {
-  display: grid;
-  grid-template: "none eye";
-  grid-template-columns: [none] 9fr [eye] 1fr;
-  padding: 0px;
-  margin-bottom: 10px;
-  margin-top: 10px;
-  background-color: white;
-  font-size: 1em;
-}
-
-.tlw-toolbar-eye {
-  grid-area: eye;
+  font-family: monospace;
 }
 </style>

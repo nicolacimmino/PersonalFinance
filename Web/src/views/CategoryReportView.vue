@@ -1,13 +1,13 @@
 <template>
+  <ToolBar
+      v-bind:upEnabled="upArrowEnabled"
+      @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
+      @arrow-up="loadPreviousCategoryReport()"
+  />
   <div v-if="!loaded">
     Loading...
   </div>
   <div v-else>
-    <ToolBar
-        v-bind:upEnabled="upArrowEnabled"
-        @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
-        @arrow-up="loadPreviousCategoryReport()"
-    />
     <div class="pie-chart">
       <Pie
           id="report-by-category"

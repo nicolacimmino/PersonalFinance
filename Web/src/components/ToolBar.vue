@@ -1,27 +1,27 @@
 <template>
   <div class="toolbar-container">
-    <div class="ref-currency">
+    <div class="ref-currency toolbar-icon">
       <i :class="(refCurrency) ? 'pi pi-money-bill' : 'pi pi-euro'"
          :style="(refCurrencyEnabled) ? 'color:black' : 'color:#EEEEEE'"
          @click="toggleRefCurrency(); $emit('ref-currency', this.refCurrency)"
       >
       </i>
     </div>
-    <div class="arrow-up">
+    <div class="arrow-up toolbar-icon">
       <i class="pi pi-arrow-up"
          :style="(upEnabled) ? 'color:black' : 'color:#EEEEEE'"
          @click="$emit('arrow-up')"
       >
       </i>
     </div>
-    <div class="maximize">
+    <div class="maximize toolbar-icon">
       <i :class="(compact) ? 'pi pi-window-maximize' : 'pi pi-window-minimize'"
          :style="(compactEnabled) ? 'color:black' : 'color:#EEEEEE'"
          @click="toggleCompact(); $emit('compact', this.compact)"
       >
       </i>
     </div>
-    <div class="eye">
+    <div class="eye toolbar-icon">
       <i :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
          @click="togglePrivacy(); $emit('privacy', this.privacy);"
       >
@@ -76,13 +76,17 @@ export default {
 <style scoped>
 .toolbar-container {
   display: grid;
-  grid-template: "none ref-currency arrow-up maximize eye";
-  grid-template-columns: [none] 6fr [ref-currency] 1fr [arrow-up] 1fr [maximize] 1fr [eye] 1fr;
+  grid-template: "ref-currency arrow-up maximize eye";
+  grid-template-columns: [ref-currency] 1fr [arrow-up] 1fr [maximize] 1fr [eye] 1fr;
   padding: 0px;
   margin-bottom: 10px;
   margin-top: 10px;
   background-color: white;
-  font-size: 1em;
+  text-align: center;
+}
+
+.toolbar-icon {
+  font-size: 25px;
 }
 
 .ref-currency {

@@ -101,5 +101,4 @@ export default {
   font-size: small;
   font-weight: bold;
 }
-
 </style>
