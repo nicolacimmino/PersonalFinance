@@ -27,7 +27,7 @@
 <script>
 import AccountOverview from "@/components/AccountOverview.vue";
 import TransactionApi from "@/TransactionsApi.ts";
-import CompactAccountOverview from "@/components/CompactAccountOverview.vue";
+import CompactAccountOverview from "@/components/AccountOverviewCompact.vue";
 import ToolBar from "@/components/ToolBar.vue";
 
 export default {

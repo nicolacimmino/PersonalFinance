@@ -9,7 +9,7 @@
           <div :class="(transaction.amount_cents < 0) ? 'negative-price' : 'non-negative-price'">
             {{ transaction.amount_cents / 100.0 }} {{ transaction.currency }}
           </div>
-          <!--          Edit category or destiantion account-->
+          <!--          Edit category or destination account-->
           <div v-if="!this.isTransfer">
             <div v-if="this.editCategory" class="category">
               <select v-model="selectedCategory" @change="this.editCategory=false">
@@ -65,7 +65,6 @@
           <div class="transaction-id">
             {{ transaction.id }}
           </div>
-
           <div class="footer">
             <button class="button-cancel"
                     @click="$emit('cancel')">
@@ -165,7 +164,7 @@ export default {
     'account-name amount-ref'
     'description description'
     'transfer transfer'
-    'none footer';
+    'footer footer';
 }
 
 .transfer {
@@ -181,30 +180,30 @@ export default {
   grid-area: creditor;
   background-color: #28282822;
   padding: 0 0 0 5px;
-  font-size: medium;
+  font-size: 10px;
 }
 
 .description {
   grid-area: description;
-  font-size: small;
+  font-size: 12px;
 }
 
 .transaction-id {
   grid-area: transaction-id;
   text-align: right;
-  font-size: small;
+  font-size: 12px;
 }
 
 .booking-date {
   grid-area: booking-date;
   text-align: left;
-  font-size: small;
+  font-size: 12px;
 }
 
 .account-name {
   grid-area: account-name;
   text-align: left;
-  font-size: small;
+  font-size: 12px;
   color: grey;
   background-color: #28282822;
   padding: 0 0 0 5px;
@@ -213,7 +212,7 @@ export default {
 .amount-in-ref-currency {
   grid-area: amount-ref;
   text-align: right;
-  font-size: small;
+  font-size: 12px;
   color: grey;
   background-color: #28282822;
   padding: 0 5px 0 0;
@@ -223,7 +222,7 @@ export default {
   grid-area: amount;
   text-align: right;
   vertical-align: bottom;
-  font-size: large;
+  font-size: 15px;
   font-weight: bold;
   color: #A63D40;
   background-color: #28282822;
@@ -233,7 +232,7 @@ export default {
 .non-negative-price {
   grid-area: amount;
   text-align: right;
-  font-size: large;
+  font-size: 15px;
   font-weight: bold;
   color: #90A959;
   background-color: #28282822;
@@ -243,7 +242,7 @@ export default {
 .category {
   grid-area: category;
   text-align: left;
-  font-size: large;
+  font-size: 15px;
   font-weight: bold;
   background-color: #28282822;
   padding: 0 0 0 5px;
@@ -252,7 +251,7 @@ export default {
 .destinationAccount {
   grid-area: category;
   text-align: left;
-  font-size: large;
+  font-size: 15px;
   font-weight: bold;
   background-color: #28282822;
   padding: 0 0 0 5px;

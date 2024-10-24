@@ -39,7 +39,7 @@ export default {
 .navbar {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  font-size: small;
+  font-size: 12px;
   text-align: center;
 }
 .navigation {

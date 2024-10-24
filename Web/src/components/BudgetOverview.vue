@@ -2,13 +2,13 @@
   <div class="budget-details">
     <div class="description">
       {{ budget.description }}
+      {{ (!privacy) ? Math.floor(Math.abs(budget.amount_cents / 100.0)) + " " + budget.currency : "" }}
     </div>
     <div v-if="privacy" class="budget_spent">
       Spent: {{ Math.floor((100.0 * Math.abs(budget.spent_cents)) / budget.amount_cents) }}%
     </div>
     <div v-else class="budget_spent">
       Spent: {{ Math.floor(Math.abs(budget.spent_cents / 100.0)) }} {{ budget.currency }}
-      ( of {{ Math.floor(Math.abs(budget.amount_cents / 100.0)) }} )
     </div>
     <div class="budget_dates">
       {{ budget.from_date }} - {{ budget.to_date }}
@@ -23,7 +23,6 @@
       />
     </div>
   </div>
-
 </template>
 
 <script>
@@ -109,10 +108,10 @@ export default {
 .budget-details {
   display: grid;
   grid-template: 'description description'
-                 'budget_spent budget_graph'
                  'budget_dates budget_graph'
+                 'budget_spent budget_graph'
                  'budget_transactions budget_graph';
-  grid-template-columns: 6fr 2fr;
+  grid-template-columns: 6fr 6fr;
   padding: 5px;
   margin-bottom: 5px;
   background-color: #E9B87222;
@@ -121,7 +120,7 @@ export default {
 .description {
   grid-area: description;
   text-align: left;
-  font-size: medium;
+  font-size: 15px;
   font-weight: bold;
   background: #2c3e50;
   color: white;
@@ -129,23 +128,23 @@ export default {
 
 .budget_transactions {
   grid-area: budget_transactions;
-  font-size: x-small;
+  font-size: 10px;
 }
 
 .budget_dates {
   grid-area: budget_dates;
-  font-size: small;
+  font-size: 15px;
 }
 
 .budget_spent {
   grid-area: budget_spent;
-  font-size: small;
+  font-size: 15px;
 }
 
 .budget_graph {
   grid-area: budget_graph;
-  width: 90px;
-  padding: 0px;
+  width: 190px;
+  padding: 10px;
 }
 
 </style>

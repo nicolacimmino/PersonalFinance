@@ -170,7 +170,7 @@ export default {
 .transactions-table {
   background-color: white;
   font-family: monospace;
-  font-size: small;
+  font-size: 12px;
 }
 
 .transactions-date-header {
@@ -178,7 +178,7 @@ export default {
   padding: 0 0 0 5px;
   background-color: #6494AA;
   color: white;
-  font-size: small;
+  font-size: 12px;
   font-family: monospace;
 }
 </style>

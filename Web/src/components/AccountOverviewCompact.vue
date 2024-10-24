@@ -54,7 +54,6 @@ export default {
 .account-details {
   display: grid;
   grid-template: 'description balance';
-  grid-template-columns: [description] 2fr [balance] 1fr;
   padding: 0px;
   margin-bottom: 2px;
   background-color: #E9B87222;
@@ -62,14 +61,14 @@ export default {
 
 .description {
   grid-area: description;
-  font-size: smaller;
+  font-size: 20px;
   text-align: left;
 }
 
 .balance {
   grid-area: balance;
   vertical-align: middle;
-  font-size: medium;
+  font-size: 20px;
   text-align: right;
 }
 

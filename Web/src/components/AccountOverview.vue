@@ -7,7 +7,7 @@
     <div class="code">
       {{ account.code }}
     </div>
-    <div :class="['balance', 'balance-style', (account.balance_cents < 0) ? 'negative-balance' : 'non-negative-balance']">
+    <div :class="['balance', (account.balance_cents < 0) ? 'negative-balance' : 'non-negative-balance']">
       <span v-if="privacy">---  {{ account.currency }}</span>
       <span v-else>{{ account.balance_cents / 100.0 }} {{ account.currency }}</span>
     </div>
@@ -68,44 +68,36 @@ export default {
 
 .description {
   grid-area: description;
-  font-size: smaller;
+  font-size: 20px;
 }
 
 .status {
   grid-area: status;
-  font-size: smaller;
+  font-size: 15px;
   text-align: right;
 }
 
 .code {
   grid-area: code;
   text-align: left;
-  font-size: xx-small;
+  font-size: 15px;
   color: grey;
 }
 
 .balance-in-ref-currency {
   grid-area: balance-ref;
   text-align: right;
-  font-size: xx-small;
+  font-size: 15px;
   color: grey;
 }
 
 .balance {
   grid-area: balance;
   text-align: right;
-}
-
-.balance-ref {
-  grid-area: balance-ref;
-}
-
-.balance-style {
-  text-align: right;
-  vertical-align: middle;
-  font-size: medium;
+  font-size: 20px;
   font-weight: bold;
 }
+
 .negative-balance {
   color: #A63D40;
 }
@@ -117,7 +109,8 @@ export default {
 .iban {
   grid-area: iban;
   text-align: left;
-  font-size: small;
+  font-size: 15px;
+  overflow: clip;
 }
 
 </style>
