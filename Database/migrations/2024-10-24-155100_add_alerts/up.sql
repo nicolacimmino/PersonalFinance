@@ -13,7 +13,7 @@ SELECT gen_random_uuid () as id,
         'CATEGORY_MISSING' AS category,
         CONCAT('Missing category:', description) AS message,
        text(id) as item_id
-       FROM transactions WHERE category='' AND type!='TRANSFER'
+       FROM transactions WHERE category='' AND type<>'TRANSFER' AND type<>'INITIAL' AND booking_date>='2024-01-01'
 UNION
 SELECT gen_random_uuid () as id,
        'ERROR' as level,
