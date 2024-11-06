@@ -3,6 +3,7 @@
       v-bind:upEnabled="upArrowEnabled"
       @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
       @arrow-up="loadPreviousCategoryReport()"
+      :eye-enabled="true"
   />
   <div v-if="!loaded">
     Loading...
@@ -15,7 +16,7 @@
           :data="chartData"
       />
     </div>
-    <div>
+    <div class="category-overview">
       <template v-for="spendingEntry in categoriesSpending" v-bind:key="spendingEntry.category">
         <CategorySpendingOverview :entry=spendingEntry
                                   :privacy=privacy
@@ -163,8 +164,12 @@ export default {
 <style scoped>
 
 .pie-chart {
-  padding: 0px;
-  margin-bottom: 2px;
+  padding: 10px;
+  margin-bottom: 15px;
   background-color: #E9B87222;
+}
+
+.category-overview {
+  font-size: 15px;
 }
 </style>

@@ -30,8 +30,8 @@ export default {
   display: grid;
   grid-template: 'category total'
                  'transactions-n transactions-n';
-  padding: 5px;
-  margin-bottom: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
   background-color: #E9B87222;
 }
 
@@ -46,14 +46,14 @@ export default {
   grid-area: total;
   text-align: right;
   font-size: 15px;
-  font-weight: bold;
   color: #90A959;
 }
 
 .cso-transactions-n {
   grid-area: transactions-n;
   text-align: left;
-  font-size: 15px;
+  /*font-size: 15px;*/
+  padding-top: 15px;
 }
 
 </style>

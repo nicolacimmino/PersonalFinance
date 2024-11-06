@@ -1,4 +1,5 @@
 use diesel::table;
+
 // Manually generated!
 // Diesel doesn't seem to generate schema for views.
 table! {
@@ -15,5 +16,16 @@ table! {
         spent_cents_eur -> Int4,
         spent_cents -> Int4,
         transactions -> Int4
+    }
+}
+
+table! {
+    alerts (id) {
+        id -> Uuid,
+        category -> Text,
+        message -> Text,
+        item -> Text,
+        item_id -> Text,
+        level -> Text,
     }
 }

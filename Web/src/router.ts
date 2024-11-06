@@ -17,12 +17,16 @@ const routes = [
         path: '/transactions',
         query: {
             account_id: '',
-            category: ''
+            category: '',
+            edit_id: '',
+            edit_return: '',
         },
         component: TransactionsListView,
         props: route => ({
             account_id: route.query.account_id,
-            category_filter: route.query.category
+            category_filter: route.query.category,
+            edit_id: route.query.edit_id,
+            edit_return: route.query.edit_return
         })
     },
     {

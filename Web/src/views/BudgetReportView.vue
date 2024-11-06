@@ -1,6 +1,7 @@
 <template>
   <ToolBar
       @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
+      :eye-enabled="true"
   />
   <div class="budgets-table">
     <div v-if="!loaded">

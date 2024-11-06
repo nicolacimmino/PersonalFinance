@@ -4,17 +4,19 @@
       {{ budget.description }}
       {{ (!privacy) ? Math.floor(Math.abs(budget.amount_cents / 100.0)) + " " + budget.currency : "" }}
     </div>
-    <div v-if="privacy" class="budget_spent">
-      Spent: {{ Math.floor((100.0 * Math.abs(budget.spent_cents)) / budget.amount_cents) }}%
-    </div>
-    <div v-else class="budget_spent">
-      Spent: {{ Math.floor(Math.abs(budget.spent_cents / 100.0)) }} {{ budget.currency }}
-    </div>
-    <div class="budget_dates">
-      {{ budget.from_date }} - {{ budget.to_date }}
-    </div>
-    <div class="budget_transactions">
-      Transactions: {{ budget.transactions }}
+    <div class="budget_info">
+      <div v-if="privacy" class="budget_spent">
+        Spent: {{ Math.floor((100.0 * Math.abs(budget.spent_cents)) / budget.amount_cents) }}%
+      </div>
+      <div v-else class="budget_spent">
+        Spent: {{ Math.floor(Math.abs(budget.spent_cents / 100.0)) }} {{ budget.currency }}
+      </div>
+      <div class="budget_dates">
+        From: {{ budget.from_date }}<br>To: {{ budget.to_date }}
+      </div>
+      <div class="budget_transactions">
+        Transactions: {{ budget.transactions }}
+      </div>
     </div>
     <div class="budget_graph">
       <Pie id="{{budget.id}}"
@@ -64,7 +66,10 @@ export default {
             color: '#333333',
             backgroundColor: '#DDDDDDAE',
             borderRadius: 10,
-            anchor: 'end'
+            anchor: 'end',
+            font: {
+              size: 15
+            }
           }
         }
       }
@@ -108,12 +113,10 @@ export default {
 .budget-details {
   display: grid;
   grid-template: 'description description'
-                 'budget_dates budget_graph'
-                 'budget_spent budget_graph'
-                 'budget_transactions budget_graph';
+                 'budget_info budget_graph';
   grid-template-columns: 6fr 6fr;
   padding: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
   background-color: #E9B87222;
 }
 
@@ -126,19 +129,25 @@ export default {
   color: white;
 }
 
+.budget_info {
+  grid-area: budget_info;
+  vertical-align: center;
+  align-content: center;
+}
+
 .budget_transactions {
   grid-area: budget_transactions;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .budget_dates {
   grid-area: budget_dates;
-  font-size: 15px;
+  font-size: 12px;
 }
 
 .budget_spent {
   grid-area: budget_spent;
-  font-size: 15px;
+  font-size: 12px;
 }
 
 .budget_graph {

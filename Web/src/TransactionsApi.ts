@@ -143,4 +143,17 @@ export default class TransactionApi {
         });
 
     }
+
+    static async loadAllAlerts() {
+        return axios({
+            headers: {
+                "X-API-KEY": localStorage.getItem("pfinanceApiKey")
+            },
+            method: "get",
+            url: `${HOST}/api/alerts/`,
+        }).then((response) => {
+            return response.data;
+        });
+
+    }
 }

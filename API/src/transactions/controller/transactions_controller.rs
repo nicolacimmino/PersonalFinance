@@ -1,4 +1,3 @@
-use log::info;
 use rocket::{get, patch};
 use rocket::figment::value::Num;
 use rocket::http::Status;

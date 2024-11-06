@@ -7,6 +7,7 @@ mod categories;
 mod reports;
 mod common;
 mod budgets;
+mod alerts;
 
 use std::env;
 use diesel::{Connection, PgConnection};
@@ -17,6 +18,7 @@ use rocket::http::Method;
 use rocket_cors::{AllowedOrigins, CorsOptions};
 use crate::accounts::get_accounts;
 use crate::accounts::get_account;
+use crate::alerts::get_alerts;
 use crate::categories::get_categories;
 use crate::reports::get_report_by_category;
 use crate::budgets::get_budgets;
@@ -48,7 +50,8 @@ fn launch() -> _ {
             patch_transaction,
             get_transactions_for_account,
             get_report_by_category,
-            get_budgets
+            get_budgets,
+            get_alerts
         ])
         .attach(cors.to_cors().unwrap())
 }

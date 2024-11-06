@@ -23,6 +23,7 @@
     </div>
     <div class="eye toolbar-icon">
       <i :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
+         :style="(eyeEnabled) ? 'color:black' : 'color:#EEEEEE'"
          @click="togglePrivacy(); $emit('privacy', this.privacy);"
       >
       </i>
@@ -37,8 +38,8 @@ export default {
   props: {
     upEnabled: Boolean,
     compactEnabled: Boolean,
-    refCurrencyEnabled: Boolean
-
+    refCurrencyEnabled: Boolean,
+    eyeEnabled: Boolean
   },
   data() {
     return {
@@ -49,6 +50,9 @@ export default {
   },
   methods: {
     togglePrivacy() {
+      if (!this.eyeEnabled) {
+        return;
+      }
       this.privacy = !this.privacy
       localStorage.setItem("privacy", this.privacy.toString());
     },

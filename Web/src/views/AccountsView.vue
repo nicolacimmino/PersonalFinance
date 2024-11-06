@@ -3,7 +3,8 @@
       @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
       @compact="(newCompact) => onCompactChange(newCompact)"
       @ref-currency="(newRefCurrency) => onRefCurrencyChange(newRefCurrency)"
-      compact-enabled="true"
+      :compact-enabled="true"
+      :eye-enabled="true"
       v-bind:ref-currency-enabled="this.compact && !this.privacy"
   />
   <div class="accounts-table">

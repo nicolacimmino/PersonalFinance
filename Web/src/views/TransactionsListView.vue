@@ -1,6 +1,7 @@
 <template>
   <ToolBar
       @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
+      :eye-enabled="true"
   />
   <div v-if="loading > 0">
     Loading...
@@ -12,8 +13,8 @@
           <TransactionEdit :transaction="transaction"
                            :accounts="accounts"
                            :categories="categories"
-                           @cancel="editDialog = false"
-                           @save="(newCategory, newAccountTo, isTransfer) => onCategoryChange(newCategory, newAccountTo, isTransfer)">
+                           @cancel="editDialog = false; this.followEditReturn();"
+                           @save="(newCategory, newAccountTo, isTransfer) => {onCategoryChange(newCategory, newAccountTo, isTransfer); this.followEditReturn();}">
           </TransactionEdit>
         </transition>
       </div>
@@ -51,7 +52,9 @@ export default {
   },
   props: {
     account_id: String,
-    category_filter: String
+    category_filter: String,
+    edit_id: String,
+    edit_return: String,
   },
   watch: {
     $route: function () {
@@ -93,6 +96,13 @@ export default {
       TransactionApi.getAllTransactions(account_id, category).then(fetchedTransactions => {
         this.transactions = fetchedTransactions
         this.loading--;
+
+        if (this.edit_id) {
+          this.transaction = this.transactions.filter(item => {
+            return item.id == this.edit_id;
+          })[0];
+          this.editDialog = true;
+        }
       });
     },
     loadAllCategories() {
@@ -151,6 +161,13 @@ export default {
                   transaction => transaction.id === updatedTransaction.id)] = updatedTransaction;
             }
         )
+      }
+    },
+    followEditReturn() {
+      if (this.edit_return) {
+        this.$router.push({
+          path: this.edit_return,
+        });
       }
     }
   },
