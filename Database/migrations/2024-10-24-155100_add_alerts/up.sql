@@ -1,7 +1,7 @@
 CREATE VIEW alerts AS
 (SELECT gen_random_uuid () as id,
        'WARN' as level,
-       'BUDGET' as item,
+       'BUDGETS' as item,
        'OVERSPENT' AS category,
        CONCAT('Budget overspent:', description) AS message,
        text(id) AS item_id

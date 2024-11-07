@@ -12,14 +12,20 @@
       Loading...
     </div>
     <div v-else>
-      <template v-for="account in accounts" v-bind:key="account.id">
-        <AccountOverview v-if="!compact" :account=account :privacy=privacy :compact=compact></AccountOverview>
-        <CompactAccountOverview v-if="compact"
-                                :account=account
-                                :privacy=privacy
-                                :compact=compact
-                                :ref-currency-active=refCurrency
-        ></CompactAccountOverview>
+      <template v-for="(accounts, type) in byAccountType" v-bind:key="type">
+        <div class="account-group-header">
+          {{ typeToTypeDescription(type) }} ({{ accounts.length }})
+        </div>
+        <template v-for="account in accounts.sort((a,b) => (a.description > b.description) ? 1 : -1) "
+                  v-bind:key="account.id">
+          <AccountOverview v-if="!compact" :account=account :privacy=privacy :compact=compact></AccountOverview>
+          <CompactAccountOverview v-if="compact"
+                                  :account=account
+                                  :privacy=privacy
+                                  :compact=compact
+                                  :ref-currency-active=refCurrency
+          ></CompactAccountOverview>
+        </template>
       </template>
     </div>
   </div>
@@ -80,12 +86,49 @@ export default {
         this.loaded = true
       });
     },
+    typeToTypeDescription(type) {
+      switch (type) {
+        case 'CASH':
+          return "Cash"
+        case 'BANK_CURRENT':
+          return "Bank Current Accounts"
+        case 'BANK_SAVINGS':
+          return "Bank Savings Accounts"
+        case 'BANK_CREDIT':
+          return "Credit Cards"
+        case 'INV':
+          return "Investments"
+        case 'ACC':
+          return "Accounting"
+        default:
+          return "Other"
+      }
+    }
   },
+  computed: {
+    byAccountType() {
+      return this.accounts.sort((a, b) => (a.type > b.type) ? 1 : -1)
+          .reduce((acc, account) => {
+            (acc[account.type] = acc[account.type] || []).push(account)
+            return acc
+          }, {})
+    }
+  }
 }
 </script>
 
 <style scoped>
 .accounts-table {
   height: 20px;
+}
+
+.account-group-header {
+  text-align: left;
+  padding: 5px;
+  margin-top: 15px;
+  background-color: #6494AA;
+  color: white;
+  font-size: 20px;
+  font-family: monospace;
 }
 </style>

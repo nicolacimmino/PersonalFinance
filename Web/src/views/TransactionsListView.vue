@@ -192,7 +192,8 @@ export default {
 
 .transactions-date-header {
   text-align: left;
-  padding: 0 0 0 5px;
+  padding: 3px;
+  margin-top: 12px;
   background-color: #6494AA;
   color: white;
   font-size: 12px;

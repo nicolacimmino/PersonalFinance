@@ -41,6 +41,7 @@ export default {
   grid-template-columns: repeat(5, 1fr);
   font-size: 12px;
   text-align: center;
+  padding: 10px;
 }
 .navigation {
   grid-area: navigation;

@@ -4,9 +4,6 @@
       <span v-if="alert.level==='ERROR'" class='pi pi-exclamation-triangle' style="color: red"/>
       <span v-if="alert.level==='WARN'" class='pi pi-exclamation-circle' style="color: darkgoldenrod"/>
     </div>
-    <div class="alert-area">
-      {{ alert.area }}
-    </div>
     <div class="alert-message">
       <div v-if="alert.item=='TRANSACTIONS'">
         <a :href='"/transactions?edit_id=" + alert.item_id + "&edit_return=/"'>
@@ -32,9 +29,9 @@ export default {
 <style scoped>
 .alert-details {
   display: grid;
-  grid-template: 'level area'
-                 'message message';
-  padding: 0px;
+  grid-template: 'level message';
+  grid-template-columns: 1fr 18fr;
+  padding: 10px;
   margin-bottom: 2px;
   background-color: #E9B87222;
 }
@@ -43,15 +40,9 @@ export default {
   grid-area: level;
 }
 
-.alert-area {
-  grid-area: area;
-  font-size: 20px;
-  text-align: left;
-}
-
 .alert-message {
   grid-area: message;
-  font-size: 20px;
+  font-size: 12px;
   text-align: left;
 }
 </style>

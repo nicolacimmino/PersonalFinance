@@ -5,11 +5,11 @@
     </div>
     <div class="cso-total">
       <i>
-        {{ (privacy) ? "---" : Math.abs(entry.total_cents / 100.0) }} {{ entry.currency }}
+        {{ (privacy) ? "---" : Math.floor(Math.abs(entry.total_cents / 100.0)) }} {{ entry.currency }}
       </i>
     </div>
     <div class="cso-transactions-n" @click="$emit('transactionsClick', entry.category)">
-      Transactions: {{ entry.transactions_count }}
+      <a>Transactions: {{ entry.transactions_count }}</a>
     </div>
   </div>
 </template>
@@ -30,30 +30,31 @@ export default {
   display: grid;
   grid-template: 'category total'
                  'transactions-n transactions-n';
-  padding: 15px;
-  margin-bottom: 15px;
+  padding: 5px;
+  margin-bottom: 2px;
   background-color: #E9B87222;
 }
 
 .cso-category {
   grid-area: category;
   text-align: left;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: bold;
 }
 
 .cso-total {
   grid-area: total;
   text-align: right;
-  font-size: 15px;
+  font-size: 14px;
   color: #90A959;
+  font-weight: bold;
 }
 
 .cso-transactions-n {
   grid-area: transactions-n;
   text-align: left;
-  /*font-size: 15px;*/
-  padding-top: 15px;
+  font-size: 12px;
+  padding-top: 5px;
 }
 
 </style>

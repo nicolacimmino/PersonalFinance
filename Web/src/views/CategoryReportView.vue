@@ -170,6 +170,6 @@ export default {
 }
 
 .category-overview {
-  font-size: 15px;
+
 }
 </style>

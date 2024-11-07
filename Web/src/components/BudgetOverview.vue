@@ -5,17 +5,19 @@
       {{ (!privacy) ? Math.floor(Math.abs(budget.amount_cents / 100.0)) + " " + budget.currency : "" }}
     </div>
     <div class="budget_info">
-      <div v-if="privacy" class="budget_spent">
-        Spent: {{ Math.floor((100.0 * Math.abs(budget.spent_cents)) / budget.amount_cents) }}%
-      </div>
-      <div v-else class="budget_spent">
-        Spent: {{ Math.floor(Math.abs(budget.spent_cents / 100.0)) }} {{ budget.currency }}
-      </div>
-      <div class="budget_dates">
-        From: {{ budget.from_date }}<br>To: {{ budget.to_date }}
-      </div>
-      <div class="budget_transactions">
-        Transactions: {{ budget.transactions }}
+      <div class="budget_info_container">
+        <div v-if="privacy" class="budget_spent">
+          Spent: {{ Math.floor((100.0 * Math.abs(budget.spent_cents)) / budget.amount_cents) }}%
+        </div>
+        <div v-else class="budget_spent">
+          Spent: {{ Math.floor(Math.abs(budget.spent_cents / 100.0)) }} {{ budget.currency }}
+        </div>
+        <div class="budget_dates">
+          {{ budget.from_date }} - {{ budget.to_date }}
+        </div>
+        <div class="budget_transactions">
+          Transactions: {{ budget.transactions }}
+        </div>
       </div>
     </div>
     <div class="budget_graph">
@@ -123,10 +125,11 @@ export default {
 .description {
   grid-area: description;
   text-align: left;
-  font-size: 15px;
-  font-weight: bold;
-  background: #2c3e50;
+  padding: 3px;
+  background-color: #6494AA;
   color: white;
+  font-size: 12px;
+  font-family: monospace;
 }
 
 .budget_info {
@@ -135,18 +138,33 @@ export default {
   align-content: center;
 }
 
+.budget_info_container {
+  display: grid;
+  grid: 'budget_dates'
+        'budget_spent'
+        'budget_transactions';
+}
+
 .budget_transactions {
   grid-area: budget_transactions;
   font-size: 12px;
+  padding: 5px;
 }
 
 .budget_dates {
   grid-area: budget_dates;
   font-size: 12px;
+  padding: 5px;
 }
 
 .budget_spent {
   grid-area: budget_spent;
+  font-size: 12px;
+  padding: 5px;
+}
+
+.budget_transactions {
+  grid-area: budget_transactions;
   font-size: 12px;
 }
 

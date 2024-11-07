@@ -53,20 +53,20 @@ export default {
     'category amount amount'
     'account-name account-name amount-ref'
     'description description description';
-  padding: 0px;
+  padding: 5px;
   margin-bottom: 2px;
   background-color: #E9B87222;
 }
 
 .description {
   grid-area: description;
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .account-name {
   grid-area: account-name;
   text-align: left;
-  font-size: 8px;
+  font-size: 10px;
   overflow: clip;
   color: grey;
 }
@@ -74,7 +74,7 @@ export default {
 .amount-in-ref-currency {
   grid-area: amount-ref;
   text-align: right;
-  font-size: 8px;
+  font-size: 10px;
   color: grey;
 }
 
@@ -82,7 +82,7 @@ export default {
   grid-area: amount;
   text-align: right;
   vertical-align: bottom;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
   color: #A63D40;
 }
@@ -90,7 +90,7 @@ export default {
 .non-negative-price {
   grid-area: amount;
   text-align: right;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
   color: #90A959;
 }
@@ -98,7 +98,7 @@ export default {
 .category {
   grid-area: category;
   text-align: left;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
 }
 </style>
