@@ -120,7 +120,7 @@ export default {
       TransactionApi.loadByCategoryReport().then(fetchedCategoriesReport => {
         let aggregatedData = TransactionsDataTransformations.aggregateSubLevels(
             fetchedCategoriesReport.reports, typeFilter, categoryFilter
-        );
+        ).sort((a, b) => (a.total_cents > b.total_cents) ? 1 : -1);
 
         if (aggregatedData.length === 0) {
           this.loaded = true;

@@ -7,7 +7,11 @@ export default class TransactionsDataTransformations {
         }).filter(item => {
             return item.category.startsWith(categoryFilter);
         }).reduce(function (res, report) {
-            const aggregation_category = report.category.substring(0, categoryFilter.length + 3)
+            const filterTokens = categoryFilter.split(".").filter(item => {
+                return item !== ""
+            });
+            const categoryTokens = report.category.split(".");
+            const aggregation_category = categoryTokens.slice(0, filterTokens.length + 1).join(".");
 
             if (res[aggregation_category] === undefined) {
                 res[aggregation_category] = {
