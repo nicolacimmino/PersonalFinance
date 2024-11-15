@@ -117,7 +117,7 @@ export default {
 
         if (this.edit_id) {
           this.transaction = this.transactions.filter(item => {
-            return item.id === this.edit_id;
+            return item.id.toString() === this.edit_id.toString();
           })[0];
           this.editDialog = true;
         }
