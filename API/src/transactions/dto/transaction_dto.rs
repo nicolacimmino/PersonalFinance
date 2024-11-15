@@ -28,3 +28,17 @@ pub struct PatchTransactionDto {
     #[serde(rename(deserialize = "type"))]
     pub type_: Option<String>
 }
+
+#[derive(Deserialize, Serialize)]
+pub struct CreateTransactionDto {
+    pub amount_cents: i32,
+    pub category: Option<String>,
+    pub description: Option<String>,
+    pub creditor_name: Option<String>,
+    pub account_id: i32,
+    pub account_to: Option<i32>,
+    #[serde(rename(deserialize = "type"))]
+    pub type_: Option<String>,
+    pub booking_date: Option<String>,
+    pub value_date: Option<String>,
+}

@@ -1,8 +1,11 @@
 <template>
   <div class="transaction-details">
     <div v-if="transaction.type === 'TRANSFER'" class="category">
-      <span :class="(transaction.amount_cents < 0) ? 'pi pi-arrow-right' : 'pi pi-arrow-left'" style="font-size: 0.5rem"></span>
-      {{ (transaction.account_to) ? accounts.find((account) => account.id === transaction.account_to).description : "-" }}
+      <span :class="(transaction.amount_cents < 0) ? 'pi pi-arrow-right' : 'pi pi-arrow-left'"
+            style="font-size: 0.5rem"></span>
+      {{
+        (transaction.account_to) ? accounts.find((account) => account.id === transaction.account_to).description : "-"
+      }}
     </div>
     <div v-else class="category">
       {{ (transaction.category) ? transaction.category : "-" }}
@@ -17,7 +20,9 @@
       {{ transaction.account_name }}
     </div>
     <div class="amount-in-ref-currency">
+      <span v-if="!privacy && (transaction.ref_currency !== transaction.currency)">
       {{ transaction.amount_cents_in_ref_currency / 100.0 }} {{ transaction.ref_currency }}
+      </span>
     </div>
     <div class="description">
       {{ (transaction.creditor_name) ? transaction.creditor_name : transaction.description }}
@@ -26,7 +31,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import {ref} from 'vue'
 
 const negativePriceClass = ref("negative-price");
 const nonNegativePriceClass = ref('non-negative-price');

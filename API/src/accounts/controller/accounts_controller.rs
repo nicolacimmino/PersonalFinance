@@ -7,7 +7,6 @@ use crate::accounts::service::AccountsService;
 use crate::common::ValutaConversionService;
 use crate::establish_db_connection;
 use crate::guard::ApiKey;
-use crate::schema::sp_accounts::account_id;
 
 #[get("/accounts")]
 pub fn get_accounts(_key: ApiKey<'_>) -> status::Custom<content::RawJson<String>> {
@@ -37,6 +36,7 @@ pub fn get_accounts(_key: ApiKey<'_>) -> status::Custom<content::RawJson<String>
             iban: account.iban,
             status: account.status,
             type_: account.type_,
+            can_create_transactions: if account.pri_transactions_src != "OBI" { "1".to_string() } else { "0".to_string() },
         })
     }
 
@@ -72,6 +72,7 @@ pub fn get_account(_key: ApiKey<'_>, id: i32) -> status::Custom<content::RawJson
         iban: account.iban,
         status: account.status,
         type_: account.type_,
+        can_create_transactions: if account.pri_transactions_src != "OBI" { "1".to_string() } else { "0".to_string() },
     };
 
     status::Custom(Status::Ok, content::RawJson(

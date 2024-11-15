@@ -170,6 +170,6 @@ export default {
 }
 
 .category-overview {
-
+  height: 40px;
 }
 </style>

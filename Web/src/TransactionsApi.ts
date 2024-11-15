@@ -114,6 +114,31 @@ export default class TransactionApi {
 
     }
 
+    static async createTransaction(newTransaction) {
+        return axios({
+            headers: {
+                "X-API-KEY": localStorage.getItem("pfinanceApiKey")
+            },
+            method: "post",
+            url: `${HOST}/api/transactions`,
+            data: {
+                type: newTransaction.type,
+                account_id: newTransaction.account.id,
+                booking_date: newTransaction.booking_date,
+                category: newTransaction.category,
+                creditor_name: newTransaction.creditor_name,
+                description: newTransaction.description,
+                amount_cents: Math.round(newTransaction.amount * 100.0),
+                account_to: (newTransaction.destination_account) ? newTransaction.destination_account.id : null
+            }
+        }).then((response) => {
+            return response.data;
+        }).catch(() => {
+            return "ERROR";
+        });
+
+    }
+
     static async updateTransactionAccountTo(id, account_to) {
         return axios({
             headers: {

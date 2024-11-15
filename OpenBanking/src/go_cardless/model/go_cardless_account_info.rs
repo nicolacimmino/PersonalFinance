@@ -14,7 +14,7 @@ impl ConvertsToGoCardlessAccountInfo for &AccountInfoResponseDto {
         let status = match self.status.as_str() {
             "READY" => "READY",
             "EXPIRED" => "EXPIRED",
-            _ => panic!("Unknown requisition status"),
+            _ => "ERROR",
         };
 
         return GoCardlessAccountInfo {

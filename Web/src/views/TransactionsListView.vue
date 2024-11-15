@@ -18,7 +18,15 @@
           </TransactionEdit>
         </transition>
       </div>
-
+      <div v-if="adding">
+        <transition name="modal">
+          <TransactionCreate :accounts="accounts"
+                             :categories="categories"
+                             @cancel="this.adding=false;"
+                             @save="(newTransaction) => {onNewTransaction(newTransaction); this.adding=false}">
+          </TransactionCreate>
+        </transition>
+      </div>
       <template v-for="(transactions, booking_date) in byDate" v-bind:key="booking_date">
         <div class="transactions-date-header">
           {{ moment(booking_date).format("DD-MM-YYYY") }}
@@ -32,8 +40,11 @@
           </TransactionOverview>
         </div>
       </template>
+      <div class="add_button pi pi-plus-circle" v-on:click="addTransaction()">
+      </div>
     </div>
   </div>
+  <div id="snackbar">message</div>
 </template>
 
 <script>
@@ -43,12 +54,14 @@ import ToolBar from "@/components/ToolBar.vue";
 import moment from "moment";
 import TransactionApi from "@/TransactionsApi.ts";
 import 'primeicons/primeicons.css'
+import TransactionCreate from "@/components/TransactionCreate.vue";
 
 export default {
   components: {
     ToolBar,
     TransactionOverview,
-    TransactionEdit
+    TransactionEdit,
+    TransactionCreate
   },
   props: {
     account_id: String,
@@ -79,11 +92,16 @@ export default {
       accounts: [],
       transaction: undefined,
       filter_description: "All",
-      privacy: Boolean
+      privacy: Boolean,
+      adding: false
     }
   },
   methods: {
     moment: moment,
+    addTransaction() {
+      console.log("ADD")
+      this.adding = true
+    },
     onPrivacyChange(newPrivacy) {
       this.privacy = newPrivacy;
     },
@@ -99,7 +117,7 @@ export default {
 
         if (this.edit_id) {
           this.transaction = this.transactions.filter(item => {
-            return item.id == this.edit_id;
+            return item.id === this.edit_id;
           })[0];
           this.editDialog = true;
         }
@@ -163,6 +181,23 @@ export default {
         )
       }
     },
+    onNewTransaction(newTransaction) {
+      TransactionApi.createTransaction(newTransaction).then(response => {
+        let message = "Error"
+        if (response !== "ERROR") {
+          this.transactions[this.transactions.length] = response;
+          message = "Created"
+        }
+
+        let snackbar = document.getElementById("snackbar");
+        snackbar.textContent = message
+        snackbar.className = "show";
+
+        setTimeout(function () {
+          snackbar.className = snackbar.className.replace("show", "");
+        }, 3000);
+      })
+    },
     followEditReturn() {
       if (this.edit_return) {
         this.$router.push({
@@ -198,5 +233,16 @@ export default {
   color: white;
   font-size: 12px;
   font-family: monospace;
+}
+
+.add_button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  border-radius: 50%;
+  background-color: var(--pf-c-dark-gray);
+  width: 50px;
+  font-size: 50px;
+  color: white;
 }
 </style>

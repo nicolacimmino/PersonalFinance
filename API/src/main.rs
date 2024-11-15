@@ -22,7 +22,7 @@ use crate::alerts::get_alerts;
 use crate::categories::get_categories;
 use crate::reports::get_report_by_category;
 use crate::budgets::get_budgets;
-use crate::transactions::{get_transactions, get_transaction, get_transactions_for_account, patch_transaction};
+use crate::transactions::{get_transactions, get_transaction, get_transactions_for_account, patch_transaction, create_transaction};
 
 #[launch]
 fn launch() -> _ {
@@ -48,6 +48,7 @@ fn launch() -> _ {
             get_transactions,
             get_transaction,
             patch_transaction,
+            create_transaction,
             get_transactions_for_account,
             get_report_by_category,
             get_budgets,

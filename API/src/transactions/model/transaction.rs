@@ -1,4 +1,4 @@
-use diesel::{Identifiable, Queryable, Selectable};
+use diesel::{Identifiable, Insertable, Queryable, Selectable};
 use chrono::NaiveDateTime;
 
 #[derive(Queryable, Identifiable, PartialEq, Selectable, Debug)]
@@ -6,6 +6,22 @@ use chrono::NaiveDateTime;
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Transaction {
     pub id: i32,
+    pub type_: String,
+    pub account_id: i32,
+    pub amount_cents: i32,
+    pub category: String,
+    pub creditor_name: String,
+    pub description: String,
+    pub booking_date: NaiveDateTime,
+    pub value_date: NaiveDateTime,
+    pub account_to: Option<i32>,
+}
+
+
+#[derive(Queryable, PartialEq, Selectable, Debug, Insertable)]
+#[diesel(table_name = crate::schema::transactions)]
+#[diesel(check_for_backend(diesel::pg::Pg))]
+pub struct NewTransaction {
     pub type_: String,
     pub account_id: i32,
     pub amount_cents: i32,

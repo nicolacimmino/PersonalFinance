@@ -4,7 +4,7 @@ use crate::{establish_db_connection, schema};
 use crate::accounts::model::Account;
 use crate::schema::accounts::dsl::accounts;
 use crate::schema::transactions::dsl::transactions;
-use crate::transactions::model::Transaction;
+use crate::transactions::model::{NewTransaction, Transaction};
 
 pub struct TransactionsService {}
 
@@ -63,10 +63,16 @@ impl TransactionsService {
             .execute(&mut establish_db_connection()).expect("Failed to update transaction description");
     }
 
+    pub fn create_transaction(&mut self, transaction: NewTransaction) -> Transaction {
+        return diesel::insert_into(transactions)
+            .values(transaction)
+            .get_result::<Transaction>(&mut establish_db_connection()).expect("Failed to create transaction");
+    }
+
     pub fn update_transaction_account_to(&mut self, transaction_id: i32, account_to: i32) {
         let (transaction, _) = self.get_transaction(transaction_id);
 
-        if(transaction.type_ != "TRANSFER") {
+        if transaction.type_ != "TRANSFER" {
             panic!("Cannot set account_to of transaction.")
         }
 

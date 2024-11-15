@@ -1,12 +1,13 @@
-use rocket::{get, patch};
+use chrono::{NaiveDate, NaiveTime};
+use rocket::{get, patch, post};
 use rocket::figment::value::Num;
 use rocket::http::Status;
 use rocket::response::{content, status};
 use crate::common::ValutaConversionService;
 use crate::establish_db_connection;
-use crate::transactions::dto::{PatchTransactionDto, TransactionDto};
+use crate::transactions::dto::{CreateTransactionDto, PatchTransactionDto, TransactionDto};
 use crate::guard::ApiKey;
-use crate::schema::transactions::dsl::transactions;
+use crate::transactions::model::{NewTransaction};
 use crate::transactions::service::TransactionsService;
 
 
@@ -83,6 +84,33 @@ pub fn get_transaction(_key: ApiKey<'_>, id: i32) -> status::Custom<content::Raw
     let dto = build_transaction_dto(id);
 
     status::Custom(Status::Ok, content::RawJson(
+        serde_json::to_string(&dto).expect("Serialization Failed")),
+    )
+}
+
+#[post("/transactions", format = "application/json", data = "<create_transaction_dto>")]
+pub fn create_transaction(_key: ApiKey<'_>, create_transaction_dto: rocket::serde::json::Json<CreateTransactionDto>) -> status::Custom<content::RawJson<String>> {
+    let mut transactions_service = TransactionsService {};
+
+    let transaction = transactions_service.create_transaction(NewTransaction {
+        type_: create_transaction_dto.type_.clone().unwrap_or("".to_string()).clone(),
+        account_id: create_transaction_dto.account_id.clone(),
+        amount_cents: create_transaction_dto.amount_cents.clone(),
+        category: create_transaction_dto.category.clone().unwrap_or("".to_string()),
+        creditor_name: create_transaction_dto.creditor_name.clone().unwrap_or("".to_string()),
+        description: create_transaction_dto.description.clone().unwrap_or("".to_string()),
+        booking_date: NaiveDate::parse_from_str(
+            &*create_transaction_dto.booking_date.clone().unwrap_or("1970-01-01".to_string()), "%Y-%m-%d",
+        ).unwrap().and_time(NaiveTime::default()),
+        value_date: NaiveDate::parse_from_str(
+            &*create_transaction_dto.value_date.clone().unwrap_or("1970-01-01".to_string()), "%Y-%m-%d",
+        ).unwrap().and_time(NaiveTime::default()),
+        account_to: create_transaction_dto.account_to.clone(),
+    });
+
+    let dto = build_transaction_dto(transaction.id);
+
+    status::Custom(Status::Created, content::RawJson(
         serde_json::to_string(&dto).expect("Serialization Failed")),
     )
 }

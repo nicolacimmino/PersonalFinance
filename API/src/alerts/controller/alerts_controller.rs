@@ -1,16 +1,10 @@
 use rocket::get;
-use rocket::figment::value::Num;
 use rocket::http::Status;
 use rocket::response::{content, status};
-use crate::accounts::dto::AccountDto;
-use crate::accounts::service::AccountsService;
+
 use crate::alerts::dto::AlertDto;
 use crate::alerts::service::AlertsService;
-use crate::common::ValutaConversionService;
-use crate::establish_db_connection;
 use crate::guard::ApiKey;
-use crate::manual_schema::alerts::dsl::alerts;
-use crate::schema::sp_accounts::account_id;
 
 #[get("/alerts")]
 pub fn get_alerts(_key: ApiKey<'_>) -> status::Custom<content::RawJson<String>> {
