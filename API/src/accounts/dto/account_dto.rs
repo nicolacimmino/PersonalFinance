@@ -13,5 +13,6 @@ pub struct AccountDto {
     pub iban: String,
     pub status: String,
     #[serde(rename(serialize = "type"))]
-    pub type_: String
+    pub type_: String,
+    pub can_create_transactions: String
 }

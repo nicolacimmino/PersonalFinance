@@ -11,4 +11,5 @@ pub struct Account {
     pub iban: String,
     pub status: String,
     pub type_: String,
+    pub pri_transactions_src: String,
 }
