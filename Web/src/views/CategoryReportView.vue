@@ -9,6 +9,18 @@
     Loading...
   </div>
   <div v-else>
+    <div class="pf-tabs">
+      <div class="pf-tab" :class="(this.type==='EXPENSE') ? 'pf-tab-selected' : 'pf-tab-inactive'"
+           @click="this.$router.push({ path: '/category_report', query: {type:'EXPENSE'}})"
+      >
+        Expenses
+      </div>
+      <div class="pf-tab" :class="(this.type==='INCOME') ? 'pf-tab-selected' : 'pf-tab-inactive'"
+           @click="this.$router.push({ path: '/category_report', query: {type:'INCOME'}})"
+      >
+        Income
+      </div>
+    </div>
     <div class="pie-chart">
       <Pie
           id="report-by-category"
@@ -20,7 +32,7 @@
       <template v-for="spendingEntry in categoriesSpending" v-bind:key="spendingEntry.category">
         <CategorySpendingOverview :entry=spendingEntry
                                   :privacy=privacy
-                                  @categoryClick="(category) => loadByCategoryReport('EXPENSE',category + '.')"
+                                  @categoryClick="(category) => loadByCategoryReport(this.type,category + '.')"
                                   @transactionsClick="(category) => showTransactionsByCategory(category)"
         >
         </CategorySpendingOverview>
@@ -45,15 +57,26 @@ export default {
   components: {
     ToolBar,
     CategorySpendingOverview: CategorySpendingOverview,
-    Pie: Pie
+    Pie: Pie,
   },
   mounted() {
     this.privacy = (localStorage.getItem("privacy") === "true")
-    this.loadByCategoryReport("EXPENSE", "")
+    this.loadByCategoryReport(this.type, "")
+  },
+  props: {
+    type: {
+      type: String,
+      default: "EXPENSE"
+    },
   },
   computed: {
     upArrowEnabled() {
       return (this.currentCategoryFilter !== "");
+    }
+  },
+  watch: {
+    $route: function () {
+      this.loadByCategoryReport(this.type, "")
     }
   },
   data() {
@@ -103,7 +126,7 @@ export default {
         return;
       }
 
-      this.loadByCategoryReport("EXPENSE", this.currentCategoryFilter.substring(
+      this.loadByCategoryReport(this.type, this.currentCategoryFilter.substring(
           0, this.currentCategoryFilter.length - 4
       ));
     },
@@ -162,7 +185,6 @@ export default {
 </script>
 
 <style scoped>
-
 .pie-chart {
   padding: 10px;
   margin-bottom: 15px;
@@ -172,4 +194,5 @@ export default {
 .category-overview {
   height: 40px;
 }
+
 </style>

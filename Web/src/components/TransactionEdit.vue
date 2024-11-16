@@ -151,7 +151,7 @@ export default {
 
 .container {
   margin: 0px auto;
-  padding: 30px;
+  padding: 20px;
   background-color: mintcream;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
@@ -180,30 +180,30 @@ export default {
   grid-area: creditor;
   background-color: #28282822;
   padding: 0 0 0 5px;
-  font-size: 10px;
+  font-size: 15px;
 }
 
 .description {
   grid-area: description;
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .transaction-id {
   grid-area: transaction-id;
   text-align: right;
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .booking-date {
   grid-area: booking-date;
   text-align: left;
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .account-name {
   grid-area: account-name;
   text-align: left;
-  font-size: 12px;
+  font-size: 15px;
   color: grey;
   background-color: #28282822;
   padding: 0 0 0 5px;
@@ -212,7 +212,7 @@ export default {
 .amount-in-ref-currency {
   grid-area: amount-ref;
   text-align: right;
-  font-size: 12px;
+  font-size: 15px;
   color: grey;
   background-color: #28282822;
   padding: 0 5px 0 0;
@@ -222,7 +222,7 @@ export default {
   grid-area: amount;
   text-align: right;
   vertical-align: bottom;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: bold;
   color: #A63D40;
   background-color: #28282822;
@@ -232,7 +232,7 @@ export default {
 .non-negative-price {
   grid-area: amount;
   text-align: right;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: bold;
   color: #90A959;
   background-color: #28282822;
@@ -242,7 +242,7 @@ export default {
 .category {
   grid-area: category;
   text-align: left;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: bold;
   background-color: #28282822;
   padding: 0 0 0 5px;
@@ -251,7 +251,7 @@ export default {
 .destinationAccount {
   grid-area: category;
   text-align: left;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: bold;
   background-color: #28282822;
   padding: 0 0 0 5px;

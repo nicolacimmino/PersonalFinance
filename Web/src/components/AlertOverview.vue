@@ -30,7 +30,7 @@ export default {
 .alert-details {
   display: grid;
   grid-template: 'level message';
-  grid-template-columns: 1fr 18fr;
+  grid-template-columns: 3fr 18fr;
   padding: 10px;
   margin-bottom: 2px;
   background-color: #E9B87222;
@@ -42,7 +42,7 @@ export default {
 
 .alert-message {
   grid-area: message;
-  font-size: 12px;
+  font-size: 20px;
   text-align: left;
 }
 </style>

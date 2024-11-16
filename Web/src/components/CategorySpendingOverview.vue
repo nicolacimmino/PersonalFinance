@@ -53,8 +53,8 @@ export default {
 .cso-transactions-n {
   grid-area: transactions-n;
   text-align: left;
-  font-size: 14px;
-  padding-top: 10px;
+  font-size: 15px;
+  padding-top: 15px;
 }
 
 </style>

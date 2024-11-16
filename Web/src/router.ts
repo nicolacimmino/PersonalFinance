@@ -32,14 +32,21 @@ const routes = [
     {
         name: 'category_report',
         path: '/category_report',
+        query: {
+            type: '',
+        },
         component: CategoryReportView,
-        props: true
+        props: route => ({
+            type: route.query.type,
+        })
     },
     {
         name: 'budgets',
         path: '/budgets',
         component: BudgetReportView,
-        props: true
+        props: route => ({
+            type: route.query.type,
+        })
     },
     {
         name: 'accounts',

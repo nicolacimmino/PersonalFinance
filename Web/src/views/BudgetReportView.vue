@@ -3,19 +3,33 @@
       @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
       :eye-enabled="true"
   />
+  <div class="pf-tabs">
+    <div class="pf-tab" :class="(this.type==='ACTIVE') ? 'pf-tab-selected' : 'pf-tab-inactive'"
+         @click="this.$router.push({ path: '/budgets', query: {type:'ACTIVE'}})"
+    >
+      Active
+    </div>
+    <div class="pf-tab" :class="(this.type==='PAST') ? 'pf-tab-selected' : 'pf-tab-inactive'"
+         @click="this.$router.push({ path: '/budgets', query: {type:'PAST'}})"
+    >
+      Past
+    </div>
+  </div>
   <div class="budgets-table">
     <div v-if="!loaded">
       Loading...
     </div>
     <div v-else>
-      Active
-      <template v-for="budget in activeBudgets" v-bind:key="budget.id">
-        <BudgetOverview :budget=budget :privacy=privacy></BudgetOverview>
-      </template>
-      Past
-      <template v-for="budget in pastBudgets" v-bind:key="budget.id">
-        <BudgetOverview :budget=budget :privacy=privacy></BudgetOverview>
-      </template>
+      <div v-if="this.type==='ACTIVE'">
+        <template v-for="budget in activeBudgets" v-bind:key="budget.id">
+          <BudgetOverview :budget=budget :privacy=privacy></BudgetOverview>
+        </template>
+      </div>
+      <div v-else>
+        <template v-for="budget in pastBudgets" v-bind:key="budget.id">
+          <BudgetOverview :budget=budget :privacy=privacy></BudgetOverview>
+        </template>
+      </div>
     </div>
   </div>
 </template>
@@ -34,6 +48,17 @@ export default {
   components: {
     ToolBar,
     BudgetOverview,
+  },
+  props: {
+    type: {
+      type: String,
+      default: "ACTIVE"
+    }
+  },
+  watch: {
+    $route: function () {
+      this.loadBudgets()
+    }
   },
   data() {
     return {
@@ -65,6 +90,8 @@ export default {
 
 <style scoped>
 .budgets-table {
-  height: 20px;
+  /*height: 20px;*/
+  padding: 5px;
+  background-color: #E9B87222;
 }
 </style>

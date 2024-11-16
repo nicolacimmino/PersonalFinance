@@ -87,7 +87,7 @@ export default {
   margin-top: 15px;
   background-color: #6494AA;
   color: white;
-  font-size: 12px;
+  font-size: 20px;
   font-family: monospace;
 }
 </style>

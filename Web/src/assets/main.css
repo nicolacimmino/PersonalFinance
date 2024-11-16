@@ -113,3 +113,28 @@ a,
         opacity: 0;
     }
 }
+
+
+.pf-tabs {
+    display: grid;
+    grid-template-columns: 120px 120px;
+    grid-gap: 10px;
+    padding-top: 10px;
+}
+
+.pf-tab {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 5px;
+    height: 25px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.pf-tab-selected {
+    background-color: #E9B87222
+}
+
+.pf-tab-inactive {
+    background-color: lightgrey;
+}
