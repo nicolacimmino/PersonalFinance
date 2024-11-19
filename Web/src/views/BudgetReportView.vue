@@ -7,12 +7,12 @@
     <div class="pf-tab" :class="(this.type==='ACTIVE') ? 'pf-tab-selected' : 'pf-tab-inactive'"
          @click="this.$router.push({ path: '/budgets', query: {type:'ACTIVE'}})"
     >
-      Active
+      <p class=" pf-text-large">Active</p>
     </div>
     <div class="pf-tab" :class="(this.type==='PAST') ? 'pf-tab-selected' : 'pf-tab-inactive'"
          @click="this.$router.push({ path: '/budgets', query: {type:'PAST'}})"
     >
-      Past
+      <p class=" pf-text-large">Past</p>
     </div>
   </div>
   <div class="budgets-table">

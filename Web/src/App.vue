@@ -1,26 +1,5 @@
 <template>
   <div class="mainContainer">
-    <div class="menu_button pi pi-bars" v-on:click="showMenu=true">
-    </div>
-    <div v-if="showMenu" class="navigation">
-      <div class="navbar">
-        <div>
-          <RouterLink class="navigation-link" to="/">Home</RouterLink>
-        </div>
-        <div>
-          <RouterLink class="navigation-link" to="/transactions">Transactions</RouterLink>
-        </div>
-        <div>
-          <RouterLink class="navigation-link" to="/category_report">Categories</RouterLink>
-        </div>
-        <div>
-          <RouterLink class="navigation-link" to="/budgets">Budgets</RouterLink>
-        </div>
-        <div>
-          <RouterLink class="navigation-link" to="/accounts">Accounts</RouterLink>
-        </div>
-      </div>
-    </div>
     <div class="main">
       <main>
         <RouterView/>
@@ -58,17 +37,6 @@ export default {
   background-color: white;
 }
 
-.navigation {
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: table;
-  transition: opacity 0.3s ease;
-}
 
 .main {
   grid-area: main;
@@ -103,15 +71,5 @@ html, body {
 
 .navigation-link {
   font-size: 2em;
-}
-
-.menu_button {
-  position: fixed;
-  top: 30px;
-  left: 30px;
-  /*border-radius: 50%;*/
-  /*background-color: var(--pf-c-dark-gray);*/
-  /*width: 50px;*/
-  /*color: white;*/
 }
 </style>

@@ -1,5 +1,13 @@
 <template>
   <div class="toolbar-container">
+    <div class="menu-bar toolbar-icon">
+      <i class="pi pi-bars"
+         style="color:black"
+         @click="showMenu=true"
+      >
+        &nbsp;
+      </i>
+    </div>
     <div class="ref-currency toolbar-icon">
       <i :class="(refCurrency) ? 'pi pi-money-bill' : 'pi pi-euro'"
          :style="(refCurrencyEnabled) ? 'color:black' : 'color:#EEEEEE'"
@@ -33,6 +41,25 @@
       </i>
     </div>
   </div>
+  <div v-if="showMenu" class="navigation" @click="showMenu=false">
+    <div class="navbar">
+      <div>
+        <RouterLink class="navigation-link" to="/">Home</RouterLink>
+      </div>
+      <div>
+        <RouterLink class="navigation-link" to="/transactions">Transactions</RouterLink>
+      </div>
+      <div>
+        <RouterLink class="navigation-link" to="/category_report">Categories</RouterLink>
+      </div>
+      <div>
+        <RouterLink class="navigation-link" to="/budgets">Budgets</RouterLink>
+      </div>
+      <div>
+        <RouterLink class="navigation-link" to="/accounts">Accounts</RouterLink>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -50,6 +77,7 @@ export default {
       privacy: (localStorage.getItem("privacy") === "true"),
       compact: (localStorage.getItem("compact") === "true"),
       refCurrency: (localStorage.getItem("refCurrency") === "true"),
+      showMenu: false
     }
   },
   methods: {
@@ -84,11 +112,11 @@ export default {
 <style scoped>
 .toolbar-container {
   display: grid;
-  grid-template: "ref-currency arrow-up maximize eye";
+  grid-template: "menu-bar ref-currency arrow-up maximize eye";
   grid-template-columns: [ref-currency] 1fr [arrow-up] 1fr [maximize] 1fr [eye] 1fr;
   padding: 0px;
-  margin-bottom: 10px;
-  margin-top: 10px;
+  margin-bottom: 20px;
+  margin-top: 20px;
   background-color: white;
   text-align: center;
   /*position: sticky;*/
@@ -97,6 +125,10 @@ export default {
 
 .toolbar-icon {
   font-size: 1.5em;
+}
+
+.menu-bar {
+  grid-area: menu-bar;
 }
 
 .ref-currency {
@@ -114,4 +146,17 @@ export default {
 .eye {
   grid-area: eye;
 }
+
+.navigation {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: table;
+  transition: opacity 0.3s ease;
+}
+
 </style>

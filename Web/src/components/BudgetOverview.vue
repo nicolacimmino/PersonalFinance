@@ -9,18 +9,14 @@
     <div class="budget-dates pf-text-medium">
       {{ budget.from_date }} - {{ budget.to_date }}
     </div>
-    <div class="budget_info pf-text-medium">
-      <div class="budget_info_container">
-        <div v-if="privacy" class="budget_spent">
-          Spent: {{ Math.floor((100.0 * Math.abs(budget.spent_cents)) / budget.amount_cents) }}%
-        </div>
-        <div v-else class="budget_spent">
-          Spent:  {{ Math.floor(Math.abs(budget.spent_cents / 100.0)) }} {{ budget.currency }}
-        </div>
-        <div class="budget_transactions">
-          Transactions: {{ budget.transactions }}
-        </div>
-      </div>
+    <div v-if="privacy" class="budget-spent pf-text-medium">
+      Spent: {{ Math.floor((100.0 * Math.abs(budget.spent_cents)) / budget.amount_cents) }}%
+    </div>
+    <div v-else class="budget-spent pf-text-medium">
+      Spent: {{ Math.floor(Math.abs(budget.spent_cents / 100.0)) }} {{ budget.currency }}
+    </div>
+    <div class="budget_transactions pf-text-medium">
+      Transactions: {{ budget.transactions }}
     </div>
     <div class="budget_graph">
       <Pie id="{{budget.id}}"
@@ -116,12 +112,14 @@ export default {
 <style scoped>
 .budget-details {
   display: grid;
-  grid-template: 'description description description'
-                 'budget-size budget-size budget-size'
-                 'budget_dates budget_dates budget_dates'
-                 'budget_info budget_info budget_info'
-                 'budget_graph budget_graph budget_graph';
+  grid-template: 'description'
+                 'budget_dates'
+                 'budget_size'
+                 'budget_spent'
+                 'budget_transactions'
+                 'budget_graph';
   margin-bottom: 15px;
+  row-gap: 5px;
   background-color: #E9B87222;
 }
 
@@ -134,42 +132,29 @@ export default {
 }
 
 .budget-size {
-  grid-area: budget-size;
+  grid-area: budget_size;
   text-align: center;
   padding-right: 5px;
-  /*background-color: #6494AA;*/
-  /*color: white;*/
-}
-
-.budget_info {
-  grid-area: budget_info;
-  vertical-align: center;
-  align-content: center;
-}
-
-.budget_info_container {
-  display: grid;
-  grid: 'budget_spent'
-        'budget_transactions';
-}
-
-.budget-dates {
-  grid-area: budget_dates;
-  padding: 5px;
-  text-align: center;
-}
-
-.budget_spent {
-  grid-area: budget_spent;
-  padding: 5px;
-  text-align: center;
 }
 
 .budget_transactions {
   grid-area: budget_transactions;
-  padding: 5px;
   text-align: center;
+  padding-right: 5px;
 }
+
+.budget-dates {
+  grid-area: budget_dates;
+  text-align: center;
+  padding-right: 5px;
+}
+
+.budget-spent {
+  grid-area: budget_spent;
+  text-align: center;
+  padding-right: 5px;
+}
+
 
 .budget_graph {
   grid-area: budget_graph;

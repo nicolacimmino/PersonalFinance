@@ -233,8 +233,8 @@ export default {
 
 .add_button {
   position: fixed;
-  bottom: 40px;
-  right: 40px;
+  bottom: 60px;
+  right: 60px;
   font-size: 40px;
   border-radius: 50%;
   background-color: var(--pf-c-dark-gray);

@@ -5,41 +5,36 @@
       @arrow-up="loadPreviousCategoryReport()"
       :eye-enabled="true"
   />
-  <!--  <div v-if="!loaded">-->
-  <!--    Loading...-->
-  <!--  </div>-->
+  <div class="pf-tabs">
+    <div class="pf-tab" :class="(this.type==='EXPENSE') ? 'pf-tab-selected' : 'pf-tab-inactive'"
+         @click="this.$router.push({ path: '/category_report', query: {type:'EXPENSE'}})"
+    >
+      <p class=" pf-text-large">Expense</p>
+    </div>
+    <div class="pf-tab" :class="(this.type==='INCOME') ? 'pf-tab-selected' : 'pf-tab-inactive'"
+         @click="this.$router.push({ path: '/category_report', query: {type:'INCOME'}})"
+    >
+      <p class=" pf-text-large">Income</p>
+    </div>
+  </div>
+  <div class="pie-chart">
+    <Pie
+        id="report-by-category"
+        :options="chartOptions"
+        :data="chartData"
+    />
+  </div>
   <div>
-    <div class="pf-tabs">
-      <div class="pf-tab" :class="(this.type==='EXPENSE') ? 'pf-tab-selected' : 'pf-tab-inactive'"
-           @click="this.$router.push({ path: '/category_report', query: {type:'EXPENSE'}})"
-      >
-        Expenses
+    <template v-for="entry in categories" v-bind:key="entry.category">
+      <div>
+        <CategorySpendingOverview :entry=entry
+                                  :privacy=privacy
+                                  @categoryClick="(category) => loadByCategoryReport(this.type,category + '.')"
+                                  @transactionsClick="(category) => showTransactionsByCategory(category)"
+        >
+        </CategorySpendingOverview>
       </div>
-      <div class="pf-tab" :class="(this.type==='INCOME') ? 'pf-tab-selected' : 'pf-tab-inactive'"
-           @click="this.$router.push({ path: '/category_report', query: {type:'INCOME'}})"
-      >
-        Income
-      </div>
-    </div>
-    <div class="pie-chart">
-      <Pie
-          id="report-by-category"
-          :options="chartOptions"
-          :data="chartData"
-      />
-    </div>
-    <div>
-      <template v-for="entry in categories" v-bind:key="entry.category">
-        <div>
-          <CategorySpendingOverview :entry=entry
-                                    :privacy=privacy
-                                    @categoryClick="(category) => loadByCategoryReport(this.type,category + '.')"
-                                    @transactionsClick="(category) => showTransactionsByCategory(category)"
-          >
-          </CategorySpendingOverview>
-        </div>
-      </template>
-    </div>
+    </template>
   </div>
 </template>
 
