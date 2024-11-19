@@ -186,7 +186,6 @@ label {
   background-color: lightgreen;
   border: 1px;
   border-radius: 5px;
-  font-family: monospace;
 }
 
 .button-cancel {
@@ -196,7 +195,6 @@ label {
   background-color: lightcoral;
   border: 1px;
   border-radius: 5px;
-  font-family: monospace;
 }
 
 ul.input-list {

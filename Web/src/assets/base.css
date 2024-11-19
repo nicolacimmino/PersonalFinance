@@ -2,10 +2,14 @@
 :root {
     --pf-c-white: rgb(255, 255, 255);
     --pf-c-dark-gray: rgb(44, 62, 80);
+    --pf-c-cream: rgb(250, 248, 230);
+    --pf-c-semi-transparent-grey: rgba(0, 0, 0, 0.5)
 }
 
 :root {
+    --color-overlay: var(--pf-c-semi-transparent-grey);
     --color-background: var(--pf-c-white);
+    --color-second-background: var(--pf-c-cream);
     --color-text: var(--pf-c-dark-gray);
 }
 

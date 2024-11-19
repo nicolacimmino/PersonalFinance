@@ -11,7 +11,7 @@
         No Alerts.
       </div>
       <template v-for="(alerts, type) in byItemType" v-bind:key="type">
-        <div class="alert-group-header">
+        <div class="alert-group-header pf-text-large">
           {{ typeToTypeDescription(type) }} ({{ alerts.length }})
         </div>
         <template v-for="alert in alerts" v-bind:key="alert.message">
@@ -23,11 +23,12 @@
 </template>
 
 
-<script>
+<script lang="ts">
 
 import ToolBar from "@/components/ToolBar.vue";
 import AlertOverview from "@/components/AlertOverview.vue";
 import TransactionApi from "@/TransactionsApi.ts";
+import Alert from "@/models/alert.ts";
 
 export default {
   name: 'HomeView',
@@ -66,7 +67,7 @@ export default {
     return {
       newApiKey: "",
       existingApiKey: "",
-      alerts: []
+      alerts: Array as Alert[]
     }
   },
   computed: {
@@ -87,7 +88,5 @@ export default {
   margin-top: 15px;
   background-color: #6494AA;
   color: white;
-  font-size: 20px;
-  font-family: monospace;
 }
 </style>

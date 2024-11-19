@@ -4,14 +4,14 @@
       <span v-if="alert.level==='ERROR'" class='pi pi-exclamation-triangle' style="color: red"/>
       <span v-if="alert.level==='WARN'" class='pi pi-exclamation-circle' style="color: darkgoldenrod"/>
     </div>
-    <div class="alert-message">
-      <div v-if="alert.item=='TRANSACTIONS'">
+    <div class="alert-message pf-text-medium">
+      <div v-if="alert.item==='TRANSACTIONS'">
         <a :href='"/transactions?edit_id=" + alert.item_id + "&edit_return=/"'>
-          {{ alert.message }}
+          <span v-html="formatPlainTextAlert(alert.message)"></span>
         </a>
       </div>
       <div v-else>
-        {{ alert.message }}
+        <span v-html="formatPlainTextAlert(alert.message)"></span>
       </div>
     </div>
   </div>
@@ -19,9 +19,16 @@
 
 <script>
 
+import Alert from "@/models/alert.ts"
+
 export default {
   props: {
-    alert: Object,
+    alert: Alert,
+  },
+  methods: {
+    formatPlainTextAlert(message) {
+      return message.replace(":", ":<br>")
+    }
   }
 }
 </script>
@@ -42,7 +49,6 @@ export default {
 
 .alert-message {
   grid-area: message;
-  font-size: 20px;
   text-align: left;
 }
 </style>

@@ -2,17 +2,27 @@
 
 #app {
     max-width: 1280px;
-    margin: 0 auto;
+    margin: auto auto;
     padding: 2rem;
     font-weight: normal;
+}
+
+@media (min-width: 650px) {
+    #app {
+        width: 640px;
+        margin: auto auto;
+        padding: 2rem;
+        font-weight: normal;
+    }
 }
 
 a,
 .green {
     text-decoration: none;
-    color: hsla(160, 100%, 37%, 1);
+    /*color: hsla(160, 100%, 37%, 1);*/
+    color: #6494AA;
     transition: 0.4s;
-    padding: 3px;
+    /*padding: 3px;*/
 }
 
 @media (hover: hover) {
@@ -21,15 +31,6 @@ a,
     }
 }
 
-
-@media (min-width: 650px) {
-    #app {
-        width: 650px;
-        /*margin: 0 auto;*/
-        /*padding: 2rem;*/
-        /*font-weight: normal;*/
-    }
-}
 
 /*@media (min-width: 1024px) {*/
 /*  body {*/
@@ -127,7 +128,6 @@ a,
     border-top-right-radius: 10px;
     padding: 5px;
     height: 25px;
-    font-size: 20px;
     text-align: center;
 }
 

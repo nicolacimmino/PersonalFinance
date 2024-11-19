@@ -1,30 +1,29 @@
 <template>
   <div class="transaction-details">
-    <div v-if="transaction.type === 'TRANSFER'" class="category">
-      <span :class="(transaction.amount_cents < 0) ? 'pi pi-arrow-right' : 'pi pi-arrow-left'"
-            style="font-size: 0.5rem"></span>
+    <div v-if="transaction.type === 'TRANSFER'" class="transaction-category pf-text-medium">
+      <span :class="(transaction.amount_cents < 0) ? 'pi pi-arrow-right' : 'pi pi-arrow-left'"></span>
       {{
         (transaction.account_to) ? accounts.find((account) => account.id === transaction.account_to).description : "-"
       }}
     </div>
-    <div v-else class="category">
+    <div v-else class="transaction-category pf-text-medium">
       {{ (transaction.category) ? transaction.category : "-" }}
     </div>
-    <div :class="(transaction.amount_cents < 0) ? negativePriceClass : nonNegativePriceClass">
-      <span v-if="privacy">--- &nbsp;{{ transaction.currency }}</span>
+    <div class="pf-text-medium" :class="(transaction.amount_cents < 0) ? negativePriceClass : nonNegativePriceClass">
+      <span v-if="privacy">---&nbsp;{{ transaction.currency }}</span>
       <span v-else>
             {{ transaction.amount_cents / 100.0 }} {{ transaction.currency }}
         </span>
     </div>
-    <div class="account-name">
+    <div class="transaction-account-name pf-text-small">
       {{ transaction.account_name }}
     </div>
-    <div class="amount-in-ref-currency">
+    <div class="transaction-amount-in-ref-currency pf-text-small">
       <span v-if="!privacy && (transaction.ref_currency !== transaction.currency)">
       {{ transaction.amount_cents_in_ref_currency / 100.0 }} {{ transaction.ref_currency }}
       </span>
     </div>
-    <div class="description">
+    <div class="transaction-description pf-text-medium">
       {{ (transaction.creditor_name) ? transaction.creditor_name : transaction.description }}
     </div>
   </div>
@@ -33,8 +32,8 @@
 <script>
 import {ref} from 'vue'
 
-const negativePriceClass = ref("negative-price");
-const nonNegativePriceClass = ref('non-negative-price');
+const negativePriceClass = ref("transaction-negative-price");
+const nonNegativePriceClass = ref('transaction-non-negative-price');
 
 export default {
   props: {
@@ -60,50 +59,44 @@ export default {
     'description description description';
   padding: 5px;
   margin-bottom: 2px;
-  background-color: #E9B87222;
+  background-color: var(--color-second-background);
 }
 
-.description {
+.transaction-description {
   grid-area: description;
-  font-size: 10px;
 }
 
-.account-name {
+.transaction-account-name {
   grid-area: account-name;
   text-align: left;
-  font-size: 10px;
   overflow: clip;
   color: grey;
 }
 
-.amount-in-ref-currency {
+.transaction-amount-in-ref-currency {
   grid-area: amount-ref;
   text-align: right;
-  font-size: 10px;
   color: grey;
 }
 
-.negative-price {
+.transaction-negative-price {
   grid-area: amount;
   text-align: right;
   vertical-align: bottom;
-  font-size: 11px;
   font-weight: bold;
   color: #A63D40;
 }
 
-.non-negative-price {
+.transaction-non-negative-price {
   grid-area: amount;
   text-align: right;
-  font-size: 11px;
   font-weight: bold;
   color: #90A959;
 }
 
-.category {
+.transaction-category {
   grid-area: category;
   text-align: left;
-  font-size: 11px;
   font-weight: bold;
 }
 </style>

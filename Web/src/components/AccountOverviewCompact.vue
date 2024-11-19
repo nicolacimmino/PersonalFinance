@@ -1,17 +1,17 @@
 <template>
   <div class="account-details">
-    <div class="description">
+    <div class="description pf-text-medium">
       {{ account.description }}
       <span :class="(account.status == 'OK') ? 'pi' : 'pi pi-exclamation-triangle'"
             :style="{color:'red'}"></span>
     </div>
-    <div v-if="!refCurrencyActive" class="balance">
+    <div v-if="!refCurrencyActive" class="balance pf-text-medium">
       <div :class="classOfAmount(account.balance_cents)">
         <span v-if="privacy">---</span>
         <span v-else>{{ account.balance_cents / 100.0 }} {{ account.currency }}</span>
       </div>
     </div>
-    <div v-else class="balance">
+    <div v-else class="balance pf-text-medium">
       <div :class="classOfAmount(account.balance_cents)">
         <span v-if="privacy">---</span>
         <span v-else>{{ account.balance_cents_in_ref_currency / 100.0 }} {{ account.ref_currency }}</span>
@@ -61,14 +61,12 @@ export default {
 
 .description {
   grid-area: description;
-  font-size: 20px;
   text-align: left;
 }
 
 .balance {
   grid-area: balance;
   vertical-align: middle;
-  font-size: 20px;
   text-align: right;
 }
 

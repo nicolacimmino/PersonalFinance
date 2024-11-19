@@ -3,7 +3,7 @@
     <div class="mask">
       <div class="wrapper">
         <div class="container">
-          <div class="creditor">
+          <div class="creditor pf-text-medium">
             {{ transaction.creditor_name }}
           </div>
           <div :class="(transaction.amount_cents < 0) ? 'negative-price' : 'non-negative-price'">
@@ -20,7 +20,7 @@
               </select>
             </div>
             <div v-else @click="this.editCategory=true" class="category">
-              {{ (selectedCategory) ? selectedCategory : "-" }}
+              {{ (selectedCategory) ? selectedCategory : "???" }}
             </div>
           </div>
           <div v-else>
@@ -37,16 +37,16 @@
             </div>
           </div>
 
-          <div class="account-name">
+          <div class="account-name pf-text-medium">
             {{ transaction.account_name }}
           </div>
-          <div class="amount-in-ref-currency">
+          <div class="amount-in-ref-currency pf-text-medium">
             {{ transaction.amount_cents_in_ref_currency / 100.0 }} {{ transaction.ref_currency }}
           </div>
-          <div class="booking-date">
+          <div class="booking-date pf-text-medium">
             {{ moment(transaction.booking_date).format("DD-MM-YYYY") }}
           </div>
-          <div class="description">
+          <div class="description pf-text-medium">
             {{ transaction.description }}
           </div>
           <div class="transfer">
@@ -138,21 +138,26 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--color-overlay);
   display: table;
   transition: opacity 0.3s ease;
 }
 
 .wrapper {
-  display: table-cell;
-  vertical-align: center;
-  padding: 20px;
+  /*padding: 20px;*/
+  width: 80%;
+  margin: auto auto;
+  /*display: table-cell;*/
+  /*vertical-align: center;*/
+  /*horiz-align: center;*/
+  /*padding: 40px;*/
+  /*background-color: red;*/
 }
 
 .container {
-  margin: 0px auto;
+  margin: auto auto;
   padding: 20px;
-  background-color: mintcream;
+  background-color: var(--color-background);
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
@@ -168,7 +173,8 @@ export default {
 }
 
 .transfer {
-  padding-top: 5px;
+  padding-top: 10px;
+  vertical-align: bottom;
 }
 
 .transfer label {
@@ -178,83 +184,63 @@ export default {
 
 .creditor {
   grid-area: creditor;
-  background-color: #28282822;
-  padding: 0 0 0 5px;
-  font-size: 15px;
+  padding-top: 10px;
 }
 
 .description {
   grid-area: description;
-  font-size: 15px;
+  padding-top: 10px;
 }
 
 .transaction-id {
   grid-area: transaction-id;
   text-align: right;
-  font-size: 15px;
+  padding-top: 10px;
 }
 
 .booking-date {
   grid-area: booking-date;
   text-align: left;
-  font-size: 15px;
+  padding-top: 10px;
 }
 
 .account-name {
   grid-area: account-name;
   text-align: left;
-  font-size: 15px;
   color: grey;
-  background-color: #28282822;
-  padding: 0 0 0 5px;
 }
 
 .amount-in-ref-currency {
   grid-area: amount-ref;
   text-align: right;
-  font-size: 15px;
   color: grey;
-  background-color: #28282822;
-  padding: 0 5px 0 0;
 }
 
 .negative-price {
   grid-area: amount;
   text-align: right;
   vertical-align: bottom;
-  font-size: 18px;
   font-weight: bold;
   color: #A63D40;
-  background-color: #28282822;
-  padding: 0 5px 0 0;
 }
 
 .non-negative-price {
   grid-area: amount;
   text-align: right;
-  font-size: 18px;
   font-weight: bold;
   color: #90A959;
-  background-color: #28282822;
-  padding: 0 5px 0 0;
 }
 
 .category {
   grid-area: category;
   text-align: left;
-  font-size: 18px;
   font-weight: bold;
-  background-color: #28282822;
-  padding: 0 0 0 5px;
 }
 
 .destinationAccount {
   grid-area: category;
   text-align: left;
-  font-size: 18px;
   font-weight: bold;
-  background-color: #28282822;
-  padding: 0 0 0 5px;
 }
 
 .footer {
@@ -268,7 +254,6 @@ export default {
   background-color: lightgrey;
   border: 1px;
   border-radius: 5px;
-  font-family: monospace;
 }
 
 .button-cancel {
@@ -278,7 +263,6 @@ export default {
   background-color: lightgreen;
   border: 1px;
   border-radius: 5px;
-  font-family: monospace;
 }
 
 </style>

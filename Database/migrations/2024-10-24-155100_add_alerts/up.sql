@@ -41,5 +41,5 @@ SELECT gen_random_uuid () as id,
         CONCAT('Invalid category:', category) AS message,
        text(id) as item_id
        FROM transactions WHERE category not in (select categories.code from categories)
-                           AND type<>'TRANSFER' AND type<>'INITIAL' AND booking_date>='2024-01-01'
+                           AND category<>'' AND type<>'TRANSFER' AND type<>'INITIAL' AND booking_date>='2024-01-01'
 ORDER BY item ASC, item_id ASC;

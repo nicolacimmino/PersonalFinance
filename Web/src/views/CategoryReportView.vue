@@ -5,10 +5,10 @@
       @arrow-up="loadPreviousCategoryReport()"
       :eye-enabled="true"
   />
-  <div v-if="!loaded">
-    Loading...
-  </div>
-  <div v-else>
+  <!--  <div v-if="!loaded">-->
+  <!--    Loading...-->
+  <!--  </div>-->
+  <div>
     <div class="pf-tabs">
       <div class="pf-tab" :class="(this.type==='EXPENSE') ? 'pf-tab-selected' : 'pf-tab-inactive'"
            @click="this.$router.push({ path: '/category_report', query: {type:'EXPENSE'}})"
@@ -28,14 +28,16 @@
           :data="chartData"
       />
     </div>
-    <div class="category-overview">
-      <template v-for="spendingEntry in categoriesSpending" v-bind:key="spendingEntry.category">
-        <CategorySpendingOverview :entry=spendingEntry
-                                  :privacy=privacy
-                                  @categoryClick="(category) => loadByCategoryReport(this.type,category + '.')"
-                                  @transactionsClick="(category) => showTransactionsByCategory(category)"
-        >
-        </CategorySpendingOverview>
+    <div>
+      <template v-for="entry in categories" v-bind:key="entry.category">
+        <div>
+          <CategorySpendingOverview :entry=entry
+                                    :privacy=privacy
+                                    @categoryClick="(category) => loadByCategoryReport(this.type,category + '.')"
+                                    @transactionsClick="(category) => showTransactionsByCategory(category)"
+          >
+          </CategorySpendingOverview>
+        </div>
       </template>
     </div>
   </div>
@@ -84,7 +86,7 @@ export default {
       loaded: false,
       privacy: true,
       currentCategoryFilter: "",
-      categoriesSpending: [],
+      categories: [],
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
@@ -152,31 +154,25 @@ export default {
 
         this.currentCategoryFilter = categoryFilter;
 
-        this.categoriesSpending = aggregatedData;
+        this.categories = aggregatedData;
 
         this.chartData = {
-          labels: this.categoriesSpending.map(
+          labels: this.categories.map(
               item => {
                 return item.category
               }
           ),
           datasets: [{
-            backgroundColor: [
-              "#CDDFA0",
-              "#7B9EA8",
-              "#E6C79C",
-              "#78586F",
-              "#6FD08C",
-              "#334139",
-            ],
-            data: this.categoriesSpending.map(
+            backgroundColor:
+                ['#00429d', '#3e67ae', '#618fbf', '#85b7ce', '#b1dfdb', '#ffcab9', '#fd9291', '#e75d6f', '#c52a52', '#93003b']
+            ,
+            data: this.categories.map(
                 item => {
                   return Math.abs(item.total_cents) / 100.00
                 }
             )
           }]
         }
-
         this.loaded = true;
       });
     },
@@ -186,13 +182,9 @@ export default {
 
 <style scoped>
 .pie-chart {
-  padding: 10px;
+  padding: 15px;
   margin-bottom: 15px;
   background-color: #E9B87222;
-}
-
-.category-overview {
-  height: 40px;
 }
 
 </style>

@@ -56,18 +56,7 @@ export default {
       compact: true,
       refCurrency: false,
       currentCategoryFilter: "",
-      accounts: [],
-      chartOptions: {
-        responsive: true,
-        maintainAspectRatio: false
-      },
-      chartData: {
-        labels: [],
-        datasets: [{
-          backgroundColor: [],
-          data: []
-        }]
-      }
+      accounts: []
     }
   },
   methods: {
@@ -91,9 +80,9 @@ export default {
         case 'CASH':
           return "Cash"
         case 'BANK_CURRENT':
-          return "Bank Current Accounts"
+          return "Bank Current"
         case 'BANK_SAVINGS':
-          return "Bank Savings Accounts"
+          return "Bank Savings"
         case 'BANK_CREDIT':
           return "Credit Cards"
         case 'INV':
@@ -119,7 +108,7 @@ export default {
 
 <style scoped>
 .accounts-table {
-  height: 20px;
+  /*height: 20px;*/
 }
 
 .account-group-header {
@@ -128,7 +117,5 @@ export default {
   margin-top: 15px;
   background-color: #6494AA;
   color: white;
-  font-size: 20px;
-  font-family: monospace;
 }
 </style>

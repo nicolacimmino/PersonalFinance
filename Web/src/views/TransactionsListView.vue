@@ -28,7 +28,7 @@
         </transition>
       </div>
       <template v-for="(transactions, booking_date) in byDate" v-bind:key="booking_date">
-        <div class="transactions-date-header">
+        <div class="transactions-date-header pf-text-large">
           {{ moment(booking_date).format("DD-MM-YYYY") }}
         </div>
         <div v-for="transaction in transactions" :key="transaction.id">
@@ -221,8 +221,6 @@ export default {
 
 .transactions-table {
   background-color: white;
-  font-family: monospace;
-  font-size: 12px;
 }
 
 .transactions-date-header {
@@ -231,18 +229,15 @@ export default {
   margin-top: 12px;
   background-color: #6494AA;
   color: white;
-  font-size: 12px;
-  font-family: monospace;
 }
 
 .add_button {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: 40px;
+  right: 40px;
+  font-size: 40px;
   border-radius: 50%;
   background-color: var(--pf-c-dark-gray);
-  width: 50px;
-  font-size: 50px;
   color: white;
 }
 </style>

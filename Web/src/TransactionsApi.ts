@@ -1,4 +1,5 @@
 import axios from "axios";
+import Alert from "@/models/alert.ts";
 
 const HOST = import.meta.env.VITE_HOST;
 
@@ -169,7 +170,7 @@ export default class TransactionApi {
 
     }
 
-    static async loadAllAlerts() {
+    static async loadAllAlerts(): Promise<Alert[]> {
         return axios({
             headers: {
                 "X-API-KEY": localStorage.getItem("pfinanceApiKey")

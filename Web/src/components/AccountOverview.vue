@@ -1,25 +1,25 @@
 <template>
   <div class="account-details"
        @click="this.showAccountTransactions(account.id)">
-    <div class="description">
+    <div class="description pf-text-medium">
       {{ account.description }}
     </div>
-    <div class="code">
+    <div class="code pf-text-small">
       {{ account.code }}
     </div>
-    <div :class="['balance', (account.balance_cents < 0) ? 'negative-balance' : 'non-negative-balance']">
+    <div :class="['balance pf-text-medium', (account.balance_cents < 0) ? 'negative-balance' : 'non-negative-balance']">
       <span v-if="privacy">---  {{ account.currency }}</span>
       <span v-else>{{ account.balance_cents / 100.0 }} {{ account.currency }}</span>
     </div>
-    <div v-if="!privacy" class="balance-in-ref-currency">
+    <div v-if="!privacy && account.ref_currency !== account.currency" class="balance-in-ref-currency pf-text-small">
       {{ account.balance_cents_in_ref_currency / 100.0 }} {{ account.ref_currency }}
     </div>
-    <div class="iban">
+    <div class="iban pf-text-small">
       IBAN: {{ (account.iban != "") ? account.iban : "-" }}
     </div>
-    <div class="status">
+    <div class="status pf-text-medium">
        <span :class="(account.status == 'OK') ? 'pi' : 'pi pi-exclamation-triangle'"
-             :style="{color:'red'}"></span>
+             :style="{color:'red'}"></span>&nbsp;&nbsp;
       Status: {{ account.status }}
     </div>
   </div>
@@ -61,40 +61,36 @@ export default {
     'code balance-ref'
     'iban iban'
     'status status';
-  padding: 0px;
-  margin-bottom: 2px;
+  padding: 5px;
+  margin-bottom: 5px;
   background-color: #E9B87222;
+  row-gap: 3px;
 }
 
 .description {
   grid-area: description;
-  font-size: 20px;
 }
 
 .status {
   grid-area: status;
-  font-size: 15px;
   text-align: right;
 }
 
 .code {
   grid-area: code;
   text-align: left;
-  font-size: 15px;
   color: grey;
 }
 
 .balance-in-ref-currency {
   grid-area: balance-ref;
   text-align: right;
-  font-size: 15px;
   color: grey;
 }
 
 .balance {
   grid-area: balance;
   text-align: right;
-  font-size: 20px;
   font-weight: bold;
 }
 
@@ -109,7 +105,6 @@ export default {
 .iban {
   grid-area: iban;
   text-align: left;
-  font-size: 15px;
   overflow: clip;
 }
 

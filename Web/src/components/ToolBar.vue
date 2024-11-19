@@ -5,6 +5,7 @@
          :style="(refCurrencyEnabled) ? 'color:black' : 'color:#EEEEEE'"
          @click="toggleRefCurrency(); $emit('ref-currency', this.refCurrency)"
       >
+        &nbsp;
       </i>
     </div>
     <div class="arrow-up toolbar-icon">
@@ -12,6 +13,7 @@
          :style="(upEnabled) ? 'color:black' : 'color:#EEEEEE'"
          @click="$emit('arrow-up')"
       >
+        &nbsp;
       </i>
     </div>
     <div class="maximize toolbar-icon">
@@ -19,6 +21,7 @@
          :style="(compactEnabled) ? 'color:black' : 'color:#EEEEEE'"
          @click="toggleCompact(); $emit('compact', this.compact)"
       >
+        &nbsp;
       </i>
     </div>
     <div class="eye toolbar-icon">
@@ -26,6 +29,7 @@
          :style="(eyeEnabled) ? 'color:black' : 'color:#EEEEEE'"
          @click="togglePrivacy(); $emit('privacy', this.privacy);"
       >
+        &nbsp;
       </i>
     </div>
   </div>
@@ -87,10 +91,12 @@ export default {
   margin-top: 10px;
   background-color: white;
   text-align: center;
+  /*position: sticky;*/
+  /*top: 0;*/
 }
 
 .toolbar-icon {
-  font-size: 25px;
+  font-size: 1.5em;
 }
 
 .ref-currency {
