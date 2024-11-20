@@ -10,8 +10,15 @@
           <span v-html="formatPlainTextAlert(alert.message)"></span>
         </a>
       </div>
+      <div v-else-if="alert.item==='BUDGETS'">
+        <a href="/budgets">
+          <span v-html="formatPlainTextAlert(alert.message)"></span>
+        </a>
+      </div>
       <div v-else>
-        <span v-html="formatPlainTextAlert(alert.message)"></span>
+        <!--  Ugly workaround. On mobile chrome only font size gets smaller unless at least one
+                  item is long enough!-->
+        <span v-html="formatPlainTextAlert(alert.message)"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
     </div>
   </div>

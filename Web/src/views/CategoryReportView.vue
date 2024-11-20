@@ -140,7 +140,7 @@ export default {
       TransactionApi.loadByCategoryReport().then(fetchedCategoriesReport => {
         let aggregatedData = TransactionsDataTransformations.aggregateSubLevels(
             fetchedCategoriesReport.reports, typeFilter, categoryFilter
-        ).sort((a, b) => (a.total_cents > b.total_cents) ? 1 : -1);
+        ).sort((a, b) => (a.total_cents > b.total_cents) ? -1 : 1);
 
         if (aggregatedData.length === 0) {
           this.loaded = true;
@@ -159,7 +159,7 @@ export default {
           ),
           datasets: [{
             backgroundColor:
-                ['#00429d', '#3e67ae', '#618fbf', '#85b7ce', '#b1dfdb', '#ffcab9', '#fd9291', '#e75d6f', '#c52a52', '#93003b']
+                ['#00429d', '#367176', '#649856', '#90be36', '#bde516', '#fcd6b7', '#f9aa8c', '#f57b5e', '#ea4438', '#cb0032']
             ,
             data: this.categories.map(
                 item => {

@@ -3,7 +3,7 @@
     <div class="mask">
       <div class="wrapper">
         <div class="container">
-          <div class="creditor pf-text-medium">
+          <div class="creditor pf-text-large">
             {{ transaction.creditor_name }}
           </div>
           <div :class="(transaction.amount_cents < 0) ? 'negative-price' : 'non-negative-price'">
@@ -19,12 +19,12 @@
                 </option>
               </select>
             </div>
-            <div v-else @click="this.editCategory=true" class="category">
+            <div v-else @click="this.editCategory=true" class="category pf-text-large">
               {{ (selectedCategory) ? selectedCategory : "???" }}
             </div>
           </div>
           <div v-else>
-            <div v-if="this.editDestinationAccount" class="destinationAccount">
+            <div v-if="this.editDestinationAccount" class="destinationAccount pf-text-large">
               <select v-model="selectedDestinationAccount" @change="this.editDestinationAccount=false">
                 <option v-for="account in accounts" v-bind:key="account" v-bind:value="account">{{
                     account.description
@@ -46,7 +46,7 @@
           <div class="booking-date pf-text-medium">
             {{ moment(transaction.booking_date).format("DD-MM-YYYY") }}
           </div>
-          <div class="description pf-text-medium">
+          <div class="description pf-text-large">
             {{ transaction.description }}
           </div>
           <div class="transfer">
@@ -145,8 +145,8 @@ export default {
 
 .wrapper {
   /*padding: 20px;*/
-  width: 80%;
-  margin: auto auto;
+  width: 95%;
+  margin: auto auto auto auto;
   /*display: table-cell;*/
   /*vertical-align: center;*/
   /*horiz-align: center;*/
@@ -155,8 +155,11 @@ export default {
 }
 
 .container {
-  margin: auto auto;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
   padding: 20px;
+  row-gap: 5px;
   background-color: var(--color-background);
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
@@ -185,6 +188,7 @@ export default {
 .creditor {
   grid-area: creditor;
   padding-top: 10px;
+  padding-bottom: 5px;
 }
 
 .description {

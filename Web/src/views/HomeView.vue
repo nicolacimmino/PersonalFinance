@@ -10,7 +10,7 @@
       <div v-if="this.alerts.length === 0">
         No Alerts.
       </div>
-      <template v-for="(alerts, type) in byItemType" v-bind:key="type">
+      <template v-for="(alerts, type) in alertsByItemType" v-bind:key="type">
         <div class="alert-group-header pf-text-large">
           {{ typeToTypeDescription(type) }} ({{ alerts.length }})
         </div>
@@ -71,7 +71,7 @@ export default {
     }
   },
   computed: {
-    byItemType() {
+    alertsByItemType() {
       return this.alerts.reduce((acc, alert) => {
         (acc[alert.item] = acc[alert.item] || []).push(alert)
         return acc

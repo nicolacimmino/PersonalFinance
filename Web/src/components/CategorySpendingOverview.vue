@@ -1,10 +1,12 @@
 <template>
   <div class="cso-category-details">
     <div class="cso-category pf-text-large" @click="$emit('categoryClick', entry.category)">
-      {{ entry.category }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <!--  Ugly workaround. On mobile chrome only font size gets smaller unless at least one
+          item is long enough!-->
+      {{ entry.category }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </div>
     <div class="cso-transactions-n pf-text-medium" @click="$emit('transactionsClick', entry.category)">
-      <a>Trans.: {{ entry.transactions_count }}</a>
+      <a>Trans.: {{ entry.transactions_count }}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </div>
     <div v-if="privacy" class="cso-total pf-text-medium">
       ---&nbsp;{{ entry.currency }}
