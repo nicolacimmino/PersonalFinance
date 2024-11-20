@@ -2,7 +2,6 @@ use crate::go_cardless::dto::prelude::AccountInfoResponseDto;
 
 pub struct GoCardlessAccountInfo {
     pub status: String,
-    pub iban: String,
 }
 
 pub trait ConvertsToGoCardlessAccountInfo {
@@ -19,7 +18,6 @@ impl ConvertsToGoCardlessAccountInfo for &AccountInfoResponseDto {
 
         return GoCardlessAccountInfo {
             status: (&status).parse().unwrap(),
-            iban: self.iban.clone(),
         };
     }
 }

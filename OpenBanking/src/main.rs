@@ -67,10 +67,9 @@ fn sync_account_transactions(ob_account_id: &Uuid, provider_account_id: &String,
 
     diesel::update(accounts)
         .filter(schema::accounts::id.eq(account_id))
-        .set((
-            schema::accounts::status.eq(&account_status),
-            schema::accounts::iban.eq(&account_info.iban)
-        ))
+        .set(
+            schema::accounts::status.eq(&account_status)
+        )
         .execute(connection).expect("Failed to update account status");
 
     if account_status != "OK" {
