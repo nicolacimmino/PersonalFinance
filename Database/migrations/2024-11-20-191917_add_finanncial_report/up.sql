@@ -1,33 +1,44 @@
-CREATE VIEW financial_kpi AS
-SELECT
-    'CFY' AS label,
-    sum(amount_cents_eur) AS amount_cents
+CREATE OR REPLACE FUNCTION get_kpis(
+    date_from timestamp,
+    date_to timestamp
+)
+    RETURNS TABLE
+            (
+                label        TEXT,
+                amount_cents int4
+            )
+AS
+$$
+SELECT 'CFY.A'                                           AS label,
+       sum(transactions_enriched.amount_cents_eur)::int4 AS amount_cents
 FROM transactions_enriched
-WHERE booking_date BETWEEN '2024-01-01' AND '2024-12-31'
-  AND type <> 'INITIAL'
+WHERE transactions_enriched.booking_date >= date_from
+  AND transactions_enriched.booking_date <= date_to
+  AND transactions_enriched.type <> 'INITIAL' AND transactions_enriched.category not like 'PSV.%'
 UNION
-SELECT
-    'TWO' AS label,
-    sum(amount_cents_eur) AS amount_cents
+SELECT 'CFY.O'                                           AS label,
+       sum(transactions_enriched.amount_cents_eur)::int4 AS amount_cents
 FROM transactions_enriched
+WHERE transactions_enriched.booking_date >= date_from
+  AND transactions_enriched.booking_date <= date_to
+  AND transactions_enriched.type <> 'INITIAL'
 UNION
-SELECT
-    'CSH' AS label,
-    sum(amount_cents_eur) AS amount_cents
+SELECT 'TWO'                                             AS label,
+       sum(transactions_enriched.amount_cents_eur)::int4 AS amount_cents
 FROM transactions_enriched
-WHERE account_type='CASH'
+WHERE transactions_enriched.booking_date <= date_to
 UNION
-SELECT
-    'INV' AS label,
-    sum(amount_cents_eur) AS amount_cents
+SELECT 'CSH'                                             AS label,
+       sum(transactions_enriched.amount_cents_eur)::int4 AS amount_cents
 FROM transactions_enriched
-WHERE account_type='INV'
+WHERE transactions_enriched.account_type = 'CASH' OR transactions_enriched.account_type like 'BANK_%'
+  AND transactions_enriched.booking_date <= date_to
 UNION
-SELECT
-    'BNK' AS label,
-    sum(amount_cents_eur) AS amount_cents
+SELECT 'INV'                                             AS label,
+       sum(transactions_enriched.amount_cents_eur)::int4 AS amount_cents
 FROM transactions_enriched
-WHERE account_type like 'BANK_%';
-
-
+WHERE transactions_enriched.account_type = 'INV'
+  AND transactions_enriched.booking_date <= date_to
+$$
+    LANGUAGE sql;
 

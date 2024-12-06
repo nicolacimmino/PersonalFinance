@@ -13,8 +13,16 @@
     </div>
     <div v-else>
       <template v-for="(accounts, type) in byAccountType" v-bind:key="type">
-        <div class="account-group-header">
-          {{ typeToTypeDescription(type) }} ({{ accounts.length }})
+        <div class="account-group-header pf-text-medium">
+          <div class="account-group-description">
+            {{ typeToTypeDescription(type) }} ({{ accounts.length }})
+          </div>
+          <div v-if="!privacy" class="account-group-balance">
+            {{ Math.floor(totalEurCentsForType(type) / 100.0) }} EUR
+          </div>
+          <div v-else class="account-group-balance">
+            ---
+          </div>
         </div>
         <template v-for="account in accounts.sort((a,b) => (a.description > b.description) ? 1 : -1) "
                   v-bind:key="account.id">
@@ -75,6 +83,9 @@ export default {
         this.loaded = true
       });
     },
+    totalEurCentsForType(type) {
+      return this.byAccountType[type].reduce((sum, account) => sum + account.balance_cents_in_ref_currency, 0)
+    },
     typeToTypeDescription(type) {
       switch (type) {
         case 'CASH':
@@ -112,10 +123,22 @@ export default {
 }
 
 .account-group-header {
+  display: grid;
+  grid-template: 'description balance';
   text-align: left;
   padding: 5px;
   margin-top: 15px;
   background-color: #6494AA;
   color: white;
 }
+
+.account-group-description {
+  grid-area: description;
+}
+
+.account-group-balance {
+  grid-area: balance;
+  text-align: right;
+}
+
 </style>

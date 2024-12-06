@@ -58,6 +58,9 @@
       <div>
         <RouterLink class="navigation-link" to="/accounts">Accounts</RouterLink>
       </div>
+      <div>
+        <RouterLink class="navigation-link" to="/kpis">KPIs</RouterLink>
+      </div>
     </div>
   </div>
 </template>
@@ -72,6 +75,7 @@ export default {
     refCurrencyEnabled: Boolean,
     eyeEnabled: Boolean
   },
+  emits: ["ref-currency", "arrow-up", "compact", "privacy"],
   data() {
     return {
       privacy: (localStorage.getItem("privacy") === "true"),

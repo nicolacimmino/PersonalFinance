@@ -85,6 +85,19 @@ export default class TransactionApi {
 
     }
 
+    static async loadKpis() {
+        return axios({
+            headers: {
+                "X-API-KEY": localStorage.getItem("pfinanceApiKey")
+            },
+            method: "get",
+            url: `${HOST}/api/reports/kpis`,
+        }).then((response) => {
+            return response.data;
+        });
+
+    }
+
     static async loadAllAccounts() {
         return axios({
             headers: {

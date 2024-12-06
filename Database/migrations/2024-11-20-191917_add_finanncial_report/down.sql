@@ -1,1 +1,1 @@
-DROP VIEW financial_kpi;
+DROP FUNCTION IF EXISTS get_kpis;
