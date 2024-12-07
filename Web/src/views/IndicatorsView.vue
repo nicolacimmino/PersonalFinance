@@ -64,10 +64,21 @@
       </div>
       <div class="kpi-derived-entry">
         <div class="kpi-description">
-          INP/(ESS+DST) (months)
+          INP/ESS+DST (months)
         </div>
         <div v-if="!privacy" class="kpi-value">
           {{ Math.floor(valueOfKpi('INP') / (164000 + 125000)) }}
+        </div>
+        <div v-else class="kpi-value">
+          ---
+        </div>
+      </div>
+      <div class="kpi-derived-entry">
+        <div class="kpi-description">
+          INV 6%/ESS+DST (months)
+        </div>
+        <div v-if="!privacy" class="kpi-value">
+          {{ Math.floor((0.06 * valueOfKpi('INV')) / (164000 + 125000)) }}
         </div>
         <div v-else class="kpi-value">
           ---
