@@ -14,7 +14,7 @@
                            :accounts="accounts"
                            :categories="categories"
                            @cancel="editDialog = false; this.followEditReturn();"
-                           @save="(newCategory, newAccountTo, isTransfer) => {onCategoryChange(newCategory, newAccountTo, isTransfer); this.followEditReturn();}">
+                           @save="(newCategory, newAccountTo, isTransfer, newDescription) => {onCategoryChange(newCategory, newAccountTo, isTransfer, newDescription); this.followEditReturn();}">
           </TransactionEdit>
         </transition>
       </div>
@@ -160,13 +160,13 @@ export default {
       this.transaction = transaction;
       this.editDialog = true;
     },
-    onCategoryChange(newCategory, newAccountTo, isTransfer) {
+    onCategoryChange(newCategory, newAccountTo, isTransfer, newDescription) {
       this.editDialog = false;
       this.saving = true;
       if (!isTransfer) {
         let type = (this.transaction.amount_cents <= 0) ? "EXPENSE" : "INCOME";
 
-        TransactionApi.updateTransactionCategory(this.transaction.id, newCategory, type).then(updatedTransaction => {
+        TransactionApi.updateTransactionCategory(this.transaction.id, newCategory, type, newDescription).then(updatedTransaction => {
               this.saving = false;
               this.transactions[this.transactions.findIndex(
                   transaction => transaction.id === updatedTransaction.id)] = updatedTransaction;

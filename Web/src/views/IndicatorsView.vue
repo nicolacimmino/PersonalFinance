@@ -10,7 +10,7 @@
     <div v-else>
       <div class="kpi-header">
         <div class="kpi-label">
-          KPI
+          Indicator
         </div>
         <div class="kpi-description">
 
@@ -37,7 +37,7 @@
       </template>
       <div class="derived">
         <div class="kpi-description">
-          Derived KPIs.
+          Derived Indicators
         </div>
       </div>
       <div class="kpi-derived-entry">
@@ -53,10 +53,46 @@
       </div>
       <div class="kpi-derived-entry">
         <div class="kpi-description">
+          INP/ESS (months)
+        </div>
+        <div v-if="!privacy" class="kpi-value">
+          {{ Math.floor(valueOfKpi('INP') / 164000) }}
+        </div>
+        <div v-else class="kpi-value">
+          ---
+        </div>
+      </div>
+      <div class="kpi-derived-entry">
+        <div class="kpi-description">
+          INP/(ESS+DST) (months)
+        </div>
+        <div v-if="!privacy" class="kpi-value">
+          {{ Math.floor(valueOfKpi('INP') / (164000 + 125000)) }}
+        </div>
+        <div v-else class="kpi-value">
+          ---
+        </div>
+      </div>
+      <div class="kpi-derived-entry">
+        <div class="kpi-description">
           Cash (% of TWO)
         </div>
         <div v-if="!privacy" class="kpi-value">
           {{ (Math.abs(100 * valueOfKpi('CSH') / valueOfKpi('TWO'))).toFixed(1) }}
+        </div>
+        <div v-else class="kpi-value">
+          ---
+        </div>
+      </div>
+      <div class="kpi-derived-entry">
+        <div class="kpi-description">
+          Income Active (% of total)
+        </div>
+        <div v-if="!privacy" class="kpi-value">
+          {{ (Math.abs(100 * valueOfKpi('INA') / (valueOfKpi('INA') + (valueOfKpi('INP'))))).toFixed(1) }}
+        </div>
+        <div v-else class="kpi-value">
+          ---
         </div>
       </div>
     </div>
@@ -89,29 +125,58 @@ export default {
     },
     loadAllKpis() {
       TransactionApi.loadKpis().then(response => {
-        this.kpis = response.kpis
+        this.kpis = response.kpis.sort((a, b) => (this.labelToPosition(a.label) > this.labelToPosition(b.label)) ? 1 : -1)
         this.loaded = true
       });
     },
     valueOfKpi(label) {
-      return this.kpis.filter(item => {
+      let res = this.kpis.filter(item => {
         return item.label === label;
-      })[0].total_cents;
+      })[0]
+      return (res) ? res.total_cents : 0;
     },
     labelToDescription(type) {
-      switch (type) {
+      switch (type.substring(0, 3)) {
         case 'CSH':
           return "Cash"
         case 'TWO':
           return "Total Worth"
-        case 'CFY.A':
-          return "Cash Flow (Active)"
-        case 'CFY.O':
-          return "Cash Flow (Overall)"
+        case 'CFA':
+          return "Cash Flow Active"
+        case 'CFO':
+          return "Cash Flow"
         case 'INV':
           return "Investments"
+        case 'INA':
+          return "Income Active"
+        case 'INP':
+          return "Income Passive"
+        case 'CUR':
+          return type.substring(4, 7) + " in EUR"
         default:
           return "Other"
+      }
+    },
+    labelToPosition(type) {
+      switch (type.substring(0, 3)) {
+        case 'CSH':
+          return 0
+        case 'INV':
+          return 1
+        case 'TWO':
+          return 2
+        case 'INA':
+          return 3
+        case 'INP':
+          return 4
+        case 'CFA':
+          return 5
+        case 'CFO':
+          return 6
+        case 'CUR':
+          return 10000000 - (this.valueOfKpi(type)/100)
+        default:
+          return 8
       }
     }
   }
@@ -122,7 +187,7 @@ export default {
 .kpi-header {
   display: grid;
   grid-template: 'label description value';
-  grid-template-columns: 2fr 6fr 4fr;
+  grid-template-columns: 4fr 6fr 4fr;
   width: 90%;
   margin: auto auto;
   padding-left: 10px;
@@ -135,7 +200,7 @@ export default {
 .kpi-entry {
   display: grid;
   grid-template: 'label description value';
-  grid-template-columns: 2fr 6fr 4fr;
+  grid-template-columns: 4fr 6fr 4fr;
   width: 90%;
   margin: auto auto;
   padding-top: 5px;

@@ -59,7 +59,7 @@
         <RouterLink class="navigation-link" to="/accounts">Accounts</RouterLink>
       </div>
       <div>
-        <RouterLink class="navigation-link" to="/kpis">KPIs</RouterLink>
+        <RouterLink class="navigation-link" to="/indicators">Indicators</RouterLink>
       </div>
     </div>
   </div>

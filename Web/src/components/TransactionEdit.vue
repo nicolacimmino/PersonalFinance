@@ -46,7 +46,10 @@
           <div class="booking-date pf-text-medium">
             {{ moment(transaction.booking_date).format("DD-MM-YYYY") }}
           </div>
-          <div class="description pf-text-large">
+          <div v-if="editDescription" class="description pf-text-large">
+            <textarea v-model="this.editedDescription"/>
+          </div>
+          <div v-else class="description pf-text-large" @click="this.editDescription=true">
             {{ transaction.description }}
           </div>
           <div class="transfer">
@@ -71,7 +74,7 @@
               Cancel
             </button>
             <button class="button-save"
-                    @click="$emit('save', selectedCategory, (selectedDestinationAccount) ? selectedDestinationAccount.id : null, isTransfer)"
+                    @click="$emit('save', selectedCategory, (selectedDestinationAccount) ? selectedDestinationAccount.id : null, isTransfer, editedDescription)"
                     :disabled="!saveEnabled()">
               Save
             </button>
@@ -91,6 +94,7 @@ export default {
     this.selectedCategory = this.transaction.category;
     this.selectedDestinationAccount = this.accounts.find((account) => account.id === this.transaction.account_to);
     this.isTransfer = this.transaction.type === "TRANSFER";
+    this.editedDescription = this.transaction.description;
   },
   props: {
     transaction: undefined,
@@ -103,7 +107,9 @@ export default {
       editCategory: false,
       isTransfer: Boolean,
       selectedDestinationAccount: Object,
-      editDestinationAccount: false
+      editDestinationAccount: false,
+      editDescription: false,
+      editedDescription: String
     }
   },
   components: {
@@ -113,6 +119,10 @@ export default {
     moment: moment,
     saveEnabled() {
       if (this.selectedCategory !== this.transaction.category) {
+        return true;
+      }
+
+      if (this.editedDescription !== this.transaction.description) {
         return true;
       }
 

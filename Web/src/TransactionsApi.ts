@@ -111,7 +111,7 @@ export default class TransactionApi {
 
     }
 
-    static async updateTransactionCategory(id, category, type) {
+    static async updateTransactionCategory(id, category, type, description) {
         return axios({
             headers: {
                 "X-API-KEY": localStorage.getItem("pfinanceApiKey")
@@ -120,7 +120,8 @@ export default class TransactionApi {
             url: `${HOST}/api/transactions/${id}`,
             data: {
                 type: type,
-                category: category
+                category: category,
+                description: description
             }
         }).then((response) => {
             return response.data;

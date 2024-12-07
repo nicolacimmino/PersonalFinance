@@ -2,6 +2,7 @@
   <div class="transaction-details">
     <div v-if="transaction.type === 'TRANSFER'" class="transaction-category pf-text-medium">
       <span :class="(transaction.amount_cents < 0) ? 'pi pi-arrow-right' : 'pi pi-arrow-left'"></span>
+      &nbsp;
       {{
         (transaction.account_to) ? accounts.find((account) => account.id === transaction.account_to).description : "-"
       }}
@@ -23,8 +24,11 @@
       {{ transaction.amount_cents_in_ref_currency / 100.0 }} {{ transaction.ref_currency }}
       </span>
     </div>
-    <div class="transaction-description pf-text-medium">
-      {{ (transaction.creditor_name) ? transaction.creditor_name : transaction.description }}
+    <div class="transaction-creditor pf-text-medium">
+      {{ (transaction.creditor_name) ? transaction.creditor_name : "---" }}
+    </div>
+    <div class="transaction-description pf-text-small">
+      {{ transaction.description }}
     </div>
   </div>
 </template>
@@ -54,9 +58,10 @@ export default {
 .transaction-details {
   display: grid;
   grid-template:
-    'category amount amount'
-    'account-name account-name amount-ref'
-    'description description description';
+    'category category amount amount'
+    'account-name account-name account-name amount-ref'
+    'creditor creditor creditor creditor'
+    'description description description description';
   padding: 5px;
   margin-bottom: 2px;
   background-color: var(--color-second-background);
@@ -64,6 +69,10 @@ export default {
 
 .transaction-description {
   grid-area: description;
+}
+
+.transaction-creditor {
+  grid-area: creditor;
 }
 
 .transaction-account-name {

@@ -5,7 +5,7 @@ import CategoryReportView from './views/CategoryReportView.vue'
 import BudgetReportView from './views/BudgetReportView.vue'
 import HomeView from './views/HomeView.vue'
 import AccountsView from './views/AccountsView.vue'
-import KpisView from './views/KpisView.vue'
+import IndicatorsView from './views/IndicatorsView.vue'
 
 const routes = [
     {
@@ -56,9 +56,9 @@ const routes = [
         props: true
     },
     {
-        name: 'kpis',
-        path: '/kpis',
-        component: KpisView,
+        name: 'indicators',
+        path: '/indicators',
+        component: IndicatorsView,
         props: true
     },
 ]
