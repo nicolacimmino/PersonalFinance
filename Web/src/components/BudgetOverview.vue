@@ -1,24 +1,59 @@
 <template>
   <div class="budget-details">
-    <div class="description pf-text-large">
+    <div class="budget-description">
       {{ budget.description }}
     </div>
-    <div class="budget-size pf-text-medium">
-      {{ (!privacy) ? Math.floor(Math.abs(budget.amount_cents / 100.0)) + "&nbsp;" + budget.currency : "" }}
+    <div class="budget-data-container">
+      <div class="budget-data">
+        <div class="budget-data-label">
+          Valid from
+        </div>
+        <div class="budget-data-value">
+          {{ budget.from_date }}
+        </div>
+      </div>
+      <div class="budget-data">
+        <div class="budget-data-label">
+          Valid to
+        </div>
+        <div class="budget-data-value">
+          {{ budget.to_date }}
+        </div>
+      </div>
+      <div class="budget-data" v-if="!privacy">
+        <div class="budget-data-label">
+          Size
+        </div>
+        <div class="budget-data-value">
+          {{ Math.floor(Math.abs(budget.amount_cents / 100.0))  }} EUR
+        </div>
+      </div>
+      <div class="budget-data" v-if="!privacy">
+        <div class="budget-data-label">
+          Spent
+        </div>
+        <div class="budget-data-value">
+          {{ Math.floor(Math.abs(budget.spent_cents / 100.0)) }} {{ budget.currency }}
+        </div>
+      </div>
+      <div class="budget-data">
+        <div class="budget-data-label">
+          Spent %
+        </div>
+        <div class="budget-data-value">
+          {{ Math.floor((100.0 * Math.abs(budget.spent_cents)) / budget.amount_cents) }}%
+        </div>
+      </div>
+      <div class="budget-data">
+        <div class="budget-data-label">
+          Transactions
+        </div>
+        <div class="budget-data-value">
+          {{ budget.transactions }}
+        </div>
+      </div>
     </div>
-    <div class="budget-dates pf-text-medium">
-      {{ budget.from_date }} - {{ budget.to_date }}
-    </div>
-    <div v-if="privacy" class="budget-spent pf-text-medium">
-      Spent: {{ Math.floor((100.0 * Math.abs(budget.spent_cents)) / budget.amount_cents) }}%
-    </div>
-    <div v-else class="budget-spent pf-text-medium">
-      Spent: {{ Math.floor(Math.abs(budget.spent_cents / 100.0)) }} {{ budget.currency }}
-    </div>
-    <div class="budget_transactions pf-text-medium">
-      Transactions: {{ budget.transactions }}
-    </div>
-    <div class="budget_graph">
+    <div class="budget-graph">
       <Pie id="{{budget.id}}"
            :options="chartOptions(budget)"
            :data="chartData(budget)"
@@ -113,17 +148,14 @@ export default {
 .budget-details {
   display: grid;
   grid-template: 'description'
-                 'budget_dates'
-                 'budget_size'
-                 'budget_spent'
-                 'budget_transactions'
+                 'budget_data'
                  'budget_graph';
   margin-bottom: 15px;
   row-gap: 5px;
   background-color: var(--color-background)
 }
 
-.description {
+.budget-description {
   grid-area: description;
   text-align: left;
   padding-left: 5px;
@@ -131,35 +163,32 @@ export default {
   color: var(--color-negative-text);
 }
 
-.budget-size {
-  grid-area: budget_size;
-  text-align: center;
-  padding-right: 5px;
-}
-
-.budget_transactions {
-  grid-area: budget_transactions;
-  text-align: center;
-  padding-right: 5px;
-}
-
-.budget-dates {
-  grid-area: budget_dates;
-  text-align: center;
-  padding-right: 5px;
-}
-
-.budget-spent {
-  grid-area: budget_spent;
-  text-align: center;
-  padding-right: 5px;
-}
-
-
-.budget_graph {
+.budget-graph {
   grid-area: budget_graph;
   width: 190px;
   margin: auto auto;
+}
+
+.budget-data {
+  display: grid;
+  grid-template: 'label value';
+  margin-bottom: 15px;
+  row-gap: 5px;
+  background-color: var(--color-background)
+}
+
+.budget-data-label {
+  grid-area: label;
+  text-align: left;
+  font-size: var(--pf-text-medium-font-size);
+  color: var(--color-text);
+}
+
+.budget-data-value {
+  grid-area: value;
+  text-align: right;
+  font-size: var(--pf-text-medium-font-size);
+  color: var(--color-text);
 }
 
 </style>
