@@ -25,7 +25,7 @@
           Size
         </div>
         <div class="budget-data-value">
-          {{ Math.floor(Math.abs(budget.amount_cents / 100.0))  }} EUR
+          {{ Math.floor(Math.abs(budget.amount_cents / 100.0)) }} {{ budget.currency }}
         </div>
       </div>
       <div class="budget-data" v-if="!privacy">
@@ -53,60 +53,75 @@
         </div>
       </div>
     </div>
-    <div class="budget-graph">
-      <Pie id="{{budget.id}}"
-           :options="chartOptions(budget)"
-           :data="chartData(budget)"
-      />
+    <div class="budget-graph-spent-container">
+      <div class="budget-graph-spent">
+        <Bar id="{{budget.id}}"
+             :options="chartOptions()"
+             :data="chartData(budget)"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import 'primeicons/primeicons.css'
-import {Pie} from 'vue-chartjs'
-import {Chart as ChartJS, ArcElement, Tooltip, Legend} from 'chart.js'
-import ChartDataLabels from 'chartjs-plugin-datalabels'
+import {Bar} from 'vue-chartjs'
 import 'primeicons/primeicons.css'
+import moment from "moment";
+import {Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale} from 'chart.js'
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels)
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels)
 
 export default {
   components: {
-    Pie: Pie
+    Bar: Bar
   },
   props: {
     budget: Object,
     privacy: Boolean
   },
   methods: {
-    chartOptions(budget) {
+    chartOptions() {
       return {
         responsive: true,
-        layout: {
-          padding: 10,
+        font: {
+          size: 15
         },
         plugins: {
+          legend: {
+            display: false
+          },
           datalabels: {
             formatter: (value, ctx) => {
-              if (ctx.chart.data.datasets[0].data.length === 1) {
-                return null
+              if (ctx.dataIndex === 0) {
+                if(this.privacy) {
+                  return "---"
+                }
+                return value
               }
-              let sum = 0;
-              ctx.chart.data.datasets[0].data.map(data => {
-                sum += data;
-              });
-              return (value * 100 / sum).toFixed(2) + "%";
+              return Math.round(value / ctx.dataset.data[0] * 100) + "%"
             },
             color: '#333333',
             backgroundColor: '#DDDDDDAE',
             borderRadius: 10,
-            anchor: 'end',
+            anchor: 'center',
             font: {
               size: 15
             }
           }
-        }
+        },
+        scales: {
+          x: {
+            stacked: false,
+            display: !this.privacy,
+          },
+          y: {
+            stacked: true
+          }
+        },
+        indexAxis: 'y',
       }
     },
     isBudgetExceeded(budget) {
@@ -115,28 +130,38 @@ export default {
     isBudgetCloseToMax(budget) {
       return budget.spent_cents > budget.amount_cents * 0.75;
     },
+    percentileTimeSpent(budget) {
+      const start = moment(budget.from_date, "YYYY-MM-DD");
+      const end = moment(budget.to_date, "YYYY-MM-DD");
+      if (end.isBefore(moment.now())) {
+        return 1.0;
+      }
+      const duration = moment.duration(start.diff(end)).asDays();
+      const daysSinceStart = moment.duration(start.diff(moment.now())).asDays();
+
+      return daysSinceStart / duration;
+    },
     chartData(budget) {
-      let colors = ["#09ed55", "#CCCCCC"];
+      let colors = ["#CCCCCC", "#34eb71", "#CCCCCC"];
 
       if (this.isBudgetCloseToMax(budget)) {
-        colors = ["#edd609", "#CCCCCC"]
+        colors[1] = "#edd609";
       }
 
       if (this.isBudgetExceeded(budget)) {
-        colors = ["#f79188"]
+        colors[1] = "#f79188"
       }
 
       return {
+        labels: ["Size", "Spent", "Time"],
         datasets: [{
-          backgroundColor: colors,
           data: [
+            Math.floor(Math.abs(budget.amount_cents / 100.0)),
             Math.floor(Math.abs(budget.spent_cents / 100.0)),
-            (budget.spent_cents < budget.amount_cents) ?
-                Math.floor(Math.abs(budget.amount_cents / 100.0) - Math.abs(budget.spent_cents / 100.0)) : null,
-          ].filter(item => {
-            return item !== null
-          })
-        }]
+            this.percentileTimeSpent(budget) * Math.abs(budget.amount_cents / 100.0),
+          ],
+          backgroundColor: colors
+        }],
       }
     }
   }
@@ -149,7 +174,7 @@ export default {
   display: grid;
   grid-template: 'description'
                  'budget_data'
-                 'budget_graph';
+                 'budget_graph_spent';
   margin-bottom: 15px;
   row-gap: 5px;
   background-color: var(--color-background)
@@ -163,10 +188,14 @@ export default {
   color: var(--color-negative-text);
 }
 
-.budget-graph {
-  grid-area: budget_graph;
-  width: 190px;
-  margin: auto auto;
+.budget-graph-spent-container {
+  text-align: center;
+}
+
+.budget-graph-spent {
+  grid-area: budget_graph_spent;
+  display: inline-block;
+  width: 100%;
 }
 
 .budget-data {
