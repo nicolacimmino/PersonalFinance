@@ -3,7 +3,7 @@
       @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
       :eye-enabled="true"
   />
-  <div class="pf-text-small">
+  <div>
     <div v-if="!loaded">
       Loading...
     </div>
@@ -16,7 +16,7 @@
 
         </div>
         <div class="kpi-value">
-          Value
+
         </div>
       </div>
       <template v-for="kpi in kpis" v-bind:key="kpi.label">
@@ -35,17 +35,16 @@
           </div>
         </div>
       </template>
-      <div class="derived">
-        <div class="kpi-description">
-          Derived Indicators
-        </div>
+
+      <div class="kpi-header">
+        Derived Indicators
       </div>
       <div class="kpi-derived-entry">
         <div class="kpi-description">
           Cash/ESS (months)
         </div>
         <div v-if="!privacy" class="kpi-value">
-          {{ Math.floor(valueOfKpi('CSH') / 164000) }}
+          {{ Math.floor(valueOfKpi('CASH') / 164000) }}
         </div>
         <div v-else class="kpi-value">
           ---
@@ -53,10 +52,10 @@
       </div>
       <div class="kpi-derived-entry">
         <div class="kpi-description">
-          INP/ESS (months)
+          INPS/ESS (months)
         </div>
         <div v-if="!privacy" class="kpi-value">
-          {{ Math.floor(valueOfKpi('INP') / 164000) }}
+          {{ Math.floor(valueOfKpi('INPS') / 164000) }}
         </div>
         <div v-else class="kpi-value">
           ---
@@ -64,10 +63,10 @@
       </div>
       <div class="kpi-derived-entry">
         <div class="kpi-description">
-          INP/ESS+DST (months)
+          INPS/ESS+DST (months)
         </div>
         <div v-if="!privacy" class="kpi-value">
-          {{ Math.floor(valueOfKpi('INP') / (164000 + 125000)) }}
+          {{ Math.floor(valueOfKpi('INPS') / (164000 + 125000)) }}
         </div>
         <div v-else class="kpi-value">
           ---
@@ -75,10 +74,10 @@
       </div>
       <div class="kpi-derived-entry">
         <div class="kpi-description">
-          INV 6%/ESS+DST
+          INVT 6%/ESS+DST
         </div>
         <div v-if="!privacy" class="kpi-value">
-          {{ Math.floor((0.06 * valueOfKpi('INV')) / (164000 + 125000)) }}
+          {{ Math.floor((0.06 * valueOfKpi('INVT')) / (164000 + 125000)) }}
         </div>
         <div v-else class="kpi-value">
           ---
@@ -89,7 +88,7 @@
           Cash (% of TWO)
         </div>
         <div v-if="!privacy" class="kpi-value">
-          {{ (Math.abs(100 * valueOfKpi('CSH') / valueOfKpi('TWO'))).toFixed(1) }}
+          {{ (Math.abs(100 * valueOfKpi('CASH') / valueOfKpi('TONW'))).toFixed(1) }}
         </div>
         <div v-else class="kpi-value">
           ---
@@ -100,7 +99,7 @@
           Income Active (% of total)
         </div>
         <div v-if="!privacy" class="kpi-value">
-          {{ (Math.abs(100 * valueOfKpi('INA') / (valueOfKpi('INA') + (valueOfKpi('INP'))))).toFixed(1) }}
+          {{ (Math.abs(100 * valueOfKpi('INAT') / (valueOfKpi('INAT') + (valueOfKpi('INPS'))))).toFixed(1) }}
         </div>
         <div v-else class="kpi-value">
           ---
@@ -136,57 +135,63 @@ export default {
     },
     loadAllKpis() {
       TransactionApi.loadKpis().then(response => {
+        this.kpis = response.kpis;
         this.kpis = response.kpis.sort((a, b) => (this.labelToPosition(a.label) > this.labelToPosition(b.label)) ? 1 : -1)
         this.loaded = true
       });
     },
     valueOfKpi(label) {
+      console.log(label)
       let res = this.kpis.filter(item => {
         return item.label === label;
       })[0]
-      return (res) ? res.total_cents : 0;
+      console.log(res)
+      console.log(this.kpis)
+      return (res) ? res.total_cents : 20;
     },
     labelToDescription(type) {
-      switch (type.substring(0, 3)) {
-        case 'CSH':
+      switch (type.substring(0, 4)) {
+        case 'CASH':
           return "Cash"
-        case 'TWO':
-          return "Total Worth"
-        case 'CFA':
+        case 'TONW':
+          return "Total Net Worth"
+        case 'CFAT':
           return "Cash Flow Active"
-        case 'CFO':
+        case 'CFOA':
           return "Cash Flow"
-        case 'INV':
+        case 'INVT':
           return "Investments"
-        case 'INA':
+        case 'INAT':
           return "Income Active"
-        case 'INP':
+        case 'INPS':
           return "Income Passive"
-        case 'CUR':
-          return type.substring(4, 7) + " in EUR"
         default:
+          if (type.substring(0, 1) == "C") {
+            return type.substring(1, 4) + " in EUR"
+          }
           return "Other"
       }
     },
     labelToPosition(type) {
-      switch (type.substring(0, 3)) {
-        case 'CSH':
+      switch (type.substring(0, 4)) {
+        case 'CASH':
           return 0
-        case 'INV':
+        case 'INVT':
           return 1
-        case 'TWO':
+        case 'TONW':
           return 2
-        case 'INA':
+        case 'INAT':
           return 3
-        case 'INP':
+        case 'INPS':
           return 4
-        case 'CFA':
+        case 'CFAT':
           return 5
-        case 'CFO':
+        case 'CFOA':
           return 6
-        case 'CUR':
-          return 10000000 - (this.valueOfKpi(type)/100)
         default:
+          if (type.substring(0, 1) === "C") {
+            return 10000000 - (this.valueOfKpi(type) / 100)
+          }
           return 8
       }
     }
@@ -196,16 +201,16 @@ export default {
 
 <style scoped>
 .kpi-header {
-  display: grid;
-  grid-template: 'label description value';
-  grid-template-columns: 4fr 6fr 4fr;
   width: 90%;
-  margin: auto auto;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
   padding-left: 10px;
   padding-right: 10px;
+  font-size: var(--pf-text-large-font-size);
   font-weight: bold;
-  padding-top: 50px;
-  border-bottom: solid 1px black;
+  background-color: var(--color-negative-background);
+  color: var(--color-negative-text);
 }
 
 .kpi-entry {
@@ -217,7 +222,7 @@ export default {
   padding-top: 5px;
   padding-left: 10px;
   padding-right: 10px;
-  /*grid-template-columns: 5fr 1fr 1fr 5fr;*/
+  font-size: var(--pf-text-small-font-size);
 }
 
 .kpi-label {
@@ -233,18 +238,6 @@ export default {
   grid-area: description;
 }
 
-.derived {
-  display: grid;
-  grid-template: 'description';
-  width: 90%;
-  margin: auto auto;
-  padding-left: 10px;
-  padding-right: 10px;
-  font-weight: bold;
-  padding-top: 50px;
-  border-bottom: solid 1px black;
-}
-
 .kpi-derived-entry {
   display: grid;
   grid-template: 'description value';
@@ -254,6 +247,6 @@ export default {
   padding-top: 5px;
   padding-left: 10px;
   padding-right: 10px;
-  /*grid-template-columns: 5fr 1fr 1fr 5fr;*/
+  font-size: var(--pf-text-small-font-size);
 }
 </style>

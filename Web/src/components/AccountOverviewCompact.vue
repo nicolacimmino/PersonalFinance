@@ -6,16 +6,12 @@
             :style="{color:'red'}"></span>
     </div>
     <div v-if="!refCurrencyActive" class="balance pf-text-medium">
-      <div :class="classOfAmount(account.balance_cents)">
         <span v-if="privacy">---</span>
         <span v-else>{{ account.balance_cents / 100.0 }} {{ account.currency }}</span>
-      </div>
     </div>
     <div v-else class="balance pf-text-medium">
-      <div :class="classOfAmount(account.balance_cents)">
         <span v-if="privacy">---</span>
         <span v-else>{{ account.balance_cents_in_ref_currency / 100.0 }} {{ account.ref_currency }}</span>
-      </div>
     </div>
   </div>
 </template>
@@ -35,9 +31,6 @@ export default {
     }
   },
   methods: {
-    classOfAmount(amount) {
-      return (amount < 0) ? 'negative-balance' : 'non-negative-balance'
-    },
     showAccountTransactions(account_id) {
       this.$router.push({
         path: '/transactions',
@@ -56,7 +49,7 @@ export default {
   grid-template: 'description balance';
   padding: 0px;
   margin-bottom: 2px;
-  background-color: #E9B87222;
+  background-color: var(--color-background)
 }
 
 .description {
@@ -68,14 +61,7 @@ export default {
   grid-area: balance;
   vertical-align: middle;
   text-align: right;
-}
-
-.negative-balance {
-  color: #A63D40;
-}
-
-.non-negative-balance {
-  color: #90A959;
+  color: var(--color-text);
 }
 
 </style>

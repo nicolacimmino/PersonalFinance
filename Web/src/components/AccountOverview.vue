@@ -7,7 +7,7 @@
     <div class="code pf-text-small">
       {{ account.code }}
     </div>
-    <div :class="['balance pf-text-medium', (account.balance_cents < 0) ? 'negative-balance' : 'non-negative-balance']">
+    <div class="balance pf-text-medium">
       <span v-if="privacy">---  {{ account.currency }}</span>
       <span v-else>{{ account.balance_cents / 100.0 }} {{ account.currency }}</span>
     </div>
@@ -18,9 +18,9 @@
       IBAN: {{ (account.iban != "") ? account.iban : "-" }}
     </div>
     <div class="status pf-text-medium">
-       <span :class="(account.status == 'OK') ? 'pi' : 'pi pi-exclamation-triangle'"
-             :style="{color:'red'}"></span>&nbsp;&nbsp;
       Status: {{ account.status }}
+      <span :class="(account.status == 'OK') ? 'pi' : 'pi pi-exclamation-triangle'"
+            :style="{color:'red'}"></span>&nbsp;&nbsp;
     </div>
   </div>
 </template>
@@ -63,43 +63,37 @@ export default {
     'status status';
   padding: 5px;
   margin-bottom: 5px;
-  background-color: #E9B87222;
+  background-color: var(--color-background);
+  color: var(--color-text);
   row-gap: 3px;
 }
 
 .description {
   grid-area: description;
+  font-weight: bold;
 }
 
 .status {
   grid-area: status;
-  text-align: right;
+  text-align: left;
 }
 
 .code {
   grid-area: code;
   text-align: left;
-  color: grey;
+  color: var(--color-secondary-text);
 }
 
 .balance-in-ref-currency {
   grid-area: balance-ref;
   text-align: right;
-  color: grey;
+  color: var(--color-secondary-text);
 }
 
 .balance {
   grid-area: balance;
   text-align: right;
   font-weight: bold;
-}
-
-.negative-balance {
-  color: #A63D40;
-}
-
-.non-negative-balance {
-  color: #90A959;
 }
 
 .iban {

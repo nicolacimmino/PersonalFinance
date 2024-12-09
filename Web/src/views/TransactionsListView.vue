@@ -227,8 +227,8 @@ export default {
   text-align: left;
   padding: 3px;
   margin-top: 12px;
-  background-color: #6494AA;
-  color: white;
+  background-color: var(--color-negative-background);
+  color: var(--color-negative-text);
 }
 
 .add_button {

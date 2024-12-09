@@ -128,8 +128,8 @@ export default {
   text-align: left;
   padding: 5px;
   margin-top: 15px;
-  background-color: #6494AA;
-  color: white;
+  background-color: var(--color-negative-background);
+  color: var(--color-negative-text)
 }
 
 .account-group-description {

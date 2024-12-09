@@ -27,19 +27,19 @@
   <div>
     <template v-for="entry in categories" v-bind:key="entry.category">
       <div>
-        <CategorySpendingOverview :entry=entry
+        <CategoryOverview :entry=entry
                                   :privacy=privacy
                                   @categoryClick="(category) => loadByCategoryReport(this.type,category + '.')"
                                   @transactionsClick="(category) => showTransactionsByCategory(category)"
         >
-        </CategorySpendingOverview>
+        </CategoryOverview>
       </div>
     </template>
   </div>
 </template>
 
 <script>
-import CategorySpendingOverview from "@/components/CategorySpendingOverview.vue";
+import CategorySpendingOverview from "@/components/CategoryOverview.vue";
 import ToolBar from "@/components/ToolBar.vue";
 import TransactionApi from "@/TransactionsApi.ts";
 import TransactionsDataTransformations from "@/TransactionsDataTransformations.ts";
@@ -53,7 +53,7 @@ ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels)
 export default {
   components: {
     ToolBar,
-    CategorySpendingOverview: CategorySpendingOverview,
+    CategoryOverview: CategorySpendingOverview,
     Pie: Pie,
   },
   mounted() {
@@ -179,7 +179,7 @@ export default {
 .pie-chart {
   padding: 15px;
   margin-bottom: 15px;
-  background-color: #E9B87222;
+  background-color: var(--color-background);
 }
 
 </style>

@@ -120,15 +120,15 @@ export default {
                  'budget_graph';
   margin-bottom: 15px;
   row-gap: 5px;
-  background-color: #E9B87222;
+  background-color: var(--color-background)
 }
 
 .description {
   grid-area: description;
   text-align: left;
   padding-left: 5px;
-  background-color: #6494AA;
-  color: white;
+  background-color: var(--color-negative-background);
+  color: var(--color-negative-text);
 }
 
 .budget-size {

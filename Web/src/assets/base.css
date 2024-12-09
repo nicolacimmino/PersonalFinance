@@ -1,16 +1,23 @@
 
 :root {
+    --pf-c-black: rgb(0, 0, 0);
     --pf-c-white: rgb(255, 255, 255);
     --pf-c-dark-gray: rgb(44, 62, 80);
     --pf-c-cream: rgb(250, 248, 230);
-    --pf-c-semi-transparent-grey: rgba(0, 0, 0, 0.5)
+    --pf-c-semi-transparent-grey: rgba(0, 0, 0, 0.5);
+    --pf-text-large-font-size: 1em;
+    --pf-text-medium-font-size: 0.8em;
+    --pf-text-small-font-size: 0.6em;
 }
 
 :root {
     --color-overlay: var(--pf-c-semi-transparent-grey);
     --color-background: var(--pf-c-white);
-    --color-second-background: var(--pf-c-cream);
-    --color-text: var(--pf-c-dark-gray);
+    --color-second-background: var(--pf-c-white);
+    --color-text: var(--pf-c-black);
+    --color-secondary-text: var(--pf-c-dark-gray);
+    --color-negative-background: var(--pf-c-black);
+    --color-negative-text: var(--pf-c-white);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -26,4 +33,16 @@ body {
     background: var(--color-background);
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+}
+
+.pf-text-large {
+    font-size: var(--pf-text-large-font-size);
+}
+
+.pf-text-medium {
+    font-size: var(--pf-text-medium-font-size);
+}
+
+.pf-text-small {
+    font-size: var(--pf-text-small-font-size);
 }

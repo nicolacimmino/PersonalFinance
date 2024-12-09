@@ -131,9 +131,11 @@ a,
 }
 
 .pf-tab-selected {
-    background-color: #E9B87222
+    background-color: var(--color-negative-background);
+    color: var(--color-negative-text)
 }
 
 .pf-tab-inactive {
-    background-color: lightgrey;
+    background-color: var(--color-background);
+    color: var(--color-text)
 }

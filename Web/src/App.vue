@@ -57,18 +57,6 @@ html, body {
   font-family: Poppins, sans-serif;
 }
 
-.pf-text-large {
-  font-size: 1em;
-}
-
-.pf-text-medium {
-  font-size: 0.8em;
-}
-
-.pf-text-small {
-  font-size: 0.6em;
-}
-
 .navigation-link {
   font-size: 2em;
 }

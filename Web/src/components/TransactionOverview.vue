@@ -10,7 +10,7 @@
     <div v-else class="transaction-category pf-text-medium">
       {{ (transaction.category) ? transaction.category : "-" }}
     </div>
-    <div class="pf-text-medium" :class="(transaction.amount_cents < 0) ? negativePriceClass : nonNegativePriceClass">
+    <div class="pf-text-medium transaction-amount">
       <span v-if="privacy">---&nbsp;{{ transaction.currency }}</span>
       <span v-else>
             {{ transaction.amount_cents / 100.0 }} {{ transaction.currency }}
@@ -34,22 +34,11 @@
 </template>
 
 <script>
-import {ref} from 'vue'
-
-const negativePriceClass = ref("transaction-negative-price");
-const nonNegativePriceClass = ref('transaction-non-negative-price');
-
 export default {
   props: {
     transaction: Object,
     accounts: Array,
     privacy: Boolean
-  },
-  data() {
-    return {
-      negativePriceClass,
-      nonNegativePriceClass
-    }
   }
 }
 </script>
@@ -88,19 +77,11 @@ export default {
   color: grey;
 }
 
-.transaction-negative-price {
+.transaction-amount {
   grid-area: amount;
   text-align: right;
   vertical-align: bottom;
   font-weight: bold;
-  color: #A63D40;
-}
-
-.transaction-non-negative-price {
-  grid-area: amount;
-  text-align: right;
-  font-weight: bold;
-  color: #90A959;
 }
 
 .transaction-category {

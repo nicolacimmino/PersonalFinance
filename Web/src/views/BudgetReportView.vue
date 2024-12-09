@@ -90,8 +90,7 @@ export default {
 
 <style scoped>
 .budgets-table {
-  /*height: 20px;*/
   padding: 5px;
-  background-color: #E9B87222;
+  background-color: var(--color-background);
 }
 </style>
