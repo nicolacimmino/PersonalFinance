@@ -9,52 +9,52 @@ CREATE OR REPLACE FUNCTION get_kpis(
             )
 AS
 $$
-SELECT 'CFA'                                           AS label,
+SELECT 'CFAT'                                           AS label,
        coalesce(sum(transactions_enriched.amount_cents_eur),0)::int4 AS amount_cents
 FROM transactions_enriched
 WHERE transactions_enriched.booking_date >= date_from
   AND transactions_enriched.booking_date <= date_to
   AND transactions_enriched.type <> 'INITIAL' AND transactions_enriched.category not like 'PSV.%'
 UNION
-SELECT 'INA'                                           AS label,
+SELECT 'INAT'                                           AS label,
        coalesce(sum(transactions_enriched.amount_cents_eur),0)::int4 AS amount_cents
 FROM transactions_enriched
 WHERE transactions_enriched.booking_date >= date_from
   AND transactions_enriched.booking_date <= date_to
   AND transactions_enriched.type <> 'INITIAL' AND transactions_enriched.category like 'ACT.%'
 UNION
-SELECT 'INP'                                           AS label,
+SELECT 'INPS'                                           AS label,
        coalesce(sum(transactions_enriched.amount_cents_eur),0)::int4 AS amount_cents
 FROM transactions_enriched
 WHERE transactions_enriched.booking_date >= date_from
   AND transactions_enriched.booking_date <= date_to
   AND transactions_enriched.type <> 'INITIAL' AND transactions_enriched.category like 'PSV.%'
 UNION
-SELECT 'CFO'                                           AS label,
+SELECT 'CFOA'                                           AS label,
        coalesce(sum(transactions_enriched.amount_cents_eur),0)::int4 AS amount_cents
 FROM transactions_enriched
 WHERE transactions_enriched.booking_date >= date_from
   AND transactions_enriched.booking_date <= date_to
   AND transactions_enriched.type <> 'INITIAL'
 UNION
-SELECT 'TWO'                                             AS label,
+SELECT 'TONW'                                             AS label,
        coalesce(sum(transactions_enriched.amount_cents_eur),0)::int4 AS amount_cents
 FROM transactions_enriched
 WHERE transactions_enriched.booking_date <= date_to
 UNION
-SELECT 'CSH'                                             AS label,
+SELECT 'CASH'                                             AS label,
        coalesce(sum(transactions_enriched.amount_cents_eur),0)::int4 AS amount_cents
 FROM transactions_enriched
 WHERE transactions_enriched.account_type = 'CASH' OR transactions_enriched.account_type like 'BANK_%'
   AND transactions_enriched.booking_date <= date_to
 UNION
-SELECT 'INV'                                             AS label,
+SELECT 'INVT'                                             AS label,
        coalesce(sum(transactions_enriched.amount_cents_eur),0)::int4 AS amount_cents
 FROM transactions_enriched
 WHERE transactions_enriched.account_type = 'INV'
   AND transactions_enriched.booking_date <= date_to
 UNION
-SELECT CONCAT('CUR.',transactions_enriched.currency) AS label,
+SELECT CONCAT('C',transactions_enriched.currency) AS label,
        coalesce(sum(transactions_enriched.amount_cents_eur),0)::int4 AS amount_cents
 FROM transactions_enriched
 WHERE transactions_enriched.booking_date <= date_to
