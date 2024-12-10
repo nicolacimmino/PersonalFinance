@@ -1,43 +1,42 @@
-use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper, TextExpressionMethods};
+use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper, sql_query, TextExpressionMethods};
+use diesel::sql_types::{Integer, VarChar};
 
 use crate::{establish_db_connection, schema};
-use crate::accounts::model::Account;
+use crate::accounts::model::{Account, ApplicationAccount};
 use crate::schema::accounts::dsl::accounts;
 use crate::schema::transactions::dsl::transactions;
-use crate::transactions::model::{NewTransaction, Transaction};
+use crate::transactions::model::{ApplicationTransaction, NewTransaction, Transaction};
 
 pub struct TransactionsService {}
 
 impl TransactionsService {
-    pub fn get_transactions(&mut self, category: Option<String>) -> Vec<(Transaction, Account)> {
-        return transactions
-            .inner_join(accounts)
-            .filter(
-                schema::transactions::category.like(format!("{}%", category.unwrap_or("".to_string())))
-            )
-            .order(schema::transactions::booking_date.desc())
-            .select((Transaction::as_select(), Account::as_select()))
-            .load::<(Transaction, Account)>(&mut establish_db_connection())
-            .expect("Error loading transactions");
+    pub fn get_transactions(&mut self, category: Option<String>) -> Vec<ApplicationTransaction> {
+        return sql_query("
+            SELECT * FROM application.transactions
+                WHERE category like $1
+                ORDER BY booking_date DESC
+          ").bind::<VarChar, _>(format!("{}%", category.unwrap_or("".to_string())))
+            .load::<ApplicationTransaction>(&mut establish_db_connection())
+            .expect("Error loading Transactions");
     }
 
-    pub fn get_transactions_for_account(&mut self, account_id: i32) -> Vec<(Transaction, Account)> {
-        return transactions
-            .inner_join(accounts)
-            .filter(schema::transactions::account_id.eq(account_id))
-            .order(schema::transactions::booking_date.desc())
-            .select((Transaction::as_select(), Account::as_select()))
-            .load::<(Transaction, Account)>(&mut establish_db_connection())
-            .expect("Error loading transactions");
+    pub fn get_transactions_for_account(&mut self, account_id: i32) -> Vec<ApplicationTransaction> {
+        return sql_query("
+            SELECT * FROM application.transactions
+                WHERE account_id = $1
+                ORDER BY booking_date DESC
+          ").bind::<Integer, _>(account_id)
+            .load::<ApplicationTransaction>(&mut establish_db_connection())
+            .expect("Error loading Transactions");
     }
 
-    pub fn get_transaction(&mut self, transaction_id: i32) -> (Transaction, Account) {
-        return transactions
-            .inner_join(accounts)
-            .filter(schema::transactions::id.eq(transaction_id))
-            .select((Transaction::as_select(), Account::as_select()))
-            .load::<(Transaction, Account)>(&mut establish_db_connection())
-            .expect("Error loading transactions")
+    pub fn get_transaction(&mut self, transaction_id: i32) -> ApplicationTransaction {
+        return sql_query("
+            SELECT * FROM application.transactions
+                WHERE id = $1
+          ").bind::<Integer, _>(transaction_id)
+            .load::<ApplicationTransaction>(&mut establish_db_connection())
+            .expect("Error loading Transactions")
             .into_iter().nth(0)
             .expect("No transaction found");
     }
@@ -70,9 +69,9 @@ impl TransactionsService {
     }
 
     pub fn update_transaction_account_to(&mut self, transaction_id: i32, account_to: i32) {
-        let (transaction, _) = self.get_transaction(transaction_id);
+        let transaction = self.get_transaction(transaction_id);
 
-        if transaction.type_ != "TRANSFER" {
+        if transaction.movement_type != "TRANSFER" {
             panic!("Cannot set account_to of transaction.")
         }
 

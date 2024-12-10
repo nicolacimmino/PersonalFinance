@@ -33,7 +33,6 @@
         </div>
         <div v-for="transaction in transactions" :key="transaction.id">
           <TransactionOverview :transaction=transaction
-                               :accounts=accounts
                                :id=transaction.id
                                :privacy=privacy
                                v-on:click="onTransactionClick(transaction)">

@@ -3,10 +3,10 @@ use rocket::{get, patch, post};
 use rocket::figment::value::Num;
 use rocket::http::Status;
 use rocket::response::{content, status};
-use crate::common::ValutaConversionService;
 use crate::establish_db_connection;
 use crate::transactions::dto::{CreateTransactionDto, PatchTransactionDto, TransactionDto};
 use crate::guard::ApiKey;
+use crate::manual_schema::budgets_overview::transactions;
 use crate::transactions::model::{NewTransaction};
 use crate::transactions::service::TransactionsService;
 
@@ -14,29 +14,25 @@ use crate::transactions::service::TransactionsService;
 #[get("/transactions?<category>")]
 pub fn get_transactions(_key: ApiKey<'_>, category: Option<String>) -> status::Custom<content::RawJson<String>> {
     let mut transactions_service = TransactionsService {};
-    let mut valuta_conversion_service = ValutaConversionService::new(&mut establish_db_connection());
 
     let mut dtos: Vec<TransactionDto> = Vec::new();
 
-    for (transaction, account) in transactions_service.get_transactions(category) {
+    for transaction in transactions_service.get_transactions(category) {
         dtos.push(TransactionDto {
             id: Num::from(transaction.id),
-            type_: transaction.type_.to_owned(),
+            type_: transaction.movement_type.to_owned(),
             account_id: Num::from(transaction.account_id),
-            account_name: account.description,
+            account_name: transaction.account_name,
             booking_date: transaction.booking_date.to_string(),
             category: transaction.category.to_owned(),
             creditor_name: transaction.creditor_name.to_owned(),
             description: transaction.description.to_owned(),
             amount_cents: Num::from(transaction.amount_cents),
-            currency: account.currency.to_owned(),
-            amount_cents_in_ref_currency: Num::from(
-                valuta_conversion_service.convert(
-                    account.currency,
-                    "EUR",
-                    transaction.amount_cents)),
+            currency: transaction.currency,
+            amount_cents_in_ref_currency: Num::from(transaction.amount_cents_eur),
             ref_currency: "EUR".to_string(),
             account_to: transaction.account_to,
+            account_to_name: transaction.account_to_name,
         })
     }
 
@@ -48,29 +44,25 @@ pub fn get_transactions(_key: ApiKey<'_>, category: Option<String>) -> status::C
 #[get("/accounts/<account_id>/transactions")]
 pub fn get_transactions_for_account(_key: ApiKey<'_>, account_id: i32) -> status::Custom<content::RawJson<String>> {
     let mut transactions_service = TransactionsService {};
-    let mut valuta_conversion_service = ValutaConversionService::new(&mut establish_db_connection());
 
     let mut dtos: Vec<TransactionDto> = Vec::new();
 
-    for (transaction, account) in transactions_service.get_transactions_for_account(account_id) {
+    for transaction in transactions_service.get_transactions_for_account(account_id) {
         dtos.push(TransactionDto {
             id: Num::from(transaction.id),
-            type_: transaction.type_.to_owned(),
+            type_: transaction.movement_type.to_owned(),
             account_id: Num::from(transaction.account_id),
-            account_name: account.description,
+            account_name: transaction.account_name,
             booking_date: transaction.booking_date.to_string(),
             category: transaction.category.to_owned(),
             creditor_name: transaction.creditor_name.to_owned(),
             description: transaction.description.to_owned(),
             amount_cents: Num::from(transaction.amount_cents),
-            currency: account.currency.to_owned(),
-            amount_cents_in_ref_currency: Num::from(
-                valuta_conversion_service.convert(
-                    account.currency,
-                    "EUR",
-                    transaction.amount_cents)),
+            currency: transaction.currency,
+            amount_cents_in_ref_currency: Num::from(transaction.amount_cents_eur),
             ref_currency: "EUR".to_string(),
             account_to: transaction.account_to,
+            account_to_name: transaction.account_to_name,
         })
     }
 
@@ -117,28 +109,24 @@ pub fn create_transaction(_key: ApiKey<'_>, create_transaction_dto: rocket::serd
 
 fn build_transaction_dto(id: i32) -> TransactionDto {
     let mut transactions_service = TransactionsService {};
-    let mut valuta_conversion_service = ValutaConversionService::new(&mut establish_db_connection());
 
-    let (transaction, account) = transactions_service.get_transaction(id);
+    let transaction = transactions_service.get_transaction(id);
 
     return TransactionDto {
         id: Num::from(transaction.id),
-        type_: transaction.type_.to_owned(),
+        type_: transaction.movement_type.to_owned(),
         account_id: Num::from(transaction.account_id),
-        account_name: account.description,
+        account_name: transaction.account_name,
         booking_date: transaction.booking_date.to_string(),
         category: transaction.category.to_owned(),
         creditor_name: transaction.creditor_name.to_owned(),
         description: transaction.description.to_owned(),
         amount_cents: Num::from(transaction.amount_cents),
-        currency: account.currency.to_owned(),
-        amount_cents_in_ref_currency: Num::from(
-            valuta_conversion_service.convert(
-                account.currency.to_owned(),
-                "EUR",
-                transaction.amount_cents)),
+        currency: transaction.currency,
+        amount_cents_in_ref_currency: Num::from(transaction.amount_cents_eur),
         ref_currency: "EUR".to_string(),
         account_to: transaction.account_to,
+        account_to_name: transaction.account_to_name,
     };
 }
 
@@ -154,7 +142,7 @@ pub fn patch_transaction(_key: ApiKey<'_>, id: i32, patch_transaction_dto: rocke
         }
 
         if !new_type.eq(&"TRANSFER".to_string()) {
-            let (transaction, _) = transactions_service.get_transaction(id);
+            let transaction = transactions_service.get_transaction(id);
             if transaction.amount_cents > 0 && new_type != "INCOME".to_string() {
                 panic!("Positive amount is INCOME")
             }

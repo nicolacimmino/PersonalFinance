@@ -1,8 +1,8 @@
 <template>
   <div class="alert-details">
     <div class="alert-level">
-      <span v-if="alert.level==='ERROR'" class='pi pi-exclamation-triangle' style="color: red"/>
-      <span v-if="alert.level==='WARN'" class='pi pi-exclamation-circle' style="color: darkgoldenrod"/>
+      <span v-if="alert.level==='ERROR'" class='pi pi-exclamation-triangle'/>
+      <span v-if="alert.level==='WARN'" class='pi pi-exclamation-circle'/>
     </div>
     <div class="alert-message pf-text-medium">
       <div v-if="alert.item==='TRANSACTIONS'">
@@ -16,8 +16,6 @@
         </a>
       </div>
       <div v-else>
-        <!--  Ugly workaround. On mobile chrome only font size gets smaller unless at least one
-                  item is long enough!-->
         <span v-html="formatPlainTextAlert(alert.message)"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
     </div>
@@ -47,7 +45,8 @@ export default {
   grid-template-columns: 3fr 18fr;
   padding: 10px;
   margin-bottom: 2px;
-  background-color: #E9B87222;
+  background-color: var(--color-background);
+  color: var(--color-text);
 }
 
 .alert-level {

@@ -4,7 +4,7 @@
       <span :class="(transaction.amount_cents < 0) ? 'pi pi-arrow-right' : 'pi pi-arrow-left'"></span>
       &nbsp;
       {{
-        (transaction.account_to) ? accounts.find((account) => account.id === transaction.account_to).description : "-"
+        (transaction.account_to_name) ? transaction.account_to_name : "-"
       }}
     </div>
     <div v-else class="transaction-category pf-text-medium">
@@ -37,7 +37,6 @@
 export default {
   props: {
     transaction: Object,
-    accounts: Array,
     privacy: Boolean
   }
 }

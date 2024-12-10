@@ -5,7 +5,6 @@ mod guard;
 mod accounts;
 mod categories;
 mod reports;
-mod common;
 mod budgets;
 mod alerts;
 

@@ -18,6 +18,7 @@ pub struct TransactionDto {
     pub amount_cents_in_ref_currency: Num,
     pub ref_currency: String,
     pub account_to: Option<i32>,
+    pub account_to_name: Option<String>,
 }
 
 #[derive(Deserialize, Serialize)]
