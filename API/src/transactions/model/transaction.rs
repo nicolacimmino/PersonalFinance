@@ -2,7 +2,7 @@ use diesel::{Identifiable, Insertable, Queryable, QueryableByName, Selectable};
 use chrono::NaiveDateTime;
 
 #[derive(Queryable, Identifiable, PartialEq, Selectable, Debug)]
-#[diesel(table_name = crate::schema::transactions)]
+#[diesel(table_name = crate::manual_schema::transactions)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Transaction {
     pub id: i32,
@@ -40,7 +40,7 @@ pub struct ApplicationTransaction {
 
 
 #[derive(Queryable, PartialEq, Selectable, Debug, Insertable)]
-#[diesel(table_name = crate::schema::transactions)]
+#[diesel(table_name = crate::manual_schema::transactions)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct NewTransaction {
     pub type_: String,

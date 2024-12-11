@@ -1,10 +1,10 @@
 use chrono::NaiveDate;
-use diesel::{Queryable, Selectable};
+use diesel::{QueryableByName, Selectable};
 
-#[derive(Queryable, Selectable, Debug)]
-#[diesel(table_name = crate::manual_schema::budgets_overview)]
+#[derive(QueryableByName, Selectable, Debug)]
+#[diesel(table_name = crate::manual_schema::application_budgets)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
-pub struct BudgetOverview {
+pub struct ApplicationBudgets {
     pub id: i32,
     pub from_date: NaiveDate,
     pub to_date: NaiveDate,

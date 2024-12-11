@@ -1,7 +1,5 @@
-mod report_by_category_entry;
-mod aggregated_report_by_category_entry;
-mod kpi_entry;
+mod report_by_category;
+mod indicator;
 
-pub use report_by_category_entry::ReportByCategoryEntry;
-pub use kpi_entry::KpiEntry;
-pub use aggregated_report_by_category_entry::AggregatedReportByCategoryEntry;
+pub use report_by_category::ReportByCategory;
+pub use indicator::Indicator;

@@ -71,3 +71,16 @@ diesel::table! {
         account_to_name -> Varchar
     }
 }
+
+diesel::table! {
+    application_categories (id) {
+        id -> Uuid,
+        #[max_length = 128]
+        code -> Varchar,
+        #[max_length = 6]
+        color -> Varchar,
+        #[sql_name = "type"]
+        #[max_length = 16]
+        type_ -> Varchar,
+    }
+}

@@ -1,17 +1,17 @@
 use diesel::prelude::*;
-use crate::categories::model::category::Category;
+use diesel::sql_query;
+use crate::categories::model::category::ApplicationCategory;
 
 use crate::establish_db_connection;
-use crate::schema::categories;
 
 pub struct CategoriesService {}
 
 impl CategoriesService {
-    pub fn get_categories(&mut self) -> Vec<Category> {
-        return categories::table
-            .select(Category::as_select())
-            .order(categories::code.asc())
-            .load::<Category>(&mut establish_db_connection())
+    pub fn get_categories(&mut self) -> Vec<ApplicationCategory> {
+        return sql_query("
+            SELECT * FROM application.categories
+                ORDER BY code ASC
+          ").load::<ApplicationCategory>(&mut establish_db_connection())
             .expect("Error loading categories");
     }
 }

@@ -3,7 +3,7 @@ use diesel::table;
 // Manually generated!
 // Diesel doesn't seem to generate schema for views.
 table! {
-    budgets_overview (id) {
+    application_budgets (id) {
         id -> Int4,
         from_date -> Date,
         to_date -> Date,
@@ -20,7 +20,7 @@ table! {
 }
 
 table! {
-    alerts (id) {
+    application_alerts (id) {
         id -> Uuid,
         category -> Text,
         message -> Text,
@@ -70,5 +70,37 @@ table! {
         #[max_length = 16]
         account_type -> Varchar,
         account_to_name -> Nullable<Varchar>
+    }
+}
+
+table! {
+    application_categories (id) {
+        id -> Uuid,
+        #[max_length = 128]
+        code -> Varchar,
+        #[max_length = 6]
+        color -> Varchar,
+        #[sql_name = "type"]
+        #[max_length = 16]
+        type_ -> Varchar,
+    }
+}
+
+// This is the raw transaction. We really use it just when inserting to get back the ID.
+// TODO: consider changing to raw insert query and just fetch the ID.
+table! {
+    transactions (id) {
+        id -> Int4,
+        #[sql_name = "type"]
+        #[max_length = 16]
+        type_ -> Varchar,
+        account_id -> Int4,
+        amount_cents -> Int4,
+        category -> Text,
+        creditor_name -> Text,
+        description -> Text,
+        booking_date -> Timestamp,
+        value_date -> Timestamp,
+        account_to -> Nullable<Int4>,
     }
 }

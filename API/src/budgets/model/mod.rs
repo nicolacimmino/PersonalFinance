@@ -1,3 +1,3 @@
-mod budget_overview;
+mod budget;
 
-pub use budget_overview::BudgetOverview;
+pub use budget::ApplicationBudgets;

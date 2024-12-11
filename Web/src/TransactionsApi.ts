@@ -5,17 +5,12 @@ const HOST = import.meta.env.VITE_HOST;
 
 export default class TransactionApi {
     static async getAllTransactions(account_id, category) {
-        let url = `${HOST}/api/transactions/?category=${category}`;
-        if (account_id) {
-            url = `${HOST}/api/accounts/${account_id}/transactions/`;
-        }
-
         return axios({
             headers: {
                 "X-API-KEY": localStorage.getItem("pfinanceApiKey")
             },
             method: "get",
-            url: url,
+            url: `${HOST}/api/transactions/?category=${category}&account=${account_id}`,
         }).then((response) => {
             return response.data;
         });

@@ -1,10 +1,10 @@
-use rocket::get;
 use rocket::figment::value::Num;
+use rocket::get;
 use rocket::http::Status;
 use rocket::response::{content, status};
+
 use crate::accounts::dto::AccountDto;
 use crate::accounts::service::AccountsService;
-use crate::establish_db_connection;
 use crate::guard::ApiKey;
 
 #[get("/accounts")]

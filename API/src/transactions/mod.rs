@@ -7,4 +7,3 @@ pub use controller::get_transactions;
 pub use controller::get_transaction;
 pub use controller::patch_transaction;
 pub use controller::create_transaction;
-pub use controller::get_transactions_for_account;
