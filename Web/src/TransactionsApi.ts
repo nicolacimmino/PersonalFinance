@@ -80,13 +80,13 @@ export default class TransactionApi {
 
     }
 
-    static async loadKpis() {
+    static async loadIndicators() {
         return axios({
             headers: {
                 "X-API-KEY": localStorage.getItem("pfinanceApiKey")
             },
             method: "get",
-            url: `${HOST}/api/reports/kpis`,
+            url: `${HOST}/api/reports/indicators`,
         }).then((response) => {
             return response.data;
         });

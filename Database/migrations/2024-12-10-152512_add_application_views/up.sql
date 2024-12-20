@@ -40,10 +40,12 @@ SELECT raw.transactions.*,
        application.accounts.description AS account_name,
        application.accounts.currency,
        application.accounts.asset_type as account_type,
-       accounts_to.description AS account_to_name
+       accounts_to.description AS account_to_name,
+       raw.receipts.id AS receipt_id
 FROM raw.transactions
          LEFT JOIN application.accounts ON application.accounts.id = raw.transactions.account_id
          LEFT JOIN application.accounts AS accounts_to ON accounts_to.id = raw.transactions.account_to
+         LEFT JOIN raw.receipts ON raw.receipts.transaction_id=raw.transactions.id
          JOIN application.valuta_conversion_rates ON application.valuta_conversion_rates.valuta_from = application.accounts.currency
     AND application.valuta_conversion_rates.valuta_to = 'EUR';
 
@@ -183,3 +185,25 @@ WHERE application.transactions.booking_date <= date_to
 GROUP BY application.transactions.currency
 $$
     LANGUAGE sql;
+
+--- ALTER TABLE raw.receipts ADD COLUMN transaction_id INT REFERENCES raw.transactions;
+
+CREATE VIEW application.receipts AS
+    SELECT
+        raw.receipts.id AS id,
+        raw.receipts.date AS date,
+        raw.receipts.amount_cents AS amount_cents,
+        raw.receipts.currency AS currency,
+        raw.receipts.ext_id AS ext_id,
+        raw.receipts.merchant_name AS merchant_name,
+        raw.receipts.merchant_address AS merchant_address,
+        raw.receipts.scan_file_name AS scan_file_name,
+        raw.transactions.id AS transaction_id,
+        raw.transactions.category AS transaction_category,
+        raw.transactions.amount_cents AS transaction_amount_cents,
+        raw.accounts.currency AS transaction_currency,
+        raw.accounts.code AS account_code,
+        raw.accounts.description AS account_description
+     FROM raw.receipts
+        LEFT JOIN raw.transactions ON raw.transactions.id=raw.receipts.transaction_id
+        LEFT JOIN raw.accounts ON raw.accounts.id=raw.transactions.account_id;

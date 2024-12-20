@@ -8,100 +8,102 @@
       Loading...
     </div>
     <div v-else>
-      <div class="kpi-header">
-        <div class="kpi-label">
+      <div class="indicator-header">
+        <div class="indicator-label">
           Indicator
         </div>
-        <div class="kpi-description">
+        <div class="indicator-description">
 
         </div>
-        <div class="kpi-value">
+        <div class="indicator-value">
 
         </div>
       </div>
-      <template v-for="kpi in kpis" v-bind:key="kpi.label">
-        <div class="kpi-entry">
-          <div class="kpi-label">
-            {{ kpi.label }}
+      <template v-for="indicator in indicators" v-bind:key="indicator.label">
+        <div class="indicator-entry">
+          <div class="indicator-label">
+            {{ indicator.label }}
           </div>
-          <div class="kpi-description">
-            {{ labelToDescription(kpi.label) }}
+          <div class="indicator-description">
+            {{ labelToDescription(indicator.label) }}
           </div>
-          <div v-if="!privacy" class="kpi-value">
-            {{ Math.floor(kpi.total_cents / 100.0) }}
+          <div v-if="!privacy" class="indicator-value">
+            {{ Math.floor(indicator.total_cents / 100.0) }}
           </div>
-          <div v-else class="kpi-value">
+          <div v-else class="indicator-value">
             ---
           </div>
         </div>
       </template>
 
-      <div class="kpi-header">
+      <div class="indicator-header">
         Derived Indicators
       </div>
-      <div class="kpi-derived-entry">
-        <div class="kpi-description">
+      <div class="indicator-derived-entry">
+        <div class="indicator-description">
           Cash/ESS (months)
         </div>
-        <div v-if="!privacy" class="kpi-value">
-          {{ Math.floor(valueOfKpi('CASH') / 164000) }}
+        <div v-if="!privacy" class="indicator-value">
+          {{ Math.floor(valueOfIndicator('CASH') / 164000) }}
         </div>
-        <div v-else class="kpi-value">
+        <div v-else class="indicator-value">
           ---
         </div>
       </div>
-      <div class="kpi-derived-entry">
-        <div class="kpi-description">
+      <div class="indicator-derived-entry">
+        <div class="indicator-description">
           INPS/ESS (months)
         </div>
-        <div v-if="!privacy" class="kpi-value">
-          {{ Math.floor(valueOfKpi('INPS') / 164000) }}
+        <div v-if="!privacy" class="indicator-value">
+          {{ Math.floor(valueOfIndicator('INPS') / 164000) }}
         </div>
-        <div v-else class="kpi-value">
+        <div v-else class="indicator-value">
           ---
         </div>
       </div>
-      <div class="kpi-derived-entry">
-        <div class="kpi-description">
+      <div class="indicator-derived-entry">
+        <div class="indicator-description">
           INPS/ESS+DST (months)
         </div>
-        <div v-if="!privacy" class="kpi-value">
-          {{ Math.floor(valueOfKpi('INPS') / (164000 + 125000)) }}
+        <div v-if="!privacy" class="indicator-value">
+          {{ Math.floor(valueOfIndicator('INPS') / (164000 + 125000)) }}
         </div>
-        <div v-else class="kpi-value">
+        <div v-else class="indicator-value">
           ---
         </div>
       </div>
-      <div class="kpi-derived-entry">
-        <div class="kpi-description">
+      <div class="indicator-derived-entry">
+        <div class="indicator-description">
           INVT 6%/ESS+DST
         </div>
-        <div v-if="!privacy" class="kpi-value">
-          {{ Math.floor((0.06 * valueOfKpi('INVT')) / (164000 + 125000)) }}
+        <div v-if="!privacy" class="indicator-value">
+          {{ Math.floor((0.06 * valueOfIndicator('INVT')) / (164000 + 125000)) }}
         </div>
-        <div v-else class="kpi-value">
+        <div v-else class="indicator-value">
           ---
         </div>
       </div>
-      <div class="kpi-derived-entry">
-        <div class="kpi-description">
+      <div class="indicator-derived-entry">
+        <div class="indicator-description">
           Cash (% of TWO)
         </div>
-        <div v-if="!privacy" class="kpi-value">
-          {{ (Math.abs(100 * valueOfKpi('CASH') / valueOfKpi('TONW'))).toFixed(1) }}
+        <div v-if="!privacy" class="indicator-value">
+          {{ (Math.abs(100 * valueOfIndicator('CASH') / valueOfIndicator('TONW'))).toFixed(1) }}
         </div>
-        <div v-else class="kpi-value">
+        <div v-else class="indicator-value">
           ---
         </div>
       </div>
-      <div class="kpi-derived-entry">
-        <div class="kpi-description">
+      <div class="indicator-derived-entry">
+        <div class="indicator-description">
           Income Active (% of total)
         </div>
-        <div v-if="!privacy" class="kpi-value">
-          {{ (Math.abs(100 * valueOfKpi('INAT') / (valueOfKpi('INAT') + (valueOfKpi('INPS'))))).toFixed(1) }}
+        <div v-if="!privacy" class="indicator-value">
+          {{
+            (Math.abs(100 * valueOfIndicator('INAT') / (valueOfIndicator('INAT') + (valueOfIndicator('INPS'))))).toFixed(1)
+          }}
         </div>
-        <div v-else class="kpi-value">
+        <div v-else class="indicator-value">
           ---
         </div>
       </div>
@@ -119,34 +121,34 @@ export default {
     ToolBar,
   },
   mounted() {
-    this.loadAllKpis()
+    this.loadAllIndicators()
     this.privacy = (localStorage.getItem("privacy") === "true")
   },
   data() {
     return {
       loaded: false,
       privacy: true,
-      kpis: []
+      indicators: []
     }
   },
   methods: {
     onPrivacyChange(newPrivacy) {
       this.privacy = newPrivacy;
     },
-    loadAllKpis() {
-      TransactionApi.loadKpis().then(response => {
-        this.kpis = response.kpis;
-        this.kpis = response.kpis.sort((a, b) => (this.labelToPosition(a.label) > this.labelToPosition(b.label)) ? 1 : -1)
+    loadAllIndicators() {
+      TransactionApi.loadIndicators().then(response => {
+        this.indicators = response.indicators;
+        this.indicators = response.indicators.sort((a, b) => (this.labelToPosition(a.label) > this.labelToPosition(b.label)) ? 1 : -1)
         this.loaded = true
       });
     },
-    valueOfKpi(label) {
+    valueOfIndicator(label) {
       console.log(label)
-      let res = this.kpis.filter(item => {
+      let res = this.indicators.filter(item => {
         return item.label === label;
       })[0]
       console.log(res)
-      console.log(this.kpis)
+      console.log(this.indicators)
       return (res) ? res.total_cents : 20;
     },
     labelToDescription(type) {
@@ -190,7 +192,7 @@ export default {
           return 6
         default:
           if (type.substring(0, 1) === "C") {
-            return 10000000 - (this.valueOfKpi(type) / 100)
+            return 10000000 - (this.valueOfIndicator(type) / 100)
           }
           return 8
       }
@@ -200,7 +202,7 @@ export default {
 </script>
 
 <style scoped>
-.kpi-header {
+.indicator-header {
   width: 90%;
   margin-left: auto;
   margin-right: auto;
@@ -213,7 +215,7 @@ export default {
   color: var(--color-negative-text);
 }
 
-.kpi-entry {
+.indicator-entry {
   display: grid;
   grid-template: 'label description value';
   grid-template-columns: 4fr 6fr 4fr;
@@ -225,20 +227,20 @@ export default {
   font-size: var(--pf-text-small-font-size);
 }
 
-.kpi-label {
+.indicator-label {
   grid-area: label;
 }
 
-.kpi-value {
+.indicator-value {
   grid-area: value;
   text-align: right;
 }
 
-.kpi-description {
+.indicator-description {
   grid-area: description;
 }
 
-.kpi-derived-entry {
+.indicator-derived-entry {
   display: grid;
   grid-template: 'description value';
   grid-template-columns: 6fr 4fr;
