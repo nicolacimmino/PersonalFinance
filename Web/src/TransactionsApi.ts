@@ -1,5 +1,6 @@
 import axios from "axios";
 import Alert from "@/models/alert.ts";
+import moment from "moment/moment.js";
 
 const HOST = import.meta.env.VITE_HOST;
 
@@ -54,13 +55,20 @@ export default class TransactionApi {
 
     }
 
-    static async loadByCategoryReport() {
+    static async loadByCategoryReport(year) {
+        if(year === undefined) {
+            year = moment().year();
+        }
+
+        const dateFrom = `${year}-01-01`;
+        const dateTo = `${year}-12-31`;
+
         return axios({
             headers: {
                 "X-API-KEY": localStorage.getItem("pfinanceApiKey")
             },
             method: "get",
-            url: `${HOST}/api/reports/by_category/`,
+            url: `${HOST}/api/reports/by_category/?date_from=${dateFrom}&date_to=${dateTo}`,
         }).then((response) => {
             return response.data;
         });
@@ -80,13 +88,20 @@ export default class TransactionApi {
 
     }
 
-    static async loadIndicators() {
+    static async loadIndicators(year) {
+        if(year === undefined) {
+            year = moment().year();
+        }
+
+        const dateFrom = `${year}-01-01`;
+        const dateTo = `${year}-12-31`;
+
         return axios({
             headers: {
                 "X-API-KEY": localStorage.getItem("pfinanceApiKey")
             },
             method: "get",
-            url: `${HOST}/api/reports/indicators`,
+            url: `${HOST}/api/reports/indicators/?date_from=${dateFrom}&date_to=${dateTo}`,
         }).then((response) => {
             return response.data;
         });

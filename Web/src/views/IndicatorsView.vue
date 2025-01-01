@@ -1,6 +1,7 @@
 <template>
   <ToolBar
       @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
+      @changeYear="loadAllIndicators()"
       :eye-enabled="true"
   />
   <div>
@@ -136,19 +137,16 @@ export default {
       this.privacy = newPrivacy;
     },
     loadAllIndicators() {
-      TransactionApi.loadIndicators().then(response => {
+      TransactionApi.loadIndicators(localStorage.getItem("year")).then(response => {
         this.indicators = response.indicators;
         this.indicators = response.indicators.sort((a, b) => (this.labelToPosition(a.label) > this.labelToPosition(b.label)) ? 1 : -1)
         this.loaded = true
       });
     },
     valueOfIndicator(label) {
-      console.log(label)
       let res = this.indicators.filter(item => {
         return item.label === label;
       })[0]
-      console.log(res)
-      console.log(this.indicators)
       return (res) ? res.total_cents : 20;
     },
     labelToDescription(type) {

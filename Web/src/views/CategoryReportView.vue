@@ -3,6 +3,7 @@
       v-bind:upEnabled="upArrowEnabled"
       @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
       @arrow-up="loadPreviousCategoryReport()"
+      @changeYear="loadByCategoryReport(this.type,'')"
       :eye-enabled="true"
   />
   <div class="pf-tabs">
@@ -137,7 +138,7 @@ export default {
     },
     loadByCategoryReport(typeFilter, categoryFilter) {
       this.loaded = false;
-      TransactionApi.loadByCategoryReport().then(fetchedCategoriesReport => {
+      TransactionApi.loadByCategoryReport(localStorage.getItem("year")).then(fetchedCategoriesReport => {
         let aggregatedData = TransactionsDataTransformations.aggregateSubLevels(
             fetchedCategoriesReport.reports, typeFilter, categoryFilter
         ).sort((a, b) => (a.total_cents > b.total_cents) ? -1 : 1);

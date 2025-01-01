@@ -50,30 +50,46 @@ FROM raw.transactions
     AND application.valuta_conversion_rates.valuta_to = 'EUR';
 
 CREATE VIEW application.budgets AS (
-SELECT A.*,
-       SUM(A.spent_cents_eur * application.valuta_conversion_rates.factor)::int4 AS spent_cents
+create view budgets
+            (id, from_date, to_date, code, description, active, currency, amount_cents, spent_cents_eur, transactions,
+             spent_cents) as
+SELECT a.id,
+       a.from_date,
+       a.to_date,
+       a.code,
+       a.description,
+       a.active,
+       a.currency,
+       a.amount_cents,
+       COALESCE(a.spent_cents_eur, 0)                                                         AS spent_cents_eur,
+       a.transactions,
+       COALESCE(sum(a.spent_cents_eur::numeric * valuta_conversion_rates.factor)::integer, 0) AS spent_cents
 FROM (SELECT budgets.id,
              budgets.from_date,
              budgets.to_date,
              budgets.code,
              budgets.description,
-             CURRENT_TIMESTAMP BETWEEN from_date and to_date                      AS active,
+             CURRENT_DATE >= budgets.from_date AND CURRENT_DATE <= budgets.to_date                 AS active,
              budgets.currency,
              budgets.amount_cents,
-             -SUM(application.transactions.amount_cents * application.valuta_conversion_rates.factor)::int4 AS spent_cents_eur,
-             COUNT(*)::int4                                                             AS transactions
+             - sum(transactions.amount_cents::numeric * valuta_conversion_rates_1.factor)::integer AS spent_cents_eur,
+             count(*)::integer                                                                     AS transactions
       FROM raw.budgets
-               JOIN application.transactions ON
-                  application.transactions.category like CONCAT(budgets.category_prefix, '%') AND
-                  application.transactions.booking_date between budgets.from_date AND budgets.to_date
-               JOIN application.accounts ON application.accounts.id = application.transactions.account_id
-               JOIN application.valuta_conversion_rates ON application.valuta_conversion_rates.valuta_from = application.accounts.currency
-          AND application.valuta_conversion_rates.valuta_to = 'EUR'
-      GROUP BY budgets.id, budgets.code, budgets.description, budgets.currency,
-               budgets.amount_cents) A
-         JOIN application.valuta_conversion_rates ON application.valuta_conversion_rates.valuta_to = A.currency AND
-                                              application.valuta_conversion_rates.valuta_from = 'EUR'
-        GROUP BY A.id,A.from_date, A.to_date, A.code, A.description,A.active,A.currency,A.amount_cents,A.spent_cents_eur, A.transactions
+               LEFT JOIN application.transactions ON transactions.category ~~ concat(budgets.category_prefix, '%') AND
+                                                     transactions.booking_date >= budgets.from_date AND
+                                                     transactions.booking_date <= budgets.to_date
+               LEFT JOIN application.accounts ON accounts.id = transactions.account_id
+               LEFT JOIN application.valuta_conversion_rates valuta_conversion_rates_1
+                         ON valuta_conversion_rates_1.valuta_from::text = accounts.currency::text AND
+                            valuta_conversion_rates_1.valuta_to::text = 'EUR'::text
+      GROUP BY budgets.id, budgets.code, budgets.description, budgets.currency, budgets.amount_cents) a
+         JOIN application.valuta_conversion_rates ON valuta_conversion_rates.valuta_to::text = a.currency::text AND
+                                                     valuta_conversion_rates.valuta_from::text = 'EUR'::text
+GROUP BY a.id, a.from_date, a.to_date, a.code, a.description, a.active, a.currency, a.amount_cents, a.spent_cents_eur,
+         a.transactions;
+
+alter table budgets
+    owner to postgres
 );
 
 CREATE VIEW application.alerts AS

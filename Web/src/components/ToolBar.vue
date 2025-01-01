@@ -41,7 +41,7 @@
       </i>
     </div>
   </div>
-  <div v-if="showMenu" class="navigation" @click="showMenu=false">
+  <div v-if="showMenu" class="navigation">
     <div class="navbar">
       <div>
         <RouterLink class="navigation-link" to="/">Home</RouterLink>
@@ -61,27 +61,40 @@
       <div>
         <RouterLink class="navigation-link" to="/indicators">Indicators</RouterLink>
       </div>
+      <hr>
+      <div>
+        <select
+            id="viewYear"
+            v-model="this.year"
+            @change="changeYear(); $emit('changeYear', this.year); showMenu=false;"
+        >
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+        </select>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import 'primeicons/primeicons.css'
+import moment from "moment";
 
 export default {
   props: {
     upEnabled: Boolean,
     compactEnabled: Boolean,
     refCurrencyEnabled: Boolean,
-    eyeEnabled: Boolean
+    eyeEnabled: Boolean,
   },
-  emits: ["ref-currency", "arrow-up", "compact", "privacy"],
+  emits: ["ref-currency", "arrow-up", "compact", "privacy", "changeYear"],
   data() {
     return {
       privacy: (localStorage.getItem("privacy") === "true"),
       compact: (localStorage.getItem("compact") === "true"),
       refCurrency: (localStorage.getItem("refCurrency") === "true"),
-      showMenu: false
+      showMenu: false,
+      year: (localStorage.getItem("year") || moment().year()).toString(),
     }
   },
   methods: {
@@ -107,6 +120,9 @@ export default {
 
       this.refCurrency = !this.refCurrency
       localStorage.setItem("refCurrency", this.refCurrency.toString());
+    },
+    changeYear() {
+      localStorage.setItem("year", this.year);
     },
   }
 }

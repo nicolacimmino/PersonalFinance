@@ -75,6 +75,10 @@ export default {
     },
     loadBudgets() {
       TransactionApi.loadBudgets().then(fetchedBudgets => {
+        fetchedBudgets = fetchedBudgets.filter(item => {
+          return moment(item.from_date).isBefore(moment.now())
+        });
+
         this.activeBudgets = fetchedBudgets.filter(item => {
           return item.active === true
         });

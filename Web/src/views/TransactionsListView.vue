@@ -98,7 +98,6 @@ export default {
   methods: {
     moment: moment,
     addTransaction() {
-      console.log("ADD")
       this.adding = true
     },
     onPrivacyChange(newPrivacy) {
