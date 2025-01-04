@@ -14,5 +14,7 @@ pub struct ReportByCategory {
     pub amount_cents_eur: i32,
     #[diesel(sql_type = Integer)]
     pub transactions_count: i32,
+    #[diesel(sql_type = Text)]
+    pub category_description: String,
 }
 

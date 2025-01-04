@@ -15,4 +15,5 @@ pub struct ReportByCategoryEntryDto {
     pub currency: String,
     pub total_cents: i32,
     pub transactions_count: i32,
+    pub category_description: String
 }

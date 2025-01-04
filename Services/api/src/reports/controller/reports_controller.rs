@@ -32,6 +32,7 @@ pub fn get_report_by_category(
             currency: "EUR".to_string(),
             total_cents: report.amount_cents_eur,
             transactions_count: report.transactions_count,
+            category_description: report.category_description
         })
     }
 

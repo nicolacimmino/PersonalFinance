@@ -14,6 +14,19 @@
     <div class="cso-transactions-n" @click="$emit('transactionsClick', entry.category)">
       <a>Transactions: {{ entry.transactions_count }}</a>
     </div>
+    <div class="cso-description-n" @click="$emit('transactionsClick', entry.category)">
+      <template v-for="category in entry.subcategories" v-bind:key="category">
+        <div class="subcategory-container">
+
+          <div class="subcategory-category">{{ category.category }}</div>
+          <div class="subcategory-description">{{ category.category_description }}</div>
+          <div class="subcategory-amount">{{
+              Math.floor(Math.abs(category.total_cents / 100.0))
+            }}&nbsp;{{ category.currency }}
+          </div>
+        </div>
+      </template>
+    </div>
   </div>
 </template>
 
@@ -28,11 +41,13 @@ export default {
 };
 </script>
 
+
 <style scoped>
 .cso-category-details {
   display: grid;
   grid-template: 'category total'
-                 'transactions-n transactions-n';
+                 'transactions-n transactions-n'
+                 'area-n area-n';
   padding: 5px;
   margin-bottom: 5px;
   background-color: var(--color-background);
@@ -54,4 +69,34 @@ export default {
   text-align: left;
   padding-top: 5px;
 }
+
+.cso-description-n {
+  grid-area: area-n;
+  text-align: left;
+  padding-top: 5px;
+}
+
+.subcategory-container {
+  display: grid;
+  grid-template: 'sc-category sc-description sc-description sc-amount';
+  grid-template-columns: 100px 1fr 100px;
+  text-align: left;
+  font-size: var(--pf-text-medium-font-size);
+  color:  var(--color-secondary-text);
+}
+
+.subcategory-category {
+  grid-area: sc-category;
+}
+
+.subcategory-description {
+  grid-area: sc-description;
+  overflow: clip;
+}
+
+.subcategory-amount {
+  grid-area: sc-amount;
+  text-align: right;
+}
+
 </style>

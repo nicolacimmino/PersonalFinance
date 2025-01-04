@@ -20,13 +20,15 @@ export default class TransactionsDataTransformations {
                     currency: report.currency,
                     color: report.color,
                     type: report.type,
-                    transactions_count: 0
+                    transactions_count: 0,
+                    subcategories: []
                 };
                 result.push(res[aggregation_category])
             }
 
             res[aggregation_category].total_cents += Math.abs(report.total_cents);
             res[aggregation_category].transactions_count += report.transactions_count;
+            res[aggregation_category].subcategories.push(report);
 
             return res;
         }, {});

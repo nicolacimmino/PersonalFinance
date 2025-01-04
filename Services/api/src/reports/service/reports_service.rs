@@ -24,13 +24,14 @@ impl ReportsService {
                 SELECT category,
                        c.type                              as category_type,
                        CAST(count(*) AS int4)              as transactions_count,
-                       CAST(sum(amount_cents_eur) as int4) as amount_cents_eur
+                       CAST(sum(amount_cents_eur) as int4) as amount_cents_eur,
+                       c.description as category_description
                 FROM application.transactions t
                          INNER JOIN raw.categories c ON c.code = t.category
                 WHERE t.type <> 'TRANSFER'
                   AND t.type <> 'INITIAL'
                   AND (booking_date BETWEEN $1 AND $2)
-                GROUP BY category, c.type
+                GROUP BY category, c.type, c.description
           ")
             .bind::<Timestamp, _>(date_from.and_time(NaiveTime::default()))
             .bind::<Timestamp, _>(date_to.and_time(NaiveTime::default()))
