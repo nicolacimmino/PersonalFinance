@@ -124,11 +124,15 @@ export default {
     loadAllCategories() {
       this.loading++;
       TransactionApi.getCategories().then(fetchedCategories => {
-        this.categories = fetchedCategories.map(
-            categoryInfo => {
-              return categoryInfo.code
-            }
-        );
+        this.categories = fetchedCategories
+            .filter(categoryInfo => {
+              return categoryInfo.discontinued !== 'Y'
+            })
+            .map(
+                categoryInfo => {
+                  return categoryInfo.code
+                }
+            );
         this.loading--;
       });
     },

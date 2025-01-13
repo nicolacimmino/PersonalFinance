@@ -15,6 +15,7 @@ pub fn get_categories(_key: ApiKey<'_>) -> status::Custom<content::RawJson<Strin
         dtos.push(CategoryDto {
             code: category.code,
             color: category.color,
+            discontinued: category.discontinued
         })
     }
 

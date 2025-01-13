@@ -9,4 +9,5 @@ pub struct ApplicationCategory {
     pub id: Uuid,
     pub code: String,
     pub color: String,
+    pub discontinued: String
 }

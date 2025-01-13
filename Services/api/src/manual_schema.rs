@@ -84,6 +84,8 @@ table! {
         #[sql_name = "type"]
         #[max_length = 16]
         type_ -> Varchar,
+        #[max_length = 10]
+        discontinued -> Varchar,
     }
 }
 
