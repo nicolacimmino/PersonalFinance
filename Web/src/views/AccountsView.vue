@@ -78,8 +78,8 @@ export default {
       this.refCurrency = newRefCurrency;
     },
     loadAllAccounts() {
-      TransactionApi.loadAllAccounts().then(accounts => {
-        this.accounts = accounts
+      TransactionApi.getAccounts().then(accounts => {
+        this.accounts = accounts.sort((a,b) => (a.description > b.description) ? 1 : -1)
         this.loaded = true
       });
     },

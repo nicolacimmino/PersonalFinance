@@ -108,19 +108,6 @@ export default class TransactionApi {
 
     }
 
-    static async loadAllAccounts() {
-        return axios({
-            headers: {
-                "X-API-KEY": localStorage.getItem("pfinanceApiKey")
-            },
-            method: "get",
-            url: `${HOST}/api/accounts/`,
-        }).then((response) => {
-            return response.data;
-        });
-
-    }
-
     static async updateTransactionCategory(id, category, type, description) {
         return axios({
             headers: {

@@ -125,6 +125,7 @@ export default {
       this.loading++;
       TransactionApi.getCategories().then(fetchedCategories => {
         this.categories = fetchedCategories
+            .sort((a,b) => (a.code > b.code) ? 1 : -1)
             .filter(categoryInfo => {
               return categoryInfo.discontinued !== 'Y'
             })
@@ -138,8 +139,8 @@ export default {
     },
     loadAllAccounts() {
       this.loading++;
-      TransactionApi.getAccounts().then(fetchedAccounts => {
-        this.accounts = fetchedAccounts;
+      TransactionApi.getAccounts().then(accounts => {
+        this.accounts = accounts.sort((a,b) => (a.description > b.description) ? 1 : -1);
         this.loading--;
       });
     },

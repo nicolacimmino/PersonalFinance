@@ -19,7 +19,6 @@
         <div class="subcategory-container">
 
           <div class="subcategory-category">{{ category.category }}</div>
-          <div class="subcategory-description">{{ category.category_description }}</div>
           <div class="subcategory-amount">{{
               Math.floor(Math.abs(category.total_cents / 100.0))
             }}&nbsp;{{ category.currency }}
@@ -78,8 +77,8 @@ export default {
 
 .subcategory-container {
   display: grid;
-  grid-template: 'sc-category sc-description sc-description sc-amount';
-  grid-template-columns: 100px 1fr 100px;
+  grid-template: 'sc-category sc-amount';
+  grid-template-columns: 2fr 1fr;
   text-align: left;
   font-size: var(--pf-text-medium-font-size);
   color:  var(--color-secondary-text);
@@ -87,11 +86,6 @@ export default {
 
 .subcategory-category {
   grid-area: sc-category;
-}
-
-.subcategory-description {
-  grid-area: sc-description;
-  overflow: clip;
 }
 
 .subcategory-amount {
