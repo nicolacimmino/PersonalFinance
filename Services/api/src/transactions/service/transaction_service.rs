@@ -1,5 +1,6 @@
+use chrono::{NaiveDate, NaiveTime};
 use diesel::{RunQueryDsl, sql_query};
-use diesel::sql_types::{Integer, Nullable, Text, VarChar};
+use diesel::sql_types::{Integer, Nullable, Text, Timestamp, VarChar};
 use log::debug;
 
 use crate::{establish_db_connection};
@@ -13,15 +14,20 @@ impl TransactionsService {
         &mut self,
         category: Option<String>,
         account_id: Option<i32>,
+        date_from: NaiveDate,
+        date_to: NaiveDate,
     ) -> Vec<ApplicationTransaction> {
         debug!("{:?}", account_id);
         return sql_query("
             SELECT * FROM application.transactions
                 WHERE category like $1
                 AND (account_id = $2 OR $2 IS NULL)
+                AND (booking_date BETWEEN $3 AND $4)
                 ORDER BY booking_date DESC
           ").bind::<VarChar, _>(format!("{}%", category.unwrap_or("".to_string())))
             .bind::<Nullable<Integer>, _>(account_id)
+            .bind::<Timestamp, _>(date_from.and_time(NaiveTime::default()))
+            .bind::<Timestamp, _>(date_to.and_time(NaiveTime::default()))
             .load::<ApplicationTransaction>(&mut establish_db_connection())
             .expect("Error loading Transactions");
     }

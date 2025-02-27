@@ -1,5 +1,5 @@
-use chrono::{NaiveDate, NaiveTime};
-use rocket::{get, patch, post};
+use chrono::{Datelike, NaiveDate, NaiveTime, Utc};
+use rocket::{FromForm, get, patch, post};
 use rocket::figment::value::Num;
 use rocket::http::Status;
 use rocket::response::{content, status};
@@ -9,17 +9,31 @@ use crate::transactions::dto::{CreateTransactionDto, PatchTransactionDto, Transa
 use crate::transactions::model::{ApplicationTransaction, NewTransaction};
 use crate::transactions::service::TransactionsService;
 
-#[get("/transactions?<category>&<account>")]
+#[get("/transactions?<params..>")]
 pub fn get_transactions(
     _key: ApiKey<'_>,
-    category: Option<String>,
-    account: Option<i32>,
+    params: GetTransactionsParameters,
 ) -> status::Custom<content::RawJson<String>> {
     let mut transactions_service = TransactionsService {};
 
+    let year = Utc::now().naive_utc().date().year();
+
+    let date_from = NaiveDate::parse_from_str(
+        &*params.date_from.unwrap_or(format!("{}-01-01", year)), "%Y-%m-%d",
+    ).expect("Invalid date_from");
+
+    let date_to = NaiveDate::parse_from_str(
+        &*params.date_to.unwrap_or(format!("{}-12-31", year)), "%Y-%m-%d",
+    ).expect("Invalid date_to");
+
     let mut dtos: Vec<TransactionDto> = Vec::new();
 
-    for transaction in transactions_service.get_transactions(category, account) {
+    for transaction in transactions_service.get_transactions(
+        params.category,
+        params.account,
+        date_from,
+        date_to
+    ) {
         dtos.push(build_transaction_dto(transaction))
     }
 
@@ -106,6 +120,14 @@ fn build_transaction_dto(transaction: ApplicationTransaction) -> TransactionDto 
         ref_currency: "EUR".to_string(),
         account_to: transaction.account_to,
         account_to_name: transaction.account_to_name,
-        receipt_id: transaction.receipt_id
+        receipt_id: transaction.receipt_id,
     };
+}
+
+#[derive(FromForm)]
+pub struct GetTransactionsParameters {
+    category: Option<String>,
+    account: Option<i32>,
+    date_from: Option<String>,
+    date_to: Option<String>,
 }
