@@ -5,13 +5,20 @@ import moment from "moment/moment.js";
 const HOST = import.meta.env.VITE_HOST;
 
 export default class TransactionApi {
-    static async getAllTransactions(account_id, category) {
+    static async getTransactions(account_id, category, year) {
+        if (year === undefined) {
+            year = moment().year();
+        }
+
+        const dateFrom = `${year}-01-01`;
+        const dateTo = `${year}-12-31`;
+
         return axios({
             headers: {
                 "X-API-KEY": localStorage.getItem("pfinanceApiKey")
             },
             method: "get",
-            url: `${HOST}/api/transactions/?category=${category}&account=${account_id}`,
+            url: `${HOST}/api/transactions/?category=${category}&account=${account_id}&&date_from=${dateFrom}&date_to=${dateTo}`,
         }).then((response) => {
             return response.data;
         });
@@ -56,7 +63,7 @@ export default class TransactionApi {
     }
 
     static async loadByCategoryReport(year) {
-        if(year === undefined) {
+        if (year === undefined) {
             year = moment().year();
         }
 
@@ -89,7 +96,7 @@ export default class TransactionApi {
     }
 
     static async loadIndicators(year) {
-        if(year === undefined) {
+        if (year === undefined) {
             year = moment().year();
         }
 

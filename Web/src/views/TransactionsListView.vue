@@ -1,6 +1,7 @@
 <template>
   <ToolBar
       @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
+      @changeYear="loadAllTransactions(this.account_id, this.category_filter)"
       :eye-enabled="true"
   />
   <div v-if="loading > 0">
@@ -109,7 +110,7 @@ export default {
       if (!category) category = ""
       if (!account_id) account_id = ""
 
-      TransactionApi.getAllTransactions(account_id, category).then(fetchedTransactions => {
+      TransactionApi.getTransactions(account_id, category, localStorage.getItem("year")).then(fetchedTransactions => {
         this.transactions = fetchedTransactions
         this.loading--;
 
@@ -125,7 +126,7 @@ export default {
       this.loading++;
       TransactionApi.getCategories().then(fetchedCategories => {
         this.categories = fetchedCategories
-            .sort((a,b) => (a.code > b.code) ? 1 : -1)
+            .sort((a, b) => (a.code > b.code) ? 1 : -1)
             .filter(categoryInfo => {
               return categoryInfo.discontinued !== 'Y'
             })
@@ -140,7 +141,7 @@ export default {
     loadAllAccounts() {
       this.loading++;
       TransactionApi.getAccounts().then(accounts => {
-        this.accounts = accounts.sort((a,b) => (a.description > b.description) ? 1 : -1);
+        this.accounts = accounts.sort((a, b) => (a.description > b.description) ? 1 : -1);
         this.loading--;
       });
     },
