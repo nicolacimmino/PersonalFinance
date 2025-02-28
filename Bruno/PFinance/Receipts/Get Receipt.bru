@@ -1,0 +1,100 @@
+meta {
+  name: Get Receipt
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{pfinance_host}}/api/receipts/:receipt_id
+  body: none
+  auth: none
+}
+
+params:path {
+  receipt_id: {{receipt_id}}
+}
+
+headers {
+  X-API-KEY: {{X-API-KEY}}
+}
+
+tests {
+  const Ajv = require('ajv');
+  const ajv = new Ajv();
+  
+  const schema = {
+    "type": "object",
+    "properties": {
+           "id": {
+            "type": "integer"
+          },
+          "date": {
+            "type": "string"
+          },
+          "amount_cents": {
+            "type": "integer"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "ext_id": {
+            "type": "string"
+          },
+          "merchant_name": {
+            "type": "string"
+          },
+          "merchant_address": {
+            "type": "string"
+          },
+          "scan_file_name": {
+            "type": "string"
+          },
+          "transaction_id": {
+            "type": ["integer", "null"]
+          },
+          "transaction_category": {
+            "type": ["string", "null"]
+          },
+          "transaction_amount_cents": {
+            "type": ["integer", "null"]
+          },
+          "transaction_currency": {
+            "type": ["string", "null"]
+          },
+          "account_code": {
+            "type": ["string", "null"]
+          },
+          "account_description": {
+            "type": "null"
+          }
+    },
+    "required": [
+      "id",
+      "date",
+      "amount_cents",
+      "currency",
+      "ext_id",
+      "merchant_name",
+      "merchant_address",
+      "scan_file_name",
+      "transaction_id",
+      "transaction_category",
+      "transaction_amount_cents",
+      "transaction_currency",
+      "account_code",
+      "account_description"
+    ]
+  }
+  
+  const data = res.getBody();
+  
+  test("response should be 200", function() {  
+    expect(res.getStatus()).to.equal(200);  
+  });
+  
+  test("response matches schema", function() {  
+    const valid = ajv.validate(schema, data);
+    expect(valid).to.be.true;
+    if (!valid) console.log(ajv.errors);
+  });
+}

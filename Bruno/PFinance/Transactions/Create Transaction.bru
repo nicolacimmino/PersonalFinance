@@ -1,0 +1,119 @@
+meta {
+  name: Create Transaction
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{pfinance_host}}/api/transactions/
+  body: json
+  auth: none
+}
+
+headers {
+  X-API-KEY: {{X-API-KEY}}
+}
+
+body:json {
+  {
+      "type": "TRANSFER",
+      "account_id": 2,
+      "booking_date": "2024-11-14",
+      "category": "ESS.LES",
+      "creditor_name": "Test Creditor",
+      "description": "A description",
+      "amount_cents": -450,
+      "account_to": 2
+  }
+}
+
+script:pre-request {
+  if(bru.getEnvVar("environment")!="local") {
+    bru.runner.skipRequest();
+  }
+}
+
+tests {
+  const Ajv = require('ajv');
+  const ajv = new Ajv();
+  
+  const schema = {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "type": {
+        "type": "string"
+      },
+      "account_id": {
+        "type": "integer"
+      },
+      "account_name": {
+        "type": "string"
+      },
+      "booking_date": {
+        "type": "string"
+      },
+      "category": {
+        "type": "string"
+      },
+      "creditor_name": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "amount_cents": {
+        "type": "integer"
+      },
+      "currency": {
+        "type": "string"
+      },
+      "amount_cents_in_ref_currency": {
+        "type": "integer"
+      },
+      "ref_currency": {
+        "type": "string"
+      },
+      "account_to": {
+        "type": ["integer", "null"]
+      },
+      "account_to_name": {
+        "type": ["string", "null"]
+      },
+      "receipt_id": {
+        "type": ["string", "null"]
+      }
+    },
+    "required": [
+      "id",
+      "type",
+      "account_id",
+      "account_name",
+      "booking_date",
+      "category",
+      "creditor_name",
+      "description",
+      "amount_cents",
+      "currency",
+      "amount_cents_in_ref_currency",
+      "ref_currency",
+      "account_to",
+      "account_to_name",
+      "receipt_id"
+    ]
+  }
+  
+  const data = res.getBody();
+  
+  test("response should be 201", function() {  
+    expect(res.getStatus()).to.equal(201);  
+  });
+  
+  test("response matches schema", function() {  
+    const valid = ajv.validate(schema, data);
+    expect(valid).to.be.true;
+    if (!valid) console.log(ajv.errors);
+  });
+}

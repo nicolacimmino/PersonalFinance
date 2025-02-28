@@ -1,0 +1,89 @@
+meta {
+  name: Get Budgets
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{pfinance_host}}/api/budgets/
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-KEY: {{X-API-KEY}}
+}
+
+tests {
+  const Ajv = require('ajv');
+  const ajv = new Ajv();
+  
+  const schema = {
+    "type": "array",
+    "items": [
+      {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "code": {
+            "type": "string"
+          },
+          "from_date": {
+            "type": "string"
+          },
+          "to_date": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "amount_cents": {
+            "type": "integer"
+          },
+          "spent_cents_in_ref_currency": {
+            "type": "integer"
+          },
+          "spent_cents": {
+            "type": "integer"
+          },
+          "transactions": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "from_date",
+          "to_date",
+          "description",
+          "active",
+          "currency",
+          "amount_cents",
+          "spent_cents_in_ref_currency",
+          "spent_cents",
+          "transactions"
+        ]
+      }
+    ]
+  }
+  
+  const data = res.getBody();
+  
+  test("response should be 200", function() {  
+    expect(res.getStatus()).to.equal(200);  
+  });
+  
+  test("response matches schema", function() {  
+    const valid = ajv.validate(schema, data);
+    expect(valid).to.be.true;
+    if (!valid) console.log(ajv.errors);
+  });
+}

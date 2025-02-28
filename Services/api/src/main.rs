@@ -42,6 +42,7 @@ fn launch() -> _ {
 
     rocket::build()
         .configure(rocket::Config::figment().merge(("address", "0.0.0.0")))
+        .configure(rocket::Config::figment().merge(("port", 8000)))
         .mount("/api", routes![
             get_categories,
             get_accounts,

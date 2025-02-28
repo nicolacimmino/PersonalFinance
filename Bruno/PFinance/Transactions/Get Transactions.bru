@@ -1,0 +1,117 @@
+meta {
+  name: Get Transactions
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{pfinance_host}}/api/transactions/?date_from=2024-01-01&date_to=2025-12-31
+  body: none
+  auth: none
+}
+
+params:query {
+  date_from: 2024-01-01
+  date_to: 2025-12-31
+  ~category: DST
+  ~account: 2
+}
+
+headers {
+  X-API-KEY: {{X-API-KEY}}
+}
+
+script:post-response {
+  const data = res.getBody();
+  
+  bru.setEnvVar("transaction_id", data[0].id)
+}
+
+tests {
+  const Ajv = require('ajv');
+  const ajv = new Ajv();
+  
+  const schema = {
+    "type": "array",
+    "items": [
+      {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "integer"
+          },
+          "account_name": {
+            "type": "string"
+          },
+          "booking_date": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "creditor_name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "amount_cents": {
+            "type": "integer"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "amount_cents_in_ref_currency": {
+            "type": "integer"
+          },
+          "ref_currency": {
+            "type": "string"
+          },
+          "account_to": {
+            "type": "null"
+          },
+          "account_to_name": {
+            "type": "null"
+          },
+          "receipt_id": {
+            "type": "null"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "account_id",
+          "account_name",
+          "booking_date",
+          "category",
+          "creditor_name",
+          "description",
+          "amount_cents",
+          "currency",
+          "amount_cents_in_ref_currency",
+          "ref_currency",
+          "account_to",
+          "account_to_name",
+          "receipt_id"
+        ]
+      }
+    ]
+  }
+  const data = res.getBody();
+  
+  test("response should be 200", function() {  
+    expect(res.getStatus()).to.equal(200);  
+  });
+  
+  test("response matches schema", function() {  
+    const valid = ajv.validate(schema, data);
+    expect(valid).to.be.true;
+    if (!valid) console.log(ajv.errors);
+  });
+}

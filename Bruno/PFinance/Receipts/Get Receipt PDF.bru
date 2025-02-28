@@ -1,0 +1,19 @@
+meta {
+  name: Get Receipt PDF
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{pfinance_host}}/api/receipts/:receipt_id/pdf
+  body: none
+  auth: none
+}
+
+params:path {
+  receipt_id: {{receipt_id}}
+}
+
+headers {
+  X-API-KEY: {{X-API-KEY}}
+}

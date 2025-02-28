@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "PFinance",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

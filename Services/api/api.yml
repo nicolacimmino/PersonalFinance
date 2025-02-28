@@ -1,0 +1,74 @@
+openapi: 3.0.3
+info:
+  title: Personal Finance API
+  version: 1.0.0
+tags:
+  - name: alerts
+    description: Everything about Alerts
+paths:
+  /api/alerts:
+    get:
+      tags:
+        - alerts
+      summary: Get all current alerts
+      operationId: getAlerts
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertsList'
+
+components:
+  schemas:
+    AlertsList:
+      type: array
+      items:
+        type: object
+        properties:
+          category:
+            type: string
+            enum:
+              - BALANCE
+              - CATEGORY_MISSING
+              - CATEGORY_INVALID
+              - ERROR
+              - OVERSPENT
+            nullable: false
+            example: BALANCE
+            description: The alert category. Usually alerts belonging to the same category are displayed
+              grouped by the client.
+          message:
+            type: string
+            nullable: false
+            example: Account balance negative.
+            description: A human readable message explaining the nature of the alert.
+          item:
+            type: string
+            enum:
+              - BUDGETS
+              - TRANSACTIONS
+              - ACCOUNTS
+            nullable: false
+            example: TRANSACTIONS
+            description: The type of item the alert refers to.
+          item_id:
+            type: string
+            nullable: false
+            example: "12"
+            description: The ID of the the item the alert refers to.
+          level:
+            type: string
+            enum:
+              - WARN
+              - ERROR
+            nullable: false
+            example: ERROR
+            description: The alert severity level.
+
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: X-API-KEY
+      in: header

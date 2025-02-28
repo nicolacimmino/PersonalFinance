@@ -1,0 +1,78 @@
+meta {
+  name: Get Indicators
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{pfinance_host}}/api/reports/indicators?date_from=2024-01-01&date_to=2024-12-31
+  body: none
+  auth: none
+}
+
+params:query {
+  date_from: 2024-01-01
+  date_to: 2024-12-31
+}
+
+headers {
+  X-API-KEY: {{X-API-KEY}}
+}
+
+tests {
+  const Ajv = require('ajv');
+  const ajv = new Ajv();
+  
+  const schema = {
+    "type": "object",
+    "properties": {
+      "date_from": {
+        "type": "string"
+      },
+      "date_to": {
+        "type": "string"
+      },
+      "indicators": {
+        "type": "array",
+        "items": [
+          {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "total_cents": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "label",
+              "currency",
+              "total_cents"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "date_from",
+      "date_to",
+      "indicators"
+    ]
+  }
+  
+  const data = res.getBody();
+  
+  test("response should be 200", function() {  
+    expect(res.getStatus()).to.equal(200);  
+  });
+  
+  test("response matches schema", function() {  
+    const valid = ajv.validate(schema, data);
+    expect(valid).to.be.true;
+    if (!valid) console.log(ajv.errors);
+  });
+}

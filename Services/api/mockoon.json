@@ -1,0 +1,93 @@
+{
+  "uuid": "e3af4696-99bc-40bb-bcc2-daacfe0a8fce",
+  "lastMigration": 32,
+  "name": "Personal Finance API",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 8000,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "9e3392a9-68c3-4751-92a9-7f60552f96ee",
+      "type": "http",
+      "documentation": "Get all current alerts",
+      "method": "get",
+      "endpoint": "api/alerts",
+      "responses": [
+        {
+          "uuid": "d3596fb7-f547-4f65-86fb-2c416ed042b0",
+          "body": "[\n  {{#repeat 5 10 comma=true}}\n  {\n    \"category\": \"{{oneOf (array 'BALANCE' 'CATEGORY_MISSING' 'CATEGORY_INVALID' 'ERROR' 'OVERSPENT')}}\",\n    \"message\": \"Account balance negative.\",\n    \"item\": \"{{oneOf (array 'BUDGETS' 'TRANSACTIONS' 'ACCOUNTS')}}\",\n    \"item_id\": \"{{int 0 100}}\",\n    \"level\": \"{{oneOf (array 'WARN' 'ERROR')}}\"\n  }\n  {{/repeat}}\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Successful operation",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "9e3392a9-68c3-4751-92a9-7f60552f96ee"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "127.0.0.1:8001",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Access-Control-Allow-Origin",
+      "value": "*"
+    },
+    {
+      "key": "Access-Control-Allow-Methods",
+      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+    },
+    {
+      "key": "Access-Control-Allow-Headers",
+      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With,x-api-key"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [],
+  "callbacks": []
+}

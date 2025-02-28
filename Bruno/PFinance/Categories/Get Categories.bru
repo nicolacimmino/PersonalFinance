@@ -1,0 +1,57 @@
+meta {
+  name: Get Categories
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{pfinance_host}}/api/categories/
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-KEY: {{X-API-KEY}}
+}
+
+tests {
+  const Ajv = require('ajv');
+  const ajv = new Ajv();
+  
+  const schema = {
+    "type": "array",
+    "items": [
+      {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "discontinued": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "color",
+          "discontinued"
+        ]
+      }
+    ]
+  }
+  
+  const data = res.getBody();
+  
+  test("response should be 200", function() {  
+    expect(res.getStatus()).to.equal(200);  
+  });
+  
+  test("response matches schema", function() {  
+    const valid = ajv.validate(schema, data);
+    expect(valid).to.be.true;
+    if (!valid) console.log(ajv.errors);
+  });
+}

@@ -1,0 +1,90 @@
+meta {
+  name: Get Report By Category
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{pfinance_host}}/api/reports/by_category/?date_from=2024-01-01&date_to=2024-12-31
+  body: none
+  auth: none
+}
+
+params:query {
+  date_from: 2024-01-01
+  date_to: 2024-12-31
+}
+
+headers {
+  X-API-KEY: {{X-API-KEY}}
+}
+
+tests {
+  const Ajv = require('ajv');
+  const ajv = new Ajv();
+  
+  const schema = {
+    "type": "object",
+    "properties": {
+      "date_from": {
+        "type": "string"
+      },
+      "date_to": {
+        "type": "string"
+      },
+      "reports": {
+        "type": "array",
+        "items": [
+          {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "total_cents": {
+                "type": "integer"
+              },
+              "transactions_count": {
+                "type": "integer"
+              },
+              "category_description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "category",
+              "type",
+              "currency",
+              "total_cents",
+              "transactions_count",
+              "category_description"
+            ]
+          }
+        ]
+      }
+    },
+    "required": [
+      "date_from",
+      "date_to",
+      "reports"
+    ]
+  }
+  
+  const data = res.getBody();
+  
+  test("response should be 200", function() {  
+    expect(res.getStatus()).to.equal(200);  
+  });
+  
+  test("response matches schema", function() {  
+    const valid = ajv.validate(schema, data);
+    expect(valid).to.be.true;
+    if (!valid) console.log(ajv.errors);
+  });
+}

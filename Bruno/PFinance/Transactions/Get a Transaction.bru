@@ -1,0 +1,104 @@
+meta {
+  name: Get a Transaction
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{pfinance_host}}/api/transactions/:transaction_id
+  body: none
+  auth: none
+}
+
+params:path {
+  transaction_id: {{transaction_id}}
+}
+
+headers {
+  X-API-KEY: {{X-API-KEY}}
+}
+
+tests {
+  const Ajv = require('ajv');
+  const ajv = new Ajv();
+  
+  const schema = {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "type": {
+        "type": "string"
+      },
+      "account_id": {
+        "type": "integer"
+      },
+      "account_name": {
+        "type": "string"
+      },
+      "booking_date": {
+        "type": "string"
+      },
+      "category": {
+        "type": "string"
+      },
+      "creditor_name": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "amount_cents": {
+        "type": "integer"
+      },
+      "currency": {
+        "type": "string"
+      },
+      "amount_cents_in_ref_currency": {
+        "type": "integer"
+      },
+      "ref_currency": {
+        "type": "string"
+      },
+      "account_to": {
+        "type": ["integer", "null"]
+      },
+      "account_to_name": {
+        "type": ["string", "null"]
+      },
+      "receipt_id": {
+        "type": ["string", "null"]
+      }
+    },
+    "required": [
+      "id",
+      "type",
+      "account_id",
+      "account_name",
+      "booking_date",
+      "category",
+      "creditor_name",
+      "description",
+      "amount_cents",
+      "currency",
+      "amount_cents_in_ref_currency",
+      "ref_currency",
+      "account_to",
+      "account_to_name",
+      "receipt_id"
+    ]
+  }
+  
+  const data = res.getBody();
+  
+  test("response should be 200", function() {  
+    expect(res.getStatus()).to.equal(200);  
+  });
+  
+  test("response matches schema", function() {  
+    const valid = ajv.validate(schema, data);
+    expect(valid).to.be.true;
+    if (!valid) console.log(ajv.errors);
+  });
+}
