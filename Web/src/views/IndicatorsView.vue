@@ -153,6 +153,8 @@ export default {
       switch (type.substring(0, 4)) {
         case 'CASH':
           return "Cash"
+        case 'LIAB':
+          return "Liabilities"
         case 'TONW':
           return "Total Net Worth"
         case 'CFAT':
@@ -178,16 +180,18 @@ export default {
           return 0
         case 'INVT':
           return 1
-        case 'TONW':
+        case 'LIAB':
           return 2
-        case 'INAT':
+        case 'TONW':
           return 3
-        case 'INPS':
+        case 'INAT':
           return 4
-        case 'CFAT':
+        case 'INPS':
           return 5
-        case 'CFOA':
+        case 'CFAT':
           return 6
+        case 'CFOA':
+          return 7
         default:
           if (type.substring(0, 1) === "C") {
             return 10000000 - (this.valueOfIndicator(type) / 100)

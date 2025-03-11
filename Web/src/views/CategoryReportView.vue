@@ -29,9 +29,9 @@
     <template v-for="entry in categories" v-bind:key="entry.category">
       <div>
         <CategoryOverview :entry=entry
-                                  :privacy=privacy
-                                  @categoryClick="(category) => loadByCategoryReport(this.type,category + '.')"
-                                  @transactionsClick="(category) => showTransactionsByCategory(category)"
+                          :privacy=privacy
+                          @categoryClick="(category) => loadByCategoryReport(this.type,category + '.')"
+                          @transactionsClick="(category) => showTransactionsByCategory(category)"
         >
         </CategoryOverview>
       </div>
@@ -138,39 +138,43 @@ export default {
     },
     loadByCategoryReport(typeFilter, categoryFilter) {
       this.loaded = false;
-      TransactionApi.loadByCategoryReport(localStorage.getItem("year")).then(fetchedCategoriesReport => {
-        let aggregatedData = TransactionsDataTransformations.aggregateSubLevels(
-            fetchedCategoriesReport.reports, typeFilter, categoryFilter
-        ).sort((a, b) => (a.total_cents > b.total_cents) ? -1 : 1);
+      TransactionApi.loadByCategoryReport(localStorage.getItem("year"))
+          .then(fetchedCategoriesReport => {
+            let aggregatedData = TransactionsDataTransformations.aggregateSubLevels(
+                fetchedCategoriesReport.reports, typeFilter, categoryFilter
+            ).sort((a, b) => (a.total_cents > b.total_cents) ? -1 : 1);
 
-        if (aggregatedData.length === 0) {
-          this.loaded = true;
-          return;
-        }
+            aggregatedData.forEach(report => report.subcategories
+                .sort((a, b) => (a.total_cents > b.total_cents) ? 1 : -1));
 
-        this.currentCategoryFilter = categoryFilter;
+            if (aggregatedData.length === 0) {
+              this.loaded = true;
+              return;
+            }
 
-        this.categories = aggregatedData;
+            this.currentCategoryFilter = categoryFilter;
 
-        this.chartData = {
-          labels: this.categories.map(
-              item => {
-                return item.category
-              }
-          ),
-          datasets: [{
-            backgroundColor:
-                ['#00429d', '#367176', '#649856', '#90be36', '#bde516', '#fcd6b7', '#f9aa8c', '#f57b5e', '#ea4438', '#cb0032']
-            ,
-            data: this.categories.map(
-                item => {
-                  return Math.abs(item.total_cents) / 100.00
-                }
-            )
-          }]
-        }
-        this.loaded = true;
-      });
+            this.categories = aggregatedData;
+
+            this.chartData = {
+              labels: this.categories.map(
+                  item => {
+                    return item.category
+                  }
+              ),
+              datasets: [{
+                backgroundColor:
+                    ['#00429d', '#367176', '#649856', '#90be36', '#bde516', '#fcd6b7', '#f9aa8c', '#f57b5e', '#ea4438', '#cb0032']
+                ,
+                data: this.categories.map(
+                    item => {
+                      return Math.abs(item.total_cents) / 100.00
+                    }
+                )
+              }]
+            }
+            this.loaded = true;
+          });
     },
   },
 }
