@@ -22,7 +22,7 @@ pub struct Transaction {
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct ApplicationTransaction {
     pub id: i32,
-    pub movement_type: String,
+    pub transaction_type: String,
     pub account_id: i32,
     pub amount_cents: i32,
     pub category: String,

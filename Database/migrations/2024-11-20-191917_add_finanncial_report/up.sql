@@ -37,6 +37,12 @@ WHERE transactions_enriched.booking_date >= date_from
   AND transactions_enriched.booking_date <= date_to
   AND transactions_enriched.type <> 'INITIAL'
 UNION
+SELECT 'LIAB'                                             AS label,
+       coalesce(sum(application.transactions.amount_cents_eur),0)::int4 AS amount_cents
+FROM application.transactions
+WHERE application.transactions.account_type = 'LIABILITIES'
+  AND application.transactions.booking_date <= date_to
+UNION
 SELECT 'TONW'                                             AS label,
        coalesce(sum(transactions_enriched.amount_cents_eur),0)::int4 AS amount_cents
 FROM transactions_enriched

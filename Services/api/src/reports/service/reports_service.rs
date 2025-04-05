@@ -28,8 +28,8 @@ impl ReportsService {
                        c.description as category_description
                 FROM application.transactions t
                          INNER JOIN raw.categories c ON c.code = t.category
-                WHERE t.type <> 'TRANSFER'
-                  AND t.type <> 'INITIAL'
+                WHERE t.category_type <> 'TRANSFER'
+                  AND t.category_type <> 'INITIAL'
                   AND (booking_date BETWEEN $1 AND $2)
                 GROUP BY category, c.type, c.description
           ")

@@ -41,8 +41,8 @@ fn launch() -> _ {
         .allow_credentials(true);
 
     rocket::build()
-        .configure(rocket::Config::figment().merge(("address", "0.0.0.0")))
         .configure(rocket::Config::figment().merge(("port", 8000)))
+        .configure(rocket::Config::figment().merge(("address", "0.0.0.0")))
         .mount("/api", routes![
             get_categories,
             get_accounts,

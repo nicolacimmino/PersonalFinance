@@ -163,6 +163,8 @@ export default {
           return "Cash Flow"
         case 'INVT':
           return "Investments"
+        case 'EXPE':
+          return "Expenses"
         case 'INAT':
           return "Income Active"
         case 'INPS':
@@ -188,15 +190,17 @@ export default {
           return 4
         case 'INPS':
           return 5
-        case 'CFAT':
+        case 'EXPE':
           return 6
-        case 'CFOA':
+        case 'CFAT':
           return 7
+        case 'CFOA':
+          return 8
         default:
           if (type.substring(0, 1) === "C") {
             return 10000000 - (this.valueOfIndicator(type) / 100)
           }
-          return 8
+          return 9
       }
     }
   }

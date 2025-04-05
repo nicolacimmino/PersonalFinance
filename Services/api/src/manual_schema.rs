@@ -55,7 +55,7 @@ table! {
     application_transactions (id) {
         id -> Int4,
         #[max_length = 16]
-        movement_type -> Varchar,
+        transaction_type -> Varchar,
         account_id -> Int4,
         amount_cents -> Int4,
         category -> Text,

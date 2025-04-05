@@ -107,7 +107,7 @@ pub fn patch_transaction(_key: ApiKey<'_>, id: i32, patch_transaction_dto: rocke
 fn build_transaction_dto(transaction: ApplicationTransaction) -> TransactionDto {
     return TransactionDto {
         id: Num::from(transaction.id),
-        type_: transaction.movement_type.to_owned(),
+        type_: transaction.transaction_type.to_owned(),
         account_id: Num::from(transaction.account_id),
         account_name: transaction.account_name,
         booking_date: transaction.booking_date.to_string(),
