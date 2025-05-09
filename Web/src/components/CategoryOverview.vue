@@ -7,8 +7,11 @@
       <div v-if="privacy">
         ---&nbsp;{{ entry.currency }}
       </div>
+      <div v-else-if="entry.type === 'EXPENSE'">
+        {{ Math.floor(-(entry.total_cents / 100.0)) }}&nbsp;{{ entry.currency }}
+      </div>
       <div v-else>
-        {{ Math.floor(Math.abs(entry.total_cents / 100.0)) }}&nbsp;{{ entry.currency }}
+        {{ Math.floor(entry.total_cents / 100.0) }}&nbsp;{{ entry.currency }}
       </div>
     </div>
     <div class="cso-transactions-n" @click="$emit('transactionsClick', entry.category)">
@@ -19,10 +22,13 @@
         <div class="subcategory-container">
 
           <div class="subcategory-category">{{ category.category }}</div>
-          <div class="subcategory-amount">{{
-              Math.floor(Math.abs(category.total_cents / 100.0))
-            }}&nbsp;{{ category.currency }}
+          <div v-if="entry.type === 'EXPENSE'" class="subcategory-amount">
+            {{ Math.floor(-(category.total_cents / 100.0)) }}&nbsp;{{ category.currency }}
           </div>
+          <div v-else class="subcategory-amount">
+            {{ Math.floor((category.total_cents / 100.0)) }}&nbsp;{{ category.currency }}
+          </div>
+
         </div>
       </template>
     </div>
@@ -81,7 +87,7 @@ export default {
   grid-template-columns: 2fr 1fr;
   text-align: left;
   font-size: var(--pf-text-medium-font-size);
-  color:  var(--color-secondary-text);
+  color: var(--color-secondary-text);
 }
 
 .subcategory-category {

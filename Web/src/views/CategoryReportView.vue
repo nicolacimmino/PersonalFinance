@@ -142,10 +142,10 @@ export default {
           .then(fetchedCategoriesReport => {
             let aggregatedData = TransactionsDataTransformations.aggregateSubLevels(
                 fetchedCategoriesReport.reports, typeFilter, categoryFilter
-            ).sort((a, b) => (a.total_cents > b.total_cents) ? -1 : 1);
+            ).sort((a, b) => (Math.abs(a.total_cents) > Math.abs(b.total_cents)) ? -1 : 1);
 
             aggregatedData.forEach(report => report.subcategories
-                .sort((a, b) => (a.total_cents > b.total_cents) ? 1 : -1));
+                .sort((a, b) => (Math.abs(a.total_cents) > Math.abs(b.total_cents)) ? -1 : 1));
 
             if (aggregatedData.length === 0) {
               this.loaded = true;

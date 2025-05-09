@@ -26,7 +26,7 @@ export default class TransactionsDataTransformations {
                 result.push(res[aggregation_category])
             }
 
-            res[aggregation_category].total_cents += Math.abs(report.total_cents);
+            res[aggregation_category].total_cents += report.total_cents;
             res[aggregation_category].transactions_count += report.transactions_count;
             res[aggregation_category].subcategories.push(report);
 
