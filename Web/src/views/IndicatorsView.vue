@@ -157,6 +157,8 @@ export default {
           return "Liabilities"
         case 'TONW':
           return "Total Net Worth"
+        case 'PONW':
+          return "Potential Net Worth"
         case 'CFAT':
           return "Cash Flow Active"
         case 'CFOA':
@@ -186,16 +188,18 @@ export default {
           return 2
         case 'TONW':
           return 3
-        case 'INAT':
+        case 'PONW':
           return 4
-        case 'INPS':
+        case 'INAT':
           return 5
-        case 'EXPE':
+        case 'INPS':
           return 6
-        case 'CFAT':
+        case 'EXPE':
           return 7
-        case 'CFOA':
+        case 'CFAT':
           return 8
+        case 'CFOA':
+          return 9
         default:
           if (type.substring(0, 1) === "C") {
             return 10000000 - (this.valueOfIndicator(type) / 100)
