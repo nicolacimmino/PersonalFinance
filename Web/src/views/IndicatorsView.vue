@@ -153,12 +153,8 @@ export default {
       switch (type.substring(0, 4)) {
         case 'CASH':
           return "Cash"
-        case 'LIAB':
-          return "Liabilities"
         case 'TONW':
           return "Total Net Worth"
-        case 'PONW':
-          return "Potential Net Worth"
         case 'CFAT':
           return "Cash Flow Active"
         case 'CFOA':
@@ -184,12 +180,8 @@ export default {
           return 0
         case 'INVT':
           return 1
-        case 'LIAB':
-          return 2
         case 'TONW':
           return 3
-        case 'PONW':
-          return 4
         case 'INAT':
           return 5
         case 'INPS':

@@ -85,7 +85,10 @@ export default {
   methods: {
     chartOptions() {
       return {
-        responsive: true,
+        animation: {
+          duration: 0
+        },
+        responsive: false,
         font: {
           size: 15
         },
