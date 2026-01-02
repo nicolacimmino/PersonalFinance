@@ -68,8 +68,9 @@
             v-model="this.year"
             @change="changeYear(); $emit('changeYear', this.year); showMenu=false;"
         >
-          <option value="2024">2024</option>
-          <option value="2025">2025</option>
+          <option v-for="y in years" :key="y" :value="y">
+            {{ y }}
+          </option>
         </select>
       </div>
     </div>
@@ -87,7 +88,20 @@ export default {
     refCurrencyEnabled: Boolean,
     eyeEnabled: Boolean,
   },
-  emits: ["ref-currency", "arrow-up", "compact", "privacy", "changeYear"],
+  computed: {
+    years() {
+      const startYear = 2024
+      const currentYear = new Date().getFullYear()
+      const list = []
+
+      for (let y = startYear; y <= currentYear; y++) {
+        list.push(y)
+      }
+
+      return list
+    }
+  },
+  emits: ['ref-currency', 'arrow-up', 'compact', 'privacy', 'changeYear'],
   data() {
     return {
       privacy: (localStorage.getItem("privacy") === "true"),
