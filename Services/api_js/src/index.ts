@@ -6,14 +6,9 @@ import { logger } from './config/logger';
 import { closePool } from './config/database';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
-// Import route modules
-import categoryRoutes from './modules/categories/category.routes';
-import accountRoutes from './modules/accounts/account.routes';
-import transactionRoutes from './modules/transactions/transaction.routes';
-import reportRoutes from './modules/reports/report.routes';
-import budgetRoutes from './modules/budgets/budget.routes';
-import alertRoutes from './modules/alerts/alert.routes';
-import receiptRoutes from './modules/receipts/receipt.routes';
+// Import versioned route bundles
+import v1Routes from './routes/v1.routes';
+import v2Routes from './routes/v2.routes';
 
 // Load environment variables
 dotenv.config();
@@ -40,14 +35,12 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Mount API routes under /api prefix
-app.use('/api', categoryRoutes);
-app.use('/api', accountRoutes);
-app.use('/api', transactionRoutes);
-app.use('/api', reportRoutes);
-app.use('/api', budgetRoutes);
-app.use('/api', alertRoutes);
-app.use('/api', receiptRoutes);
+// Mount versioned API routes
+app.use('/api/v1', v1Routes);  // V1 at /api/v1/*
+app.use('/api/v2', v2Routes);  // V2 at /api/v2/*
+
+// For backward compatibility, mount v1 at /api/* as well
+app.use('/api', v1Routes);     // Legacy /api/* → v1
 
 // 404 handler for undefined routes
 app.use(notFoundHandler);
@@ -59,6 +52,8 @@ app.use(errorHandler);
 const server = app.listen(PORT, () => {
   logger.info(`Node.js API server started on port ${PORT}`);
   logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.info('API v1: /api/v1/* and /api/* (legacy)');
+  logger.info('API v2: /api/v2/* (camelCase)');
 });
 
 // Graceful shutdown

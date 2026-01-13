@@ -1,0 +1,22 @@
+meta {
+  name: Get Accounts
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/v2/accounts
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}
+
+docs {
+  Get all accounts (V2 - camelCase).
+
+  Returns accounts with camelCase fields:
+  - assetType, primaryTransactionSource, balanceCents, balanceEurCents
+}

@@ -1,5 +1,6 @@
 .env
 .env.production
+.env.devk8
 .envrc
 
 # Logs
@@ -14,6 +15,8 @@ lerna-debug.log*
 node_modules
 .DS_Store
 dist
+dist_prod
+dist_devk8
 dist-ssr
 coverage
 *.local

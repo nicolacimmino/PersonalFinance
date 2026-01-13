@@ -1,0 +1,22 @@
+meta {
+  name: Get Transaction by ID
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/v1/transactions/1
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}
+
+docs {
+  Get a single transaction by ID (V1 - snake_case).
+
+  Returns transaction details with snake_case field names:
+  - account_id, booking_date, amount_cents, etc.
+}

@@ -1,0 +1,31 @@
+meta {
+  name: Get Indicators
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/api/v1/reports/indicators?date_from=2024-01-01&date_to=2024-12-31
+  body: none
+  auth: none
+}
+
+params:query {
+  date_from: 2024-01-01
+  date_to: 2024-12-31
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}
+
+docs {
+  Get KPI indicators (V1 - snake_case).
+
+  Query parameters:
+  - date_from: Indicator start date (YYYY-MM-DD)
+  - date_to: Indicator end date (YYYY-MM-DD)
+
+  Returns indicators with snake_case field:
+  - ref_currency
+}

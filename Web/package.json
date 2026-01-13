@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "run-p \"build-only {@}\" --",
+    "build-devk8": "vite build --mode devk8 --outDir dist_devk8",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",

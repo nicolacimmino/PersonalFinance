@@ -1,0 +1,22 @@
+meta {
+  name: Get Budgets
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/api/v1/budgets
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}
+
+docs {
+  Get all budgets (V1 - snake_case).
+
+  Returns budgets with snake_case fields:
+  - from_date, to_date, amount_cents, spent_cents_eur, spent_cents, transactions
+}

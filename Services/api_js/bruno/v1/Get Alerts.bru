@@ -1,0 +1,22 @@
+meta {
+  name: Get Alerts
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/api/v1/alerts
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}
+
+docs {
+  Get all alerts (V1 - snake_case).
+
+  Returns alerts with snake_case field:
+  - item_id
+}

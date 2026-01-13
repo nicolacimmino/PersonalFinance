@@ -1,0 +1,24 @@
+meta {
+  name: Get Receipts
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/api/v2/receipts
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}
+
+docs {
+  Get all receipts (V2 - camelCase).
+
+  Returns receipts with camelCase fields:
+  - amountCents, externalId, merchantName, merchantAddress, scanFileName
+  - transactionId, transactionCategory, transactionAmountCents, transactionCurrency
+  - accountCode, accountDescription
+}

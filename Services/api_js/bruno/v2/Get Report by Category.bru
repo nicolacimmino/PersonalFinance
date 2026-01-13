@@ -1,0 +1,31 @@
+meta {
+  name: Get Report by Category
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{baseUrl}}/api/v2/reports/by_category?dateFrom=2024-01-01&dateTo=2024-12-31
+  body: none
+  auth: none
+}
+
+params:query {
+  dateFrom: 2024-01-01
+  dateTo: 2024-12-31
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}
+
+docs {
+  Get spending report grouped by category (V2 - camelCase).
+
+  Query parameters (camelCase):
+  - dateFrom: Report start date (YYYY-MM-DD)
+  - dateTo: Report end date (YYYY-MM-DD)
+
+  Returns report with camelCase fields:
+  - dateFrom, dateTo, totalCents, transactionCount, categoryDescription
+}

@@ -1,0 +1,34 @@
+meta {
+  name: Update Transaction
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/api/v2/transactions/1
+  body: json
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "category": "FOOD",
+    "description": "Updated description",
+    "type": "DEBIT"
+  }
+}
+
+docs {
+  Update a transaction (V2 - camelCase).
+
+  All fields are optional (camelCase):
+  - category: Update category
+  - description: Update description
+  - accountTo: Update destination account
+  - type: Update transaction type
+}

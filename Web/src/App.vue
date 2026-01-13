@@ -2,14 +2,18 @@
   <div class="mainContainer">
     <div class="main">
       <main>
-        <RouterView/>
+        {{ envName }}
+        <RouterView />
       </main>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
+const envName = import.meta.env.VITE_ENV
+</script>
 
+<script>
 export default {
   name: 'App',
   data() {
@@ -21,12 +25,11 @@ export default {
     $route: function () {
       this.showMenu = false
     }
-  },
+  }
 }
 </script>
 
 <style>
-
 .navbar {
   text-align: left;
   padding: 10px;
@@ -36,7 +39,6 @@ export default {
   padding: 10px;
   background-color: white;
 }
-
 
 .main {
   grid-area: main;
@@ -49,7 +51,8 @@ export default {
     'main';
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
