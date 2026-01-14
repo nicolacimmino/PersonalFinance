@@ -1,9 +1,4 @@
-class Alert {
-    category: String;
-    message: String;
-    item: String;
-    item_id: String;
-    level: String;
-}
+import type { Alert, AlertLevel } from '@/types';
 
-export default Alert;
+// Re-export Alert type for backward compatibility
+export type { Alert, AlertLevel };

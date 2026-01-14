@@ -10,7 +10,8 @@
 </template>
 
 <script setup>
-const envName = import.meta.env.VITE_ENV
+import { config } from '@/config';
+const envName = config.envName;
 </script>
 
 <script>

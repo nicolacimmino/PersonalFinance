@@ -27,24 +27,29 @@
 
 import ToolBar from "@/components/ToolBar.vue";
 import AlertOverview from "@/components/AlertOverview.vue";
-import TransactionApi from "@/TransactionsApi.ts";
-import Alert from "@/models/alert.ts";
+import { useSettingsStore } from '@/stores/settings';
+import { useAlertsStore } from '@/stores/alerts';
+import { mapState, mapActions } from 'pinia';
 
 export default {
   name: 'HomeView',
   components: {AlertOverview, ToolBar},
+  computed: {
+    ...mapState(useSettingsStore, {
+      existingApiKey: 'apiKey',
+      hasApiKey: 'hasApiKey'
+    }),
+    ...mapState(useAlertsStore, ['alerts', 'alertsByItemType']),
+  },
   methods: {
+    ...mapActions(useSettingsStore, ['setApiKey']),
+    ...mapActions(useAlertsStore, ['fetchAlerts']),
     saveApiKey() {
-      localStorage.setItem("pfinanceApiKey", this.newApiKey)
-      this.existingApiKey = this.newApiKey;
+      this.setApiKey(this.newApiKey);
+      this.newApiKey = "";
+      this.fetchAlerts();
     },
-    loadAllAlerts() {
-      TransactionApi.loadAllAlerts().then(alerts => {
-        this.alerts = alerts
-      });
-
-    },
-    typeToTypeDescription(type) {
+    typeToTypeDescription(type: string) {
       switch (type) {
         case 'ACCOUNTS':
           return "Accounts"
@@ -58,26 +63,15 @@ export default {
     }
   },
   mounted() {
-    this.existingApiKey = localStorage.getItem("pfinanceApiKey") || ""
-    if (this.existingApiKey !== "") {
-      this.loadAllAlerts()
+    if (this.hasApiKey) {
+      this.fetchAlerts();
     }
   },
   data() {
     return {
       newApiKey: "",
-      existingApiKey: "",
-      alerts: Array as Alert[]
     }
   },
-  computed: {
-    alertsByItemType() {
-      return this.alerts.reduce((acc, alert) => {
-        (acc[alert.item] = acc[alert.item] || []).push(alert)
-        return acc
-      }, {})
-    }
-  }
 }
 </script>
 <style>

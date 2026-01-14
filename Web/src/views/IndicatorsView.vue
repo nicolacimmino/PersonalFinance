@@ -45,7 +45,7 @@
           Cash/ESS (months)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ Math.floor(valueOfIndicator('CASH') / 164000) }}
+          {{ Math.floor(valueOfIndicator('CASH') / ESS_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">
           ---
@@ -56,7 +56,7 @@
           INPS/ESS (months)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ Math.floor(valueOfIndicator('INPS') / 164000) }}
+          {{ Math.floor(valueOfIndicator('INPS') / ESS_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">
           ---
@@ -67,7 +67,7 @@
           INPS/ESS+DST (months)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ Math.floor(valueOfIndicator('INPS') / (164000 + 125000)) }}
+          {{ Math.floor(valueOfIndicator('INPS') / TOTAL_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">
           ---
@@ -78,7 +78,7 @@
           INVT 6%/ESS+DST
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ Math.floor((0.06 * valueOfIndicator('INVT')) / (164000 + 125000)) }}
+          {{ Math.floor((INVESTMENT_RETURN_RATE * valueOfIndicator('INVT')) / TOTAL_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">
           ---
@@ -113,43 +113,44 @@
   </div>
 </template>
 
-<script>
-import TransactionApi from "@/TransactionsApi.ts";
+<script lang="ts">
 import ToolBar from "@/components/ToolBar.vue";
+import { ESS_MONTHLY_COST_CENTS, TOTAL_MONTHLY_COST_CENTS, INVESTMENT_RETURN_RATE } from "@/constants";
+import { useSettingsStore } from '@/stores/settings';
+import { useIndicatorsStore } from '@/stores/indicators';
+import { mapState, mapActions } from 'pinia';
 
 export default {
   components: {
     ToolBar,
   },
+  computed: {
+    ...mapState(useSettingsStore, ['privacy']),
+    ...mapState(useIndicatorsStore, ['indicators', 'loading', 'getIndicatorValue']),
+    loaded() {
+      return !this.loading;
+    }
+  },
   mounted() {
-    this.loadAllIndicators()
-    this.privacy = (localStorage.getItem("privacy") === "true")
+    this.fetchIndicators();
   },
   data() {
     return {
-      loaded: false,
-      privacy: true,
-      indicators: []
+      // Expose constants to template
+      ESS_MONTHLY_COST_CENTS,
+      TOTAL_MONTHLY_COST_CENTS,
+      INVESTMENT_RETURN_RATE
     }
   },
   methods: {
-    onPrivacyChange(newPrivacy) {
-      this.privacy = newPrivacy;
+    ...mapActions(useSettingsStore, {
+      onPrivacyChange: 'setPrivacy'
+    }),
+    ...mapActions(useIndicatorsStore, ['fetchIndicators']),
+    valueOfIndicator(label: string) {
+      return this.getIndicatorValue(label);
     },
-    loadAllIndicators() {
-      TransactionApi.loadIndicators(localStorage.getItem("year")).then(response => {
-        this.indicators = response.indicators;
-        this.indicators = response.indicators.sort((a, b) => (this.labelToPosition(a.label) > this.labelToPosition(b.label)) ? 1 : -1)
-        this.loaded = true
-      });
-    },
-    valueOfIndicator(label) {
-      let res = this.indicators.filter(item => {
-        return item.label === label;
-      })[0]
-      return (res) ? res.total_cents : 20;
-    },
-    labelToDescription(type) {
+    labelToDescription(type: string) {
       switch (type.substring(0, 4)) {
         case 'CASH':
           return "Cash"
@@ -172,31 +173,6 @@ export default {
             return type.substring(1, 4) + " in EUR"
           }
           return "Other"
-      }
-    },
-    labelToPosition(type) {
-      switch (type.substring(0, 4)) {
-        case 'CASH':
-          return 0
-        case 'INVT':
-          return 1
-        case 'TONW':
-          return 3
-        case 'INAT':
-          return 5
-        case 'INPS':
-          return 6
-        case 'EXPE':
-          return 7
-        case 'CFAT':
-          return 8
-        case 'CFOA':
-          return 9
-        default:
-          if (type.substring(0, 1) === "C") {
-            return 10000000 - (this.valueOfIndicator(type) / 100)
-          }
-          return 9
       }
     }
   }

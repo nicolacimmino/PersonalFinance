@@ -44,17 +44,21 @@
       </div>
     </div>
   </div>
-  <div id="snackbar">message</div>
+  <div id="snackbar" :class="{ show: snackbarVisible }">{{ snackbarMessage }}</div>
 </template>
 
-<script>
+<script lang="ts">
 import TransactionOverview from "@/components/TransactionOverview.vue";
 import TransactionEdit from "@/components/TransactionEdit.vue";
 import ToolBar from "@/components/ToolBar.vue";
 import moment from "moment";
-import TransactionApi from "@/TransactionsApi.ts";
 import 'primeicons/primeicons.css'
 import TransactionCreate from "@/components/TransactionCreate.vue";
+import { usePrivacy, useLoading, useSnackbar, useYearFilter } from '@/composables';
+import { useTransactionsStore } from '@/stores/transactions';
+import { useAccountsStore } from '@/stores/accounts';
+import { useCategoriesStore } from '@/stores/categories';
+import { mapState, mapActions } from 'pinia';
 
 export default {
   components: {
@@ -69,6 +73,49 @@ export default {
     edit_id: String,
     edit_return: String,
   },
+  setup() {
+    // Use composables
+    const { privacy, setPrivacy } = usePrivacy();
+    const { loading, startLoading, stopLoading } = useLoading();
+    const { message: snackbarMessage, isVisible: snackbarVisible, showSnackbar } = useSnackbar();
+    const { selectedYear } = useYearFilter();
+
+    return {
+      privacy,
+      setPrivacy,
+      loading,
+      startLoading,
+      stopLoading,
+      snackbarMessage,
+      snackbarVisible,
+      showSnackbar,
+      selectedYear,
+    };
+  },
+  computed: {
+    ...mapState(useTransactionsStore, ['transactions']),
+    ...mapState(useAccountsStore, {
+      allAccounts: 'accounts'
+    }),
+    ...mapState(useCategoriesStore, {
+      allCategories: 'categories'
+    }),
+    byDate() {
+      return this.transactions.reduce((acc, transaction) => {
+        (acc[transaction.booking_date] = acc[transaction.booking_date] || []).push(transaction)
+        return acc
+      }, {})
+    },
+    categories() {
+      return this.allCategories
+        .sort((a, b) => (a.code > b.code) ? 1 : -1)
+        .filter(categoryInfo => categoryInfo.discontinued !== 'Y')
+        .map(categoryInfo => categoryInfo.code);
+    },
+    accounts() {
+      return [...this.allAccounts].sort((a, b) => (a.description > b.description) ? 1 : -1);
+    }
+  },
   watch: {
     $route: function () {
       this.loadAllTransactions(this.account_id, this.category_filter);
@@ -76,80 +123,59 @@ export default {
     }
   },
   mounted() {
-    this.privacy = (localStorage.getItem("privacy") === "true")
     this.loadAllTransactions(this.account_id, this.category_filter);
     this.updateFilterDescription();
-    this.loadAllCategories();
-    this.loadAllAccounts();
+    this.fetchCategories();
+    this.fetchAccounts();
   },
   data() {
     return {
-      loading: 0,
       saving: false,
       editDialog: false,
-      transactions: [],
-      categories: [],
-      accounts: [],
       transaction: undefined,
       filter_description: "All",
-      privacy: Boolean,
       adding: false
     }
   },
   methods: {
+    ...mapActions(useTransactionsStore, {
+      fetchTransactionsFromStore: 'fetchTransactions',
+      updateTransactionFromStore: 'updateTransaction',
+      updateTransactionAccountToFromStore: 'updateTransactionAccountTo',
+      createTransactionFromStore: 'createTransaction'
+    }),
+    ...mapActions(useAccountsStore, {
+      fetchAccounts: 'fetchAccounts',
+      fetchAccount: 'fetchAccount'
+    }),
+    ...mapActions(useCategoriesStore, ['fetchCategories']),
     moment: moment,
     addTransaction() {
       this.adding = true
     },
     onPrivacyChange(newPrivacy) {
-      this.privacy = newPrivacy;
+      this.setPrivacy(newPrivacy);
     },
-    loadAllTransactions(account_id, category) {
-      this.loading++;
+    async loadAllTransactions(account_id, category) {
+      this.startLoading();
 
       if (!category) category = ""
       if (!account_id) account_id = ""
 
-      TransactionApi.getTransactions(account_id, category, localStorage.getItem("year")).then(fetchedTransactions => {
-        this.transactions = fetchedTransactions
-        this.loading--;
+      await this.fetchTransactionsFromStore(account_id, category, this.selectedYear);
+      this.stopLoading();
 
-        if (this.edit_id) {
-          this.transaction = this.transactions.filter(item => {
-            return item.id.toString() === this.edit_id.toString();
-          })[0];
-          this.editDialog = true;
-        }
-      });
-    },
-    loadAllCategories() {
-      this.loading++;
-      TransactionApi.getCategories().then(fetchedCategories => {
-        this.categories = fetchedCategories
-            .sort((a, b) => (a.code > b.code) ? 1 : -1)
-            .filter(categoryInfo => {
-              return categoryInfo.discontinued !== 'Y'
-            })
-            .map(
-                categoryInfo => {
-                  return categoryInfo.code
-                }
-            );
-        this.loading--;
-      });
-    },
-    loadAllAccounts() {
-      this.loading++;
-      TransactionApi.getAccounts().then(accounts => {
-        this.accounts = accounts.sort((a, b) => (a.description > b.description) ? 1 : -1);
-        this.loading--;
-      });
-    },
-    updateFilterDescription() {
-      if (this.account_id) {
-        TransactionApi.getAccount(this.account_id).then(account => {
-          this.filter_description = account.description;
+      if (this.edit_id) {
+        this.transaction = this.transactions.find(item => {
+          return item.id.toString() === this.edit_id.toString();
         });
+        this.editDialog = true;
+      }
+    },
+    async updateFilterDescription() {
+      if (this.account_id) {
+        const account = await this.fetchAccount(this.account_id);
+        this.filter_description = account.description;
         return;
       }
 
@@ -164,43 +190,25 @@ export default {
       this.transaction = transaction;
       this.editDialog = true;
     },
-    onCategoryChange(newCategory, newAccountTo, isTransfer, newDescription) {
+    async onCategoryChange(newCategory, newAccountTo, isTransfer, newDescription) {
       this.editDialog = false;
       this.saving = true;
       if (!isTransfer) {
         let type = (this.transaction.amount_cents <= 0) ? "EXPENSE" : "INCOME";
-
-        TransactionApi.updateTransactionCategory(this.transaction.id, newCategory, type, newDescription).then(updatedTransaction => {
-              this.saving = false;
-              this.transactions[this.transactions.findIndex(
-                  transaction => transaction.id === updatedTransaction.id)] = updatedTransaction;
-            }
-        )
+        await this.updateTransactionFromStore(this.transaction.id, newCategory, type, newDescription);
+        this.saving = false;
       } else {
-        TransactionApi.updateTransactionAccountTo(this.transaction.id, newAccountTo).then(updatedTransaction => {
-              this.saving = false;
-              this.transactions[this.transactions.findIndex(
-                  transaction => transaction.id === updatedTransaction.id)] = updatedTransaction;
-            }
-        )
+        await this.updateTransactionAccountToFromStore(this.transaction.id, newAccountTo);
+        this.saving = false;
       }
     },
-    onNewTransaction(newTransaction) {
-      TransactionApi.createTransaction(newTransaction).then(response => {
-        let message = "Error"
-        if (response !== "ERROR") {
-          this.transactions[this.transactions.length] = response;
-          message = "Created"
-        }
-
-        let snackbar = document.getElementById("snackbar");
-        snackbar.textContent = message
-        snackbar.className = "show";
-
-        setTimeout(function () {
-          snackbar.className = snackbar.className.replace("show", "");
-        }, 3000);
-      })
+    async onNewTransaction(newTransaction) {
+      const response = await this.createTransactionFromStore(newTransaction);
+      if (response !== "ERROR") {
+        this.showSnackbar("Created");
+      } else {
+        this.showSnackbar("Error");
+      }
     },
     followEditReturn() {
       if (this.edit_return) {
@@ -208,14 +216,6 @@ export default {
           path: this.edit_return,
         });
       }
-    }
-  },
-  computed: {
-    byDate() {
-      return this.transactions.reduce((acc, transaction) => {
-        (acc[transaction.booking_date] = acc[transaction.booking_date] || []).push(transaction)
-        return acc
-      }, {})
     }
   }
 }

@@ -39,11 +39,13 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import AccountOverview from "@/components/AccountOverview.vue";
-import TransactionApi from "@/TransactionsApi.ts";
 import CompactAccountOverview from "@/components/AccountOverviewCompact.vue";
 import ToolBar from "@/components/ToolBar.vue";
+import { useAccountsStore } from '@/stores/accounts';
+import { useSettingsStore } from '@/stores/settings';
+import { mapState, mapActions } from 'pinia';
 
 export default {
   components: {
@@ -51,38 +53,32 @@ export default {
     CompactAccountOverview,
     AccountOverview: AccountOverview,
   },
-  mounted() {
-    this.loadAllAccounts()
-    this.privacy = (localStorage.getItem("privacy") === "true")
-    this.compact = (localStorage.getItem("compact") === "true")
-    this.refCurrency = (localStorage.getItem("refCurrency") === "true")
-  },
-  data() {
-    return {
-      loaded: false,
-      privacy: true,
-      compact: true,
-      refCurrency: false,
-      currentCategoryFilter: "",
-      accounts: []
+  computed: {
+    ...mapState(useSettingsStore, ['privacy', 'compact', 'refCurrency']),
+    ...mapState(useAccountsStore, ['accounts', 'loading']),
+    loaded() {
+      return !this.loading;
+    },
+    byAccountType() {
+      return this.accounts
+          .slice()
+          .sort((a, b) => (a.type > b.type) ? 1 : -1)
+          .reduce((acc, account) => {
+            (acc[account.type] = acc[account.type] || []).push(account)
+            return acc
+          }, {})
     }
   },
+  mounted() {
+    this.fetchAccounts();
+  },
   methods: {
-    onPrivacyChange(newPrivacy) {
-      this.privacy = newPrivacy;
-    },
-    onCompactChange(newCompact) {
-      this.compact = newCompact;
-    },
-    onRefCurrencyChange(newRefCurrency) {
-      this.refCurrency = newRefCurrency;
-    },
-    loadAllAccounts() {
-      TransactionApi.getAccounts().then(accounts => {
-        this.accounts = accounts.sort((a,b) => (a.description > b.description) ? 1 : -1)
-        this.loaded = true
-      });
-    },
+    ...mapActions(useSettingsStore, {
+      onPrivacyChange: 'setPrivacy',
+      onCompactChange: 'setCompact',
+      onRefCurrencyChange: 'setRefCurrency'
+    }),
+    ...mapActions(useAccountsStore, ['fetchAccounts']),
     totalEurCentsForType(type) {
       return this.byAccountType[type].reduce((sum, account) => sum + account.balance_cents_in_ref_currency, 0)
     },
@@ -103,15 +99,6 @@ export default {
         default:
           return "Other"
       }
-    }
-  },
-  computed: {
-    byAccountType() {
-      return this.accounts.sort((a, b) => (a.type > b.type) ? 1 : -1)
-          .reduce((acc, account) => {
-            (acc[account.type] = acc[account.type] || []).push(account)
-            return acc
-          }, {})
     }
   }
 }

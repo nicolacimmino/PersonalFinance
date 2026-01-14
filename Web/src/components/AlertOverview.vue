@@ -24,11 +24,9 @@
 
 <script>
 
-import Alert from "@/models/alert.ts"
-
 export default {
   props: {
-    alert: Alert,
+    alert: Object,
   },
   methods: {
     formatPlainTextAlert(message) {

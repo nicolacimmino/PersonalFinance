@@ -64,7 +64,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import 'primeicons/primeicons.css'
 import {Bar} from 'vue-chartjs'
 import 'primeicons/primeicons.css'
