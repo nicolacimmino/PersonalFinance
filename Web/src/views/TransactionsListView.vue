@@ -1,10 +1,10 @@
 <template>
   <ToolBar
-      @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
-      @changeYear="loadAllTransactions(this.account_id, this.category_filter)"
-      :eye-enabled="true"
+    @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
+    @changeYear="loadAllTransactions(account_id, category_filter)"
+    :eye-enabled="true"
   />
-  <div v-if="loading > 0">
+  <div v-if="loading">
     Loading...
   </div>
   <div v-else>
@@ -14,8 +14,11 @@
           <TransactionEdit :transaction="transaction"
                            :accounts="accounts"
                            :categories="categories"
-                           @cancel="editDialog = false; this.followEditReturn();"
-                           @save="(newCategory, newAccountTo, isTransfer, newDescription) => {onCategoryChange(newCategory, newAccountTo, isTransfer, newDescription); this.followEditReturn();}">
+                           @cancel="editDialog = false; followEditReturn();"
+                           @save="(newCategory, newAccountTo, isTransfer, newDescription) => {
+                             onCategoryChange(newCategory, newAccountTo, isTransfer, newDescription);
+                             followEditReturn();
+                           }">
           </TransactionEdit>
         </transition>
       </div>
@@ -118,7 +121,7 @@ export default {
     }
   },
   watch: {
-    $route: function () {
+    $route: function() {
       this.loadAllTransactions(this.account_id, this.category_filter)
       this.updateFilterDescription()
     }
