@@ -29,7 +29,7 @@
             {{ labelToDescription(indicator.label) }}
           </div>
           <div v-if="!privacy" class="indicator-value">
-            {{ Math.floor(indicator.total_cents / 100.0) }}
+            {{ Math.floor(indicator.totalCents / 100.0) }}
           </div>
           <div v-else class="indicator-value">
             ---

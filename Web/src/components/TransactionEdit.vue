@@ -4,10 +4,10 @@
       <div class="wrapper">
         <div class="container">
           <div class="creditor pf-text-large">
-            {{ transaction.creditor_name }}
+            {{ transaction.creditorName }}
           </div>
-          <div :class="(transaction.amount_cents < 0) ? 'negative-price' : 'non-negative-price'">
-            {{ transaction.amount_cents / 100.0 }} {{ transaction.currency }}
+          <div :class="(transaction.amountCents < 0) ? 'negative-price' : 'non-negative-price'">
+            {{ transaction.amountCents / 100.0 }} {{ transaction.currency }}
           </div>
           <!--          Edit category or destination account-->
           <div v-if="!this.isTransfer">
@@ -38,13 +38,13 @@
           </div>
 
           <div class="account-name pf-text-medium">
-            {{ transaction.account_name }}
+            {{ transaction.accountName }}
           </div>
           <div class="amount-in-ref-currency pf-text-medium">
-            {{ transaction.amount_cents_in_ref_currency / 100.0 }} {{ transaction.ref_currency }}
+            {{ transaction.amountCents_in_refCurrency / 100.0 }} {{ transaction.refCurrency }}
           </div>
           <div class="booking-date pf-text-medium">
-            {{ moment(transaction.booking_date).format("DD-MM-YYYY") }}
+            {{ moment(transaction.bookingDate).format("DD-MM-YYYY") }}
           </div>
           <div v-if="editDescription" class="description pf-text-large">
             <textarea v-model="this.editedDescription"/>
@@ -92,7 +92,7 @@ import {VueToggles} from "vue-toggles";
 export default {
   mounted() {
     this.selectedCategory = this.transaction.category;
-    this.selectedDestinationAccount = this.accounts.find((account) => account.id === this.transaction.account_to);
+    this.selectedDestinationAccount = this.accounts.find((account) => account.id === this.transaction.accountTo);
     this.isTransfer = this.transaction.type === "TRANSFER";
     this.editedDescription = this.transaction.description;
   },
@@ -126,7 +126,7 @@ export default {
         return true;
       }
 
-      if (this.selectedDestinationAccount && this.selectedDestinationAccount.id !== this.transaction.account_to) {
+      if (this.selectedDestinationAccount && this.selectedDestinationAccount.id !== this.transaction.accountTo) {
         return true
       }
 

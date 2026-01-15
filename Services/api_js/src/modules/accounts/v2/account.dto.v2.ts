@@ -6,10 +6,11 @@ export interface AccountDtoV2 {
   code: string;
   description: string;
   currency: string;
+  refCurrency: string;
   iban: string;
   status: string;
   assetType: string;
   primaryTransactionSource: string;
   balanceCents: number;
-  balanceEurCents: number;
+  balanceRefCurrencyCents: number;
 }

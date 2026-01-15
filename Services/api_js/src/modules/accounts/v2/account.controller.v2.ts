@@ -15,9 +15,8 @@ function toAccountDtoV2(account: ApplicationAccount): AccountDtoV2 {
     iban: account.iban,
     status: account.status,
     assetType: account.asset_type,
-    primaryTransactionSource: account.pri_transactions_src,
     balanceCents: account.balance_cents,
-    balanceEurCents: account.balance_eur_cents,
+    balanceRefCurrencyCents: account.balance_eur_cents,
   };
 }
 

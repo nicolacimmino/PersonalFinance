@@ -18,31 +18,33 @@ export type AlertLevel = 'INFO' | 'WARNING' | 'ERROR';
 export interface Transaction {
   id: string | number;
   type: TransactionType;
-  account_name: string;
-  account_to_name?: string;
+  accountName: string;
+  accountToName?: string;
   category?: string;
-  creditor_name?: string;
+  creditorName?: string;
   description: string;
-  amount_cents: number;
+  amountCents: number;
   currency: string;
-  amount_cents_in_ref_currency?: number;
-  ref_currency?: string;
-  booking_date: string;
+  amountCentsInRefCurrency?: number;
+  refCurrency?: string;
+  bookingDate: string;
   account?: Account;
-  account_id?: string | number;
-  account_to?: string | number;
-  destination_account?: Account;
+  accountId?: string | number;
+  accountTo?: string | number;
+  destinationAccount?: Account;
 }
 
 /**
  * Account interface representing a financial account
  */
 export interface Account {
-  id: string | number;
-  name: string;
-  currency?: string;
-  balance_cents?: number;
-  type?: string;
+  id: string | number
+  name: string
+  currency?: string
+  refCurrency?: string
+  balanceCents?: number
+  balanceRefCurrencyCents?: number
+  type?: string
 }
 
 /**
@@ -61,10 +63,10 @@ export interface Category {
 export interface Budget {
   id: string | number;
   description: string;
-  from_date: string;
-  to_date: string;
-  amount_cents: number;
-  spent_cents: number;
+  fromDate: string;
+  toDate: string;
+  amountCents: number;
+  spentCents: number;
   currency: string;
   transactions: number;
   category?: string;
@@ -75,7 +77,7 @@ export interface Budget {
  */
 export interface Indicator {
   label: string;
-  total_cents: number;
+  totalCents: number;
   description?: string;
 }
 
@@ -86,7 +88,7 @@ export interface Alert {
   category: string;
   message: string;
   item: string;
-  item_id: string;
+  itemId: string;
   level: AlertLevel;
 }
 
@@ -95,8 +97,8 @@ export interface Alert {
  */
 export interface CategoryReportEntry {
   category: string;
-  total_cents: number;
-  transaction_count?: number;
+  totalCents: number;
+  transactionCount?: number;
   percentage?: number;
   subcategories?: CategoryReportEntry[];
 }

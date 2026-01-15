@@ -28,7 +28,7 @@ export const useIndicatorsStore = defineStore('indicators', () => {
   // Helper to get value of a specific indicator
   const getIndicatorValue = computed(() => (label: string) => {
     const indicator = indicators.value.find(ind => ind.label === label);
-    return indicator ? indicator.total_cents : 0;
+    return indicator ? indicator.totalCents : 0;
   });
 
   // Actions

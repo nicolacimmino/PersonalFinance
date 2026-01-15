@@ -24,7 +24,7 @@ export const useTransactionsStore = defineStore('transactions', () => {
   // Getters
   const transactionsByDate = computed<TransactionsByDate>(() => {
     return transactions.value.reduce((acc, transaction) => {
-      const date = transaction.booking_date;
+      const date = transaction.bookingDate;
       if (!acc[date]) {
         acc[date] = [];
       }

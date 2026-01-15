@@ -61,12 +61,12 @@ export default {
     },
     activeBudgets() {
       return this.budgets
-        .filter(item => moment(item.from_date).isBefore(moment.now()))
+        .filter(item => moment(item.fromDate).isBefore(moment.now()))
         .filter(item => item.active === true);
     },
     pastBudgets() {
       return this.budgets
-        .filter(item => moment(item.from_date).isBefore(moment.now()))
+        .filter(item => moment(item.fromDate).isBefore(moment.now()))
         .filter(item => item.active === false)
         .sort((a, b) => (moment(a.start_date).isAfter(moment(b.start_date))) ? 1 : (a.start_date === b.start_date) ? 0 : -1);
     }

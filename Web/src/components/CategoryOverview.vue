@@ -8,14 +8,14 @@
         ---&nbsp;{{ entry.currency }}
       </div>
       <div v-else-if="entry.type === 'EXPENSE'">
-        {{ Math.floor(-(entry.total_cents / 100.0)) }}&nbsp;{{ entry.currency }}
+        {{ Math.floor(-(entry.totalCents / 100.0)) }}&nbsp;{{ entry.currency }}
       </div>
       <div v-else>
-        {{ Math.floor(entry.total_cents / 100.0) }}&nbsp;{{ entry.currency }}
+        {{ Math.floor(entry.totalCents / 100.0) }}&nbsp;{{ entry.currency }}
       </div>
     </div>
     <div class="cso-transactions-n" @click="$emit('transactionsClick', entry.category)">
-      <a>Transactions: {{ entry.transactions_count }}</a>
+      <a>Transactions: {{ entry.transactionCount }}</a>
     </div>
     <div class="cso-description-n" @click="$emit('transactionsClick', entry.category)">
       <template v-for="category in entry.subcategories" v-bind:key="category">
@@ -23,10 +23,10 @@
 
           <div class="subcategory-category">{{ category.category }}</div>
           <div v-if="entry.type === 'EXPENSE'" class="subcategory-amount">
-            {{ Math.floor(-(category.total_cents / 100.0)) }}&nbsp;{{ category.currency }}
+            {{ Math.floor(-(category.totalCents / 100.0)) }}&nbsp;{{ category.currency }}
           </div>
           <div v-else class="subcategory-amount">
-            {{ Math.floor((category.total_cents / 100.0)) }}&nbsp;{{ category.currency }}
+            {{ Math.floor((category.totalCents / 100.0)) }}&nbsp;{{ category.currency }}
           </div>
 
         </div>

@@ -143,10 +143,10 @@ export default {
 
       let aggregatedData = TransactionsDataTransformations.aggregateSubLevels(
           fetchedCategoriesReport.reports, typeFilter, categoryFilter
-      ).sort((a, b) => (Math.abs(a.total_cents) > Math.abs(b.total_cents)) ? -1 : 1);
+      ).sort((a, b) => (Math.abs(a.totalCents) > Math.abs(b.totalCents)) ? -1 : 1);
 
       aggregatedData.forEach(report => report.subcategories
-          .sort((a, b) => (Math.abs(a.total_cents) > Math.abs(b.total_cents)) ? -1 : 1));
+          .sort((a, b) => (Math.abs(a.totalCents) > Math.abs(b.totalCents)) ? -1 : 1));
 
       if (aggregatedData.length === 0) {
         this.loaded = true;
@@ -169,7 +169,7 @@ export default {
           ,
           data: this.categories.map(
               item => {
-                return Math.abs(item.total_cents) / 100.00
+                return Math.abs(item.totalCents) / 100.00
               }
           )
         }]

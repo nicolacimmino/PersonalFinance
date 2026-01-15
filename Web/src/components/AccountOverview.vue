@@ -1,6 +1,5 @@
 <template>
-  <div class="account-details"
-       @click="this.showAccountTransactions(account.id)">
+  <div class="account-details" @click="this.showAccountTransactions(account.id)">
     <div class="description pf-text-medium">
       {{ account.description }}
     </div>
@@ -8,19 +7,23 @@
       {{ account.code }}
     </div>
     <div class="balance pf-text-medium">
-      <span v-if="privacy">---  {{ account.currency }}</span>
-      <span v-else>{{ account.balance_cents / 100.0 }} {{ account.currency }}</span>
+      <span v-if="privacy">--- {{ account.currency }}</span>
+      <span v-else>{{ account.balanceCents / 100.0 }} {{ account.currency }}</span>
     </div>
-    <div v-if="!privacy && account.ref_currency !== account.currency" class="balance-in-ref-currency pf-text-small">
-      {{ account.balance_cents_in_ref_currency / 100.0 }} {{ account.ref_currency }}
+    <div
+      v-if="!privacy && account.currency !== 'EUR'"
+      class="balance-in-ref-currency pf-text-small"
+    >
+      {{ account.balanceRefCurrencyCents / 100.0 }} EUR
     </div>
-    <div class="iban pf-text-small">
-      IBAN: {{ (account.iban != "") ? account.iban : "-" }}
-    </div>
+    <div class="iban pf-text-small">IBAN: {{ account.iban !== '' ? account.iban : '-' }}</div>
     <div class="status pf-text-medium">
       Status: {{ account.status }}
-      <span :class="(account.status == 'OK') ? 'pi' : 'pi pi-exclamation-triangle'"
-            :style="{color:'red'}"></span>&nbsp;&nbsp;
+      <span
+        :class="account.status === 'OK' ? 'pi' : 'pi pi-exclamation-triangle'"
+        :style="{ color: 'red' }"
+      ></span
+      >&nbsp;&nbsp;
     </div>
   </div>
 </template>
@@ -46,12 +49,11 @@ export default {
         query: {
           account_id: account_id
         }
-      });
+      })
     }
   }
 }
 </script>
-
 
 <style scoped>
 .account-details {
@@ -101,5 +103,4 @@ export default {
   text-align: left;
   overflow: clip;
 }
-
 </style>

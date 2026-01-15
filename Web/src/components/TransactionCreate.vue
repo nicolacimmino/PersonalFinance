@@ -20,7 +20,7 @@
             </li>
             <li>
               <label for="creditor">Creditor</label>
-              <input id="creditor" v-model="transaction.creditor_name">
+              <input id="creditor" v-model="transaction.creditorName">
             </li>
 
             <li>
@@ -49,7 +49,7 @@
 
             <li v-if="this.transfer">
               <label for="contra-account">Contra Account</label>
-              <select id="contra-account" v-model="transaction.destination_account">
+              <select id="contra-account" v-model="transaction.destinationAccount">
                 <option v-for="account in accounts" v-bind:key="account" v-bind:value="account">
                   {{ account.description }}
                 </option>
@@ -58,7 +58,7 @@
 
             <li>
               <label for="booking-date">Date</label>
-              <input id="booking-date" v-model="transaction.booking_date">
+              <input id="booking-date" v-model="transaction.bookingDate">
             </li>
 
             <li>
@@ -91,7 +91,7 @@ import {VueToggles} from "vue-toggles";
 export default {
   mounted() {
     this.transfer = false;
-    this.transaction.booking_date = moment(new Date()).format("YYYY-MM-DD");
+    this.transaction.bookingDate = moment(new Date()).format("YYYY-MM-DD");
     this.transaction.description = "";
     this.transaction.amount = "0";
     this.transaction.type = "EXPENSE";
@@ -105,12 +105,12 @@ export default {
       transfer: Boolean,
       transaction: {
         description: String,
-        booking_date: moment(new Date()).format("YYYY-MM-DD"),
-        creditor_name: "",
+        bookingDate: moment(new Date()).format("YYYY-MM-DD"),
+        creditorName: "",
         amount: Number,
         category: String,
         account: Object,
-        destination_account: Object,
+        destinationAccount: Object,
         type: String,
       }
     }

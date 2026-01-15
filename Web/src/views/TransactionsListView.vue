@@ -28,37 +28,38 @@
           </TransactionCreate>
         </transition>
       </div>
-      <template v-for="(transactions, booking_date) in byDate" v-bind:key="booking_date">
+      <template v-for="(transactions, bookingDate) in byDate" v-bind:key="bookingDate">
         <div class="transactions-date-header pf-text-large">
-          {{ moment(booking_date).format("DD-MM-YYYY") }}
+          {{ moment(bookingDate).format('DD-MM-YYYY') }}
         </div>
         <div v-for="transaction in transactions" :key="transaction.id">
-          <TransactionOverview :transaction=transaction
-                               :id=transaction.id
-                               :privacy=privacy
-                               v-on:click="onTransactionClick(transaction)">
+          <TransactionOverview
+            :transaction="transaction"
+            :id="transaction.id"
+            :privacy="privacy"
+            v-on:click="onTransactionClick(transaction)"
+          >
           </TransactionOverview>
         </div>
       </template>
-      <div class="add_button pi pi-plus-circle" v-on:click="addTransaction()">
-      </div>
+      <div class="add_button pi pi-plus-circle" v-on:click="addTransaction()"></div>
     </div>
   </div>
   <div id="snackbar" :class="{ show: snackbarVisible }">{{ snackbarMessage }}</div>
 </template>
 
 <script lang="ts">
-import TransactionOverview from "@/components/TransactionOverview.vue";
-import TransactionEdit from "@/components/TransactionEdit.vue";
-import ToolBar from "@/components/ToolBar.vue";
-import moment from "moment";
+import TransactionOverview from '@/components/TransactionOverview.vue'
+import TransactionEdit from '@/components/TransactionEdit.vue'
+import ToolBar from '@/components/ToolBar.vue'
+import moment from 'moment'
 import 'primeicons/primeicons.css'
-import TransactionCreate from "@/components/TransactionCreate.vue";
-import { usePrivacy, useLoading, useSnackbar, useYearFilter } from '@/composables';
-import { useTransactionsStore } from '@/stores/transactions';
-import { useAccountsStore } from '@/stores/accounts';
-import { useCategoriesStore } from '@/stores/categories';
-import { mapState, mapActions } from 'pinia';
+import TransactionCreate from '@/components/TransactionCreate.vue'
+import { usePrivacy, useLoading, useSnackbar, useYearFilter } from '@/composables'
+import { useTransactionsStore } from '@/stores/transactions'
+import { useAccountsStore } from '@/stores/accounts'
+import { useCategoriesStore } from '@/stores/categories'
+import { mapState, mapActions } from 'pinia'
 
 export default {
   components: {
@@ -71,14 +72,14 @@ export default {
     account_id: String,
     category_filter: String,
     edit_id: String,
-    edit_return: String,
+    edit_return: String
   },
   setup() {
     // Use composables
-    const { privacy, setPrivacy } = usePrivacy();
-    const { loading, startLoading, stopLoading } = useLoading();
-    const { message: snackbarMessage, isVisible: snackbarVisible, showSnackbar } = useSnackbar();
-    const { selectedYear } = useYearFilter();
+    const { privacy, setPrivacy } = usePrivacy()
+    const { loading, startLoading, stopLoading } = useLoading()
+    const { message: snackbarMessage, isVisible: snackbarVisible, showSnackbar } = useSnackbar()
+    const { selectedYear } = useYearFilter()
 
     return {
       privacy,
@@ -89,8 +90,8 @@ export default {
       snackbarMessage,
       snackbarVisible,
       showSnackbar,
-      selectedYear,
-    };
+      selectedYear
+    }
   },
   computed: {
     ...mapState(useTransactionsStore, ['transactions']),
@@ -102,44 +103,45 @@ export default {
     }),
     byDate() {
       return this.transactions.reduce((acc, transaction) => {
-        (acc[transaction.booking_date] = acc[transaction.booking_date] || []).push(transaction)
+        ;(acc[transaction.bookingDate] = acc[transaction.bookingDate] || []).push(transaction)
         return acc
       }, {})
     },
     categories() {
       return this.allCategories
-        .sort((a, b) => (a.code > b.code) ? 1 : -1)
-        .filter(categoryInfo => categoryInfo.discontinued !== 'Y')
-        .map(categoryInfo => categoryInfo.code);
+        .sort((a, b) => (a.code > b.code ? 1 : -1))
+        .filter((categoryInfo) => categoryInfo.discontinued !== 'Y')
+        .map((categoryInfo) => categoryInfo.code)
     },
     accounts() {
-      return [...this.allAccounts].sort((a, b) => (a.description > b.description) ? 1 : -1);
+      return [...this.allAccounts].sort((a, b) => (a.description > b.description ? 1 : -1))
     }
   },
   watch: {
     $route: function () {
-      this.loadAllTransactions(this.account_id, this.category_filter);
-      this.updateFilterDescription();
+      this.loadAllTransactions(this.account_id, this.category_filter)
+      this.updateFilterDescription()
     }
   },
   mounted() {
-    this.loadAllTransactions(this.account_id, this.category_filter);
-    this.updateFilterDescription();
-    this.fetchCategories();
-    this.fetchAccounts();
+    this.loadAllTransactions(this.account_id, this.category_filter)
+    this.updateFilterDescription()
+    this.fetchCategories()
+    this.fetchAccounts()
   },
   data() {
     return {
       saving: false,
       editDialog: false,
       transaction: undefined,
-      filter_description: "All",
+      filter_description: 'All',
       adding: false
     }
   },
   methods: {
     ...mapActions(useTransactionsStore, {
       fetchTransactionsFromStore: 'fetchTransactions',
+      fetchTransactionFromStore: 'fetchTransaction',
       updateTransactionFromStore: 'updateTransaction',
       updateTransactionAccountToFromStore: 'updateTransactionAccountTo',
       createTransactionFromStore: 'createTransaction'
@@ -154,67 +156,70 @@ export default {
       this.adding = true
     },
     onPrivacyChange(newPrivacy) {
-      this.setPrivacy(newPrivacy);
+      this.setPrivacy(newPrivacy)
     },
     async loadAllTransactions(account_id, category) {
-      this.startLoading();
+      this.startLoading()
 
-      if (!category) category = ""
-      if (!account_id) account_id = ""
+      if (!category) category = ''
+      if (!account_id) account_id = ''
 
-      await this.fetchTransactionsFromStore(account_id, category, this.selectedYear);
-      this.stopLoading();
+      await this.fetchTransactionsFromStore(account_id, category, this.selectedYear)
+      this.stopLoading()
 
       if (this.edit_id) {
-        this.transaction = this.transactions.find(item => {
-          return item.id.toString() === this.edit_id.toString();
-        });
-        this.editDialog = true;
+        this.transaction = await this.fetchTransactionFromStore(this.edit_id)
+        this.editDialog = true
       }
     },
     async updateFilterDescription() {
       if (this.account_id) {
-        const account = await this.fetchAccount(this.account_id);
-        this.filter_description = account.description;
-        return;
+        const account = await this.fetchAccount(this.account_id)
+        this.filter_description = account.description
+        return
       }
 
       if (this.category_filter) {
-        this.filter_description = this.category_filter;
-        return;
+        this.filter_description = this.category_filter
+        return
       }
 
-      this.filter_description = "All"
+      this.filter_description = 'All'
     },
     onTransactionClick(transaction) {
-      this.transaction = transaction;
-      this.editDialog = true;
+      this.transaction = transaction
+      this.editDialog = true
     },
     async onCategoryChange(newCategory, newAccountTo, isTransfer, newDescription) {
-      this.editDialog = false;
-      this.saving = true;
+      this.editDialog = false
+      this.saving = true
       if (!isTransfer) {
-        let type = (this.transaction.amount_cents <= 0) ? "EXPENSE" : "INCOME";
-        await this.updateTransactionFromStore(this.transaction.id, newCategory, type, newDescription);
-        this.saving = false;
+        let type = this.transaction.amountCents <= 0 ? 'EXPENSE' : 'INCOME'
+        await this.updateTransactionFromStore(
+          this.transaction.id,
+          newCategory,
+          type,
+          newDescription
+        )
+        this.saving = false
       } else {
-        await this.updateTransactionAccountToFromStore(this.transaction.id, newAccountTo);
-        this.saving = false;
+        await this.updateTransactionAccountToFromStore(this.transaction.id, newAccountTo)
+        this.saving = false
       }
     },
     async onNewTransaction(newTransaction) {
-      const response = await this.createTransactionFromStore(newTransaction);
-      if (response !== "ERROR") {
-        this.showSnackbar("Created");
+      const response = await this.createTransactionFromStore(newTransaction)
+      if (response !== 'ERROR') {
+        this.showSnackbar('Created')
       } else {
-        this.showSnackbar("Error");
+        this.showSnackbar('Error')
       }
     },
     followEditReturn() {
       if (this.edit_return) {
         this.$router.push({
-          path: this.edit_return,
-        });
+          path: this.edit_return
+        })
       }
     }
   }
@@ -222,7 +227,6 @@ export default {
 </script>
 
 <style scoped>
-
 .transactions-table {
   background-color: white;
 }

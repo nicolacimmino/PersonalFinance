@@ -1,16 +1,14 @@
 <template>
   <ToolBar
-      @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
-      @compact="(newCompact) => onCompactChange(newCompact)"
-      @ref-currency="(newRefCurrency) => onRefCurrencyChange(newRefCurrency)"
-      :compact-enabled="true"
-      :eye-enabled="true"
-      v-bind:ref-currency-enabled="this.compact && !this.privacy"
+    @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
+    @compact="(newCompact) => onCompactChange(newCompact)"
+    @ref-currency="(newRefCurrency) => onRefCurrencyChange(newRefCurrency)"
+    :compact-enabled="true"
+    :eye-enabled="true"
+    v-bind:ref-currency-enabled="this.compact && !this.privacy"
   />
   <div class="accounts-table">
-    <div v-if="!loaded">
-      Loading...
-    </div>
+    <div v-if="!loaded">Loading...</div>
     <div v-else>
       <template v-for="(accounts, type) in byAccountType" v-bind:key="type">
         <div class="account-group-header pf-text-medium">
@@ -20,18 +18,24 @@
           <div v-if="!privacy" class="account-group-balance">
             {{ Math.floor(totalEurCentsForType(type) / 100.0) }} EUR
           </div>
-          <div v-else class="account-group-balance">
-            ---
-          </div>
+          <div v-else class="account-group-balance">---</div>
         </div>
-        <template v-for="account in accounts.sort((a,b) => (a.description > b.description) ? 1 : -1) "
-                  v-bind:key="account.id">
-          <AccountOverview v-if="!compact" :account=account :privacy=privacy :compact=compact></AccountOverview>
-          <CompactAccountOverview v-if="compact"
-                                  :account=account
-                                  :privacy=privacy
-                                  :compact=compact
-                                  :ref-currency-active=refCurrency
+        <template
+          v-for="account in accounts.sort((a, b) => (a.description > b.description ? 1 : -1))"
+          v-bind:key="account.id"
+        >
+          <AccountOverview
+            v-if="!compact"
+            :account="account"
+            :privacy="privacy"
+            :compact="compact"
+          ></AccountOverview>
+          <CompactAccountOverview
+            v-if="compact"
+            :account="account"
+            :privacy="privacy"
+            :compact="compact"
+            :ref-currency-active="refCurrency"
           ></CompactAccountOverview>
         </template>
       </template>
@@ -40,37 +44,37 @@
 </template>
 
 <script lang="ts">
-import AccountOverview from "@/components/AccountOverview.vue";
-import CompactAccountOverview from "@/components/AccountOverviewCompact.vue";
-import ToolBar from "@/components/ToolBar.vue";
-import { useAccountsStore } from '@/stores/accounts';
-import { useSettingsStore } from '@/stores/settings';
-import { mapState, mapActions } from 'pinia';
+import AccountOverview from '@/components/AccountOverview.vue'
+import CompactAccountOverview from '@/components/AccountOverviewCompact.vue'
+import ToolBar from '@/components/ToolBar.vue'
+import { useAccountsStore } from '@/stores/accounts'
+import { useSettingsStore } from '@/stores/settings'
+import { mapState, mapActions } from 'pinia'
 
 export default {
   components: {
     ToolBar,
     CompactAccountOverview,
-    AccountOverview: AccountOverview,
+    AccountOverview: AccountOverview
   },
   computed: {
     ...mapState(useSettingsStore, ['privacy', 'compact', 'refCurrency']),
     ...mapState(useAccountsStore, ['accounts', 'loading']),
     loaded() {
-      return !this.loading;
+      return !this.loading
     },
     byAccountType() {
       return this.accounts
-          .slice()
-          .sort((a, b) => (a.type > b.type) ? 1 : -1)
-          .reduce((acc, account) => {
-            (acc[account.type] = acc[account.type] || []).push(account)
-            return acc
-          }, {})
+        .slice()
+        .sort((a, b) => (a.assetType > b.assetType ? 1 : -1))
+        .reduce((acc, account) => {
+          ;(acc[account.assetType] = acc[account.assetType] || []).push(account)
+          return acc
+        }, {})
     }
   },
   mounted() {
-    this.fetchAccounts();
+    this.fetchAccounts()
   },
   methods: {
     ...mapActions(useSettingsStore, {
@@ -80,24 +84,27 @@ export default {
     }),
     ...mapActions(useAccountsStore, ['fetchAccounts']),
     totalEurCentsForType(type) {
-      return this.byAccountType[type].reduce((sum, account) => sum + account.balance_cents_in_ref_currency, 0)
+      return this.byAccountType[type].reduce(
+        (sum, account) => sum + account.balanceRefCurrencyCents,
+        0
+      )
     },
     typeToTypeDescription(type) {
       switch (type) {
         case 'CASH':
-          return "Cash"
+          return 'Cash'
         case 'BANK_CURRENT':
-          return "Bank Current"
+          return 'Bank Current'
         case 'BANK_SAVINGS':
-          return "Bank Savings"
+          return 'Bank Savings'
         case 'BANK_CREDIT':
-          return "Credit Cards"
+          return 'Credit Cards'
         case 'INV':
-          return "Investments"
+          return 'Investments'
         case 'ACC':
-          return "Accounting"
+          return 'Accounting'
         default:
-          return "Other"
+          return 'Other'
       }
     }
   }
@@ -116,7 +123,7 @@ export default {
   padding: 5px;
   margin-top: 15px;
   background-color: var(--color-negative-background);
-  color: var(--color-negative-text)
+  color: var(--color-negative-text);
 }
 
 .account-group-description {
@@ -127,5 +134,4 @@ export default {
   grid-area: balance;
   text-align: right;
 }
-
 </style>

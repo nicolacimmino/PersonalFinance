@@ -9,7 +9,7 @@
           Valid from
         </div>
         <div class="budget-data-value">
-          {{ budget.from_date }}
+          {{ budget.fromDate }}
         </div>
       </div>
       <div class="budget-data">
@@ -17,7 +17,7 @@
           Valid to
         </div>
         <div class="budget-data-value">
-          {{ budget.to_date }}
+          {{ budget.toDate }}
         </div>
       </div>
       <div class="budget-data" v-if="!privacy">
@@ -25,7 +25,7 @@
           Size
         </div>
         <div class="budget-data-value">
-          {{ Math.floor(Math.abs(budget.amount_cents / 100.0)) }} {{ budget.currency }}
+          {{ Math.floor(Math.abs(budget.amountCents / 100.0)) }} {{ budget.currency }}
         </div>
       </div>
       <div class="budget-data" v-if="!privacy">
@@ -33,7 +33,7 @@
           Spent
         </div>
         <div class="budget-data-value">
-          {{ Math.floor(Math.abs(budget.spent_cents / 100.0)) }} {{ budget.currency }}
+          {{ Math.floor(Math.abs(budget.spentCents / 100.0)) }} {{ budget.currency }}
         </div>
       </div>
       <div class="budget-data">
@@ -41,7 +41,7 @@
           Spent %
         </div>
         <div class="budget-data-value">
-          {{ Math.floor((100.0 * Math.abs(budget.spent_cents)) / budget.amount_cents) }}%
+          {{ Math.floor((100.0 * Math.abs(budget.spentCents)) / budget.amountCents) }}%
         </div>
       </div>
       <div class="budget-data">
@@ -128,14 +128,14 @@ export default {
       }
     },
     isBudgetExceeded(budget) {
-      return budget.spent_cents > budget.amount_cents;
+      return budget.spentCents > budget.amountCents;
     },
     isBudgetCloseToMax(budget) {
-      return budget.spent_cents > budget.amount_cents * 0.75;
+      return budget.spentCents > budget.amountCents * 0.75;
     },
     percentileTimeSpent(budget) {
-      const start = moment(budget.from_date, "YYYY-MM-DD");
-      const end = moment(budget.to_date, "YYYY-MM-DD");
+      const start = moment(budget.fromDate, "YYYY-MM-DD");
+      const end = moment(budget.toDate, "YYYY-MM-DD");
       if (end.isBefore(moment.now())) {
         return 1.0;
       }
@@ -159,9 +159,9 @@ export default {
         labels: ["Size", "Spent", "Time"],
         datasets: [{
           data: [
-            Math.floor(Math.abs(budget.amount_cents / 100.0)),
-            Math.floor(Math.abs(budget.spent_cents / 100.0)),
-            this.percentileTimeSpent(budget) * Math.abs(budget.amount_cents / 100.0),
+            Math.floor(Math.abs(budget.amountCents / 100.0)),
+            Math.floor(Math.abs(budget.spentCents / 100.0)),
+            this.percentileTimeSpent(budget) * Math.abs(budget.amountCents / 100.0),
           ],
           backgroundColor: colors
         }],

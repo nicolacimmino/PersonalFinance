@@ -16,10 +16,10 @@ export async function getCategoryReport(year?: number): Promise<CategoryReportEn
   const dateFrom = `${selectedYear}-01-01`;
   const dateTo = `${selectedYear}-12-31`;
 
-  const response = await httpClient.get<CategoryReportEntry[]>('/api/reports/by_category/', {
+  const response = await httpClient.get<CategoryReportEntry[]>('/api/v2/reports/by_category/', {
     params: {
-      date_from: dateFrom,
-      date_to: dateTo,
+      dateFrom: dateFrom,
+      dateTo: dateTo,
     },
   });
 
@@ -34,10 +34,10 @@ export async function getIndicators(year?: number): Promise<Indicator[]> {
   const dateFrom = `${selectedYear}-01-01`;
   const dateTo = `${selectedYear}-12-31`;
 
-  const response = await httpClient.get<Indicator[]>('/api/reports/indicators/', {
+  const response = await httpClient.get<Indicator[]>('/api/v2/reports/indicators/', {
     params: {
-      date_from: dateFrom,
-      date_to: dateTo,
+      dateFrom: dateFrom,
+      dateTo: dateTo,
     },
   });
 
