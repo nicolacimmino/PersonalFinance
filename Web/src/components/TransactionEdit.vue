@@ -20,7 +20,7 @@
               </select>
             </div>
             <div v-else @click="this.editCategory=true" class="category pf-text-large">
-              {{ (selectedCategory) ? selectedCategory : "???" }}
+              {{ (selectedCategory) ? selectedCategory : '???' }}
             </div>
           </div>
           <div v-else>
@@ -33,7 +33,7 @@
               </select>
             </div>
             <div v-else @click="this.editDestinationAccount=true" class="destinationAccount">
-              {{ (selectedDestinationAccount) ? selectedDestinationAccount.description : "???" }}
+              {{ (selectedDestinationAccount) ? selectedDestinationAccount.description : '???' }}
             </div>
           </div>
 
@@ -44,10 +44,10 @@
             {{ transaction.amountCents_in_refCurrency / 100.0 }} {{ transaction.refCurrency }}
           </div>
           <div class="booking-date pf-text-medium">
-            {{ moment(transaction.bookingDate).format("DD-MM-YYYY") }}
+            {{ moment(transaction.bookingDate).format('DD-MM-YYYY') }}
           </div>
           <div v-if="editDescription" class="description pf-text-large">
-            <textarea v-model="this.editedDescription"/>
+            <textarea v-model="this.editedDescription" />
           </div>
           <div v-else class="description pf-text-large" @click="this.editDescription=true">
             {{ transaction.description }}
@@ -62,7 +62,7 @@
                        uncheckedText=""
                        checkedBg="#b4d455"
                        uncheckedBg="lightgrey"
-                       @click="isTransfer = !isTransfer"/>
+                       @click="isTransfer = !isTransfer" />
 
           </div>
           <div class="transaction-id">
@@ -74,7 +74,12 @@
               Cancel
             </button>
             <button class="button-save"
-                    @click="$emit('save', selectedCategory, (selectedDestinationAccount) ? selectedDestinationAccount.id : null, isTransfer, editedDescription)"
+                    @click="$emit('save', {
+                      category: selectedCategory,
+                      accountTo: (selectedDestinationAccount && isTransfer) ? selectedDestinationAccount.id : null,
+                      isTransfer: isTransfer,
+                      description: editedDescription,
+                       })"
                     :disabled="!saveEnabled()">
               Save
             </button>
@@ -86,15 +91,15 @@
 </template>
 
 <script>
-import moment from "moment/moment.js";
-import {VueToggles} from "vue-toggles";
+import moment from 'moment/moment.js'
+import { VueToggles } from 'vue-toggles'
 
 export default {
   mounted() {
-    this.selectedCategory = this.transaction.category;
-    this.selectedDestinationAccount = this.accounts.find((account) => account.id === this.transaction.accountTo);
-    this.isTransfer = this.transaction.type === "TRANSFER";
-    this.editedDescription = this.transaction.description;
+    this.selectedCategory = this.transaction.category
+    this.selectedDestinationAccount = this.accounts.find((account) => account.id === this.transaction.accountTo)
+    this.isTransfer = this.transaction.type === 'TRANSFER'
+    this.editedDescription = this.transaction.description
   },
   props: {
     transaction: undefined,
@@ -113,24 +118,24 @@ export default {
     }
   },
   components: {
-    VueToggle: VueToggles,
+    VueToggle: VueToggles
   },
   methods: {
     moment: moment,
     saveEnabled() {
       if (this.selectedCategory !== this.transaction.category) {
-        return true;
+        return true
       }
 
       if (this.editedDescription !== this.transaction.description) {
-        return true;
+        return true
       }
 
       if (this.selectedDestinationAccount && this.selectedDestinationAccount.id !== this.transaction.accountTo) {
         return true
       }
 
-      if (this.isTransfer && this.isTransfer !== (this.transaction.type === "TRANSFER")) {
+      if (this.isTransfer && this.isTransfer !== (this.transaction.type === 'TRANSFER')) {
         return true
       }
 

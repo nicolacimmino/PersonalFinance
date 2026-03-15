@@ -42,7 +42,7 @@ export async function getTransactions(
   res: Response
 ): Promise<void> {
   // Accept both camelCase and snake_case for backward compatibility
-  const { category, account, dateFrom, date_from, dateTo, date_to } = req.query;
+  const { category, accountId, dateFrom, date_from, dateTo, date_to } = req.query;
 
   // Use camelCase first, fallback to snake_case
   const dateFromParam = dateFrom || date_from;
@@ -55,16 +55,16 @@ export async function getTransactions(
   );
 
   // Parse account ID if provided
-  const accountId = account ? parseInt(String(account), 10) : undefined;
+  const accountIdFilter = accountId ? parseInt(String(accountId), 10) : undefined;
 
-  if (account && isNaN(accountId!)) {
+  if (accountId && isNaN(accountIdFilter!)) {
     res.status(400).json({ error: 'Invalid account ID' });
     return;
   }
 
   const transactions = await service.getTransactions(
     category ? String(category) : undefined,
-    accountId,
+    accountIdFilter,
     parsedDateFrom,
     parsedDateTo
   );

@@ -15,8 +15,8 @@
                            :accounts="accounts"
                            :categories="categories"
                            @cancel="editDialog = false; followEditReturn();"
-                           @save="(newCategory, newAccountTo, isTransfer, newDescription) => {
-                             onCategoryChange(newCategory, newAccountTo, isTransfer, newDescription);
+                           @save="updatedValues => {
+                             onTransactionValuesChange(updatedValues);
                              followEditReturn();
                            }">
           </TransactionEdit>
@@ -145,8 +145,7 @@ export default {
     ...mapActions(useTransactionsStore, {
       fetchTransactionsFromStore: 'fetchTransactions',
       fetchTransactionFromStore: 'fetchTransaction',
-      updateTransactionFromStore: 'updateTransaction',
-      updateTransactionAccountToFromStore: 'updateTransactionAccountTo',
+      updateTransactionFromStore: 'updateTransactionInfo',
       createTransactionFromStore: 'createTransaction'
     }),
     ...mapActions(useAccountsStore, {
@@ -193,22 +192,34 @@ export default {
       this.transaction = transaction
       this.editDialog = true
     },
-    async onCategoryChange(newCategory, newAccountTo, isTransfer, newDescription) {
+    async onTransactionValuesChange(updatedValues) {
+      console.log(updatedValues)
       this.editDialog = false
-      this.saving = true
-      if (!isTransfer) {
-        let type = this.transaction.amountCents <= 0 ? 'EXPENSE' : 'INCOME'
-        await this.updateTransactionFromStore(
-          this.transaction.id,
-          newCategory,
-          type,
-          newDescription
-        )
-        this.saving = false
-      } else {
-        await this.updateTransactionAccountToFromStore(this.transaction.id, newAccountTo)
-        this.saving = false
+
+      if (this.transaction == undefined) {
+        return
       }
+
+      this.saving = true
+
+      let type: 'EXPENSE' | 'INCOME' | 'TRANSFER'
+
+      if (updatedValues.isTransfer) {
+        type = 'TRANSFER'
+      } else if (this.transaction.amountCents <= 0) {
+        type = 'EXPENSE'
+      } else {
+        type = 'INCOME'
+      }
+      await this.updateTransactionFromStore(
+        this.transaction.id,
+        updatedValues.category,
+        type,
+        updatedValues.description,
+        updatedValues.accountTo
+      )
+
+      this.saving = false
     },
     async onNewTransaction(newTransaction) {
       const response = await this.createTransactionFromStore(newTransaction)

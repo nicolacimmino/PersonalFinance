@@ -15,8 +15,7 @@ export { default as httpClient } from './httpClient';
 export {
   getTransactions,
   getTransaction,
-  updateTransactionCategory,
-  updateTransactionAccountTo,
+  updateTransaction,
   createTransaction,
 } from './transactionService';
 

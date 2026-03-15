@@ -13,8 +13,8 @@ get {
 params:query {
   dateFrom: 2024-01-01
   dateTo: 2024-12-31
-  ~category: GROCERIES
-  ~account: 1
+  ~accountId: 11
+  ~category: FEE
 }
 
 headers {
@@ -23,13 +23,13 @@ headers {
 
 docs {
   Get all transactions with optional filters (V2 - camelCase).
-
+  
   Query parameters (camelCase):
   - dateFrom: Filter from date (YYYY-MM-DD)
   - dateTo: Filter to date (YYYY-MM-DD)
   - category: Filter by category code
   - account: Filter by account ID
-
+  
   Returns camelCase fields:
   - accountId, accountName, bookingDate, creditorName, amountCents
   - amountCentsInRefCurrency, refCurrency, accountTo, accountToName, receiptId
