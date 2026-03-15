@@ -47,9 +47,7 @@
 import AccountOverview from '@/components/AccountOverview.vue'
 import CompactAccountOverview from '@/components/AccountOverviewCompact.vue'
 import ToolBar from '@/components/ToolBar.vue'
-import { useAccountsStore } from '@/stores/accounts'
-import { useSettingsStore } from '@/stores/settings'
-import { mapState, mapActions } from 'pinia'
+import { useAccounts, useSettings } from '@/composables'
 
 export default {
   components: {
@@ -57,11 +55,14 @@ export default {
     CompactAccountOverview,
     AccountOverview: AccountOverview
   },
+  setup() {
+    const { accounts, isLoading } = useAccounts()
+    const { privacy, compact, refCurrency, setPrivacy, setCompact, setRefCurrency } = useSettings()
+    return { accounts, isLoading, privacy, compact, refCurrency, setPrivacy, setCompact, setRefCurrency }
+  },
   computed: {
-    ...mapState(useSettingsStore, ['privacy', 'compact', 'refCurrency']),
-    ...mapState(useAccountsStore, ['accounts', 'loading']),
     loaded() {
-      return !this.loading
+      return !this.isLoading
     },
     byAccountType() {
       return this.accounts
@@ -73,16 +74,16 @@ export default {
         }, {})
     }
   },
-  mounted() {
-    this.fetchAccounts()
-  },
   methods: {
-    ...mapActions(useSettingsStore, {
-      onPrivacyChange: 'setPrivacy',
-      onCompactChange: 'setCompact',
-      onRefCurrencyChange: 'setRefCurrency'
-    }),
-    ...mapActions(useAccountsStore, ['fetchAccounts']),
+    onPrivacyChange(value) {
+      this.setPrivacy(value)
+    },
+    onCompactChange(value) {
+      this.setCompact(value)
+    },
+    onRefCurrencyChange(value) {
+      this.setRefCurrency(value)
+    },
     totalEurCentsForType(type) {
       return this.byAccountType[type].reduce(
         (sum, account) => sum + account.balanceRefCurrencyCents,

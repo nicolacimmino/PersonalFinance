@@ -27,27 +27,25 @@
 
 import ToolBar from "@/components/ToolBar.vue";
 import AlertOverview from "@/components/AlertOverview.vue";
-import { useSettingsStore } from '@/stores/settings';
-import { useAlertsStore } from '@/stores/alerts';
-import { mapState, mapActions } from 'pinia';
+import { useAlerts, useSettings } from '@/composables';
 
 export default {
   name: 'HomeView',
   components: {AlertOverview, ToolBar},
+  setup() {
+    const { alerts, alertsByItemType } = useAlerts()
+    const settings = useSettings()
+    return { alerts, alertsByItemType, settings }
+  },
   computed: {
-    ...mapState(useSettingsStore, {
-      existingApiKey: 'apiKey',
-      hasApiKey: 'hasApiKey'
-    }),
-    ...mapState(useAlertsStore, ['alerts', 'alertsByItemType']),
+    existingApiKey() {
+      return this.settings.apiKey
+    },
   },
   methods: {
-    ...mapActions(useSettingsStore, ['setApiKey']),
-    ...mapActions(useAlertsStore, ['fetchAlerts']),
     saveApiKey() {
-      this.setApiKey(this.newApiKey);
+      this.settings.setApiKey(this.newApiKey);
       this.newApiKey = "";
-      this.fetchAlerts();
     },
     typeToTypeDescription(type: string) {
       switch (type) {
@@ -60,11 +58,6 @@ export default {
         default:
           return "Other"
       }
-    }
-  },
-  mounted() {
-    if (this.hasApiKey) {
-      this.fetchAlerts();
     }
   },
   data() {

@@ -38,9 +38,7 @@
 import BudgetOverview from "@/components/BudgetOverview.vue";
 import moment from "moment";
 import ToolBar from "@/components/ToolBar.vue";
-import { useBudgetsStore } from '@/stores/budgets';
-import { useSettingsStore } from '@/stores/settings';
-import { mapState, mapActions } from 'pinia';
+import { useBudgets, useSettings } from '@/composables';
 
 export default {
   components: {
@@ -53,11 +51,14 @@ export default {
       default: "ACTIVE"
     }
   },
+  setup() {
+    const { budgets, isLoading } = useBudgets()
+    const { privacy, setPrivacy } = useSettings()
+    return { budgets, isLoading, privacy, setPrivacy }
+  },
   computed: {
-    ...mapState(useSettingsStore, ['privacy']),
-    ...mapState(useBudgetsStore, ['budgets', 'loading']),
     loaded() {
-      return !this.loading;
+      return !this.isLoading;
     },
     activeBudgets() {
       return this.budgets
@@ -71,19 +72,10 @@ export default {
         .sort((a, b) => (moment(a.start_date).isAfter(moment(b.start_date))) ? 1 : (a.start_date === b.start_date) ? 0 : -1);
     }
   },
-  watch: {
-    $route: function () {
-      this.fetchBudgets();
-    }
-  },
-  mounted() {
-    this.fetchBudgets();
-  },
   methods: {
-    ...mapActions(useSettingsStore, {
-      onPrivacyChange: 'setPrivacy'
-    }),
-    ...mapActions(useBudgetsStore, ['fetchBudgets'])
+    onPrivacyChange(value) {
+      this.setPrivacy(value)
+    },
   },
 }
 </script>

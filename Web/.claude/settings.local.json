@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run build-only:*)"
+      "Bash(npm run build-only:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }

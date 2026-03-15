@@ -58,11 +58,8 @@ import ToolBar from '@/components/ToolBar.vue'
 import moment from 'moment'
 import 'primeicons/primeicons.css'
 import TransactionCreate from '@/components/TransactionCreate.vue'
-import { usePrivacy, useLoading, useSnackbar, useYearFilter } from '@/composables'
-import { useTransactionsStore } from '@/stores/transactions'
-import { useAccountsStore } from '@/stores/accounts'
-import { useCategoriesStore } from '@/stores/categories'
-import { mapState, mapActions } from 'pinia'
+import { usePrivacy, useLoading, useSnackbar, useYearFilter, useAccounts, useCategories } from '@/composables'
+import { getAccount, getTransactions, getTransaction, updateTransaction, createTransaction } from '@/services/api'
 
 export default {
   components: {
@@ -83,6 +80,8 @@ export default {
     const { loading, startLoading, stopLoading } = useLoading()
     const { message: snackbarMessage, isVisible: snackbarVisible, showSnackbar } = useSnackbar()
     const { selectedYear } = useYearFilter()
+    const { accounts: allAccounts } = useAccounts()
+    const { categories: allCategories } = useCategories()
 
     return {
       privacy,
@@ -93,17 +92,12 @@ export default {
       snackbarMessage,
       snackbarVisible,
       showSnackbar,
-      selectedYear
+      selectedYear,
+      allAccounts,
+      allCategories
     }
   },
   computed: {
-    ...mapState(useTransactionsStore, ['transactions']),
-    ...mapState(useAccountsStore, {
-      allAccounts: 'accounts'
-    }),
-    ...mapState(useCategoriesStore, {
-      allCategories: 'categories'
-    }),
     byDate() {
       return this.transactions.reduce((acc, transaction) => {
         ;(acc[transaction.bookingDate] = acc[transaction.bookingDate] || []).push(transaction)
@@ -129,30 +123,18 @@ export default {
   mounted() {
     this.loadAllTransactions(this.account_id, this.category_filter)
     this.updateFilterDescription()
-    this.fetchCategories()
-    this.fetchAccounts()
   },
   data() {
     return {
       saving: false,
       editDialog: false,
       transaction: undefined,
+      transactions: [],
       filter_description: 'All',
       adding: false
     }
   },
   methods: {
-    ...mapActions(useTransactionsStore, {
-      fetchTransactionsFromStore: 'fetchTransactions',
-      fetchTransactionFromStore: 'fetchTransaction',
-      updateTransactionFromStore: 'updateTransactionInfo',
-      createTransactionFromStore: 'createTransaction'
-    }),
-    ...mapActions(useAccountsStore, {
-      fetchAccounts: 'fetchAccounts',
-      fetchAccount: 'fetchAccount'
-    }),
-    ...mapActions(useCategoriesStore, ['fetchCategories']),
     moment: moment,
     addTransaction() {
       this.adding = true
@@ -166,17 +148,17 @@ export default {
       if (!category) category = ''
       if (!account_id) account_id = ''
 
-      await this.fetchTransactionsFromStore(account_id, category, this.selectedYear)
+      this.transactions = await getTransactions(account_id, category, this.selectedYear)
       this.stopLoading()
 
       if (this.edit_id) {
-        this.transaction = await this.fetchTransactionFromStore(this.edit_id)
+        this.transaction = await getTransaction(this.edit_id)
         this.editDialog = true
       }
     },
     async updateFilterDescription() {
       if (this.account_id) {
-        const account = await this.fetchAccount(this.account_id)
+        const account = await getAccount(this.account_id)
         this.filter_description = account.description
         return
       }
@@ -211,20 +193,28 @@ export default {
       } else {
         type = 'INCOME'
       }
-      await this.updateTransactionFromStore(
+      const updated = await updateTransaction(
         this.transaction.id,
         updatedValues.category,
         type,
         updatedValues.description,
         updatedValues.accountTo
       )
+      // Update in local list
+      const index = this.transactions.findIndex(t => t.id === this.transaction.id)
+      if (index >= 0) {
+        this.transactions[index] = updated
+      }
 
       this.saving = false
     },
     async onNewTransaction(newTransaction) {
-      const response = await this.createTransactionFromStore(newTransaction)
+      const response = await createTransaction(newTransaction)
       if (response !== 'ERROR') {
         this.showSnackbar('Created')
+        if (typeof response !== 'string') {
+          this.transactions.push(response)
+        }
       } else {
         this.showSnackbar('Error')
       }

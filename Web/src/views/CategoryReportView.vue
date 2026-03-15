@@ -44,8 +44,7 @@ import CategorySpendingOverview from "@/components/CategoryOverview.vue";
 import ToolBar from "@/components/ToolBar.vue";
 import TransactionsDataTransformations from "@/TransactionsDataTransformations.ts";
 import { getCategoryReport } from '@/services/api';
-import { useSettingsStore } from '@/stores/settings';
-import { mapState, mapActions } from 'pinia';
+import { useSettings } from '@/composables';
 import {Pie} from 'vue-chartjs'
 import {Chart as ChartJS, ArcElement, Tooltip, Legend} from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
@@ -65,8 +64,11 @@ export default {
       default: "EXPENSE"
     },
   },
+  setup() {
+    const { privacy, year, setPrivacy } = useSettings()
+    return { privacy, year, setPrivacy }
+  },
   computed: {
-    ...mapState(useSettingsStore, ['privacy', 'year']),
     upArrowEnabled() {
       return (this.currentCategoryFilter !== "");
     }
@@ -116,9 +118,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useSettingsStore, {
-      onPrivacyChange: 'setPrivacy'
-    }),
+    onPrivacyChange(value) {
+      this.setPrivacy(value)
+    },
     loadPreviousCategoryReport() {
       if (this.currentCategoryFilter === "") {
         this.loaded = true;

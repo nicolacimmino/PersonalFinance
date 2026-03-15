@@ -79,8 +79,7 @@
 
 <script lang="ts">
 import 'primeicons/primeicons.css'
-import { useSettingsStore } from '@/stores/settings';
-import { mapState, mapActions } from 'pinia';
+import { useSettings } from '@/composables';
 
 export default {
   props: {
@@ -89,8 +88,20 @@ export default {
     refCurrencyEnabled: Boolean,
     eyeEnabled: Boolean,
   },
+  setup() {
+    const settings = useSettings()
+    return {
+      privacy: settings.privacy,
+      compact: settings.compact,
+      refCurrency: settings.refCurrency,
+      year: settings.year,
+      togglePrivacy: settings.togglePrivacy,
+      toggleCompact: settings.toggleCompact,
+      toggleRefCurrency: settings.toggleRefCurrency,
+      setYear: settings.setYear
+    }
+  },
   computed: {
-    ...mapState(useSettingsStore, ['privacy', 'compact', 'refCurrency', 'year']),
     years() {
       const startYear = 2024;
       const currentYear = new Date().getFullYear();
@@ -110,7 +121,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useSettingsStore, ['togglePrivacy', 'toggleCompact', 'toggleRefCurrency', 'setYear']),
     handleTogglePrivacy() {
       if (!this.eyeEnabled) {
         return;

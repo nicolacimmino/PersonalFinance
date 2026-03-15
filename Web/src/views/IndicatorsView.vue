@@ -116,23 +116,23 @@
 <script lang="ts">
 import ToolBar from "@/components/ToolBar.vue";
 import { ESS_MONTHLY_COST_CENTS, TOTAL_MONTHLY_COST_CENTS, INVESTMENT_RETURN_RATE } from "@/constants";
-import { useSettingsStore } from '@/stores/settings';
-import { useIndicatorsStore } from '@/stores/indicators';
-import { mapState, mapActions } from 'pinia';
+import { useIndicators, useYearFilter, useSettings } from '@/composables';
+import { toRef } from 'vue';
 
 export default {
   components: {
     ToolBar,
   },
-  computed: {
-    ...mapState(useSettingsStore, ['privacy']),
-    ...mapState(useIndicatorsStore, ['indicators', 'loading', 'getIndicatorValue']),
-    loaded() {
-      return !this.loading;
-    }
+  setup() {
+    const { selectedYear } = useYearFilter()
+    const { indicators, getIndicatorValue, isLoading } = useIndicators(toRef(selectedYear))
+    const { privacy, setPrivacy } = useSettings()
+    return { indicators, getIndicatorValue, isLoading, privacy, setPrivacy }
   },
-  mounted() {
-    this.fetchIndicators();
+  computed: {
+    loaded() {
+      return !this.isLoading;
+    }
   },
   data() {
     return {
@@ -143,10 +143,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useSettingsStore, {
-      onPrivacyChange: 'setPrivacy'
-    }),
-    ...mapActions(useIndicatorsStore, ['fetchIndicators']),
+    onPrivacyChange(value) {
+      this.setPrivacy(value)
+    },
     valueOfIndicator(label: string) {
       return this.getIndicatorValue(label);
     },
