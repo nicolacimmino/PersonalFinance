@@ -21,7 +21,7 @@
     </div>
     <div class="transaction-amount-in-ref-currency pf-text-small">
       <span v-if="!privacy && (transaction.refCurrency !== transaction.currency)">
-      {{ transaction.amountCents_in_refCurrency / 100.0 }} {{ transaction.refCurrency }}
+      {{ transaction.amountCentsInRefCurrency / 100.0 }} {{ transaction.refCurrency }}
       </span>
     </div>
     <div class="transaction-creditor pf-text-medium">

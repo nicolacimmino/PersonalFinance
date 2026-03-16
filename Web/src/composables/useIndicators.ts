@@ -11,13 +11,14 @@ export function useIndicators(year: Ref<number>) {
 
   const indicators = computed(() => {
     if (!data.value?.indicators) return []
-    return data.value.indicators.sort((a, b) =>
-      labelToPosition(a.label, getIndicatorValue) > labelToPosition(b.label, getIndicatorValue) ? 1 : -1
+    const rawIndicators = data.value.indicators
+    return [...rawIndicators].sort((a, b) =>
+      labelToPosition(a.label, rawIndicators) > labelToPosition(b.label, rawIndicators) ? 1 : -1
     )
   })
 
   function getIndicatorValue(label: string): number {
-    const indicator = indicators.value.find(ind => ind.label === label)
+    const indicator = data.value?.indicators?.find(ind => ind.label === label)
     return indicator ? indicator.totalCents : 0
   }
 
@@ -29,7 +30,7 @@ export function useIndicators(year: Ref<number>) {
   }
 }
 
-function labelToPosition(type: string, getIndicatorValue: (label: string) => number): number {
+function labelToPosition(type: string, indicators: Indicator[]): number {
   switch (type.substring(0, 4)) {
     case 'CASH':
       return 0
@@ -49,7 +50,9 @@ function labelToPosition(type: string, getIndicatorValue: (label: string) => num
       return 9
     default:
       if (type.substring(0, 1) === 'C') {
-        return 10000000 - (getIndicatorValue(type) / 100)
+        const indicator = indicators.find(ind => ind.label === type)
+        const value = indicator ? indicator.totalCents : 0
+        return 10000000 - (value / 100)
       }
       return 9
   }
