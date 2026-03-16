@@ -1,0 +1,25 @@
+{
+  "name": "obt_js",
+  "version": "1.0.0",
+  "description": "OpenBanking Transformer - Node.js port of the Rust OBT application",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "build:prod": "esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=dist_prod/index.js --minify",
+    "start": "node dist/index.js",
+    "start:prod": "node dist_prod/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "pg": "^8.16.0",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "@types/pg": "^8.15.4",
+    "esbuild": "^0.27.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.0"
+  }
+}
