@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     existingApiKey() {
-      return this.settings.apiKey
+      return this.settings.apiKey.value
     },
   },
   methods: {

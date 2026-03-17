@@ -8,10 +8,18 @@ if [ "$1" != "dev" ] && [ "$1" != "pro" ]; then
 fi
 
 echo "Building..."
-npm run build:prod
+if [ "$1" == "dev" ]; then
+    npm run build-devk8
+else
+    npm run build:prod
+fi
 
 echo "Deploying to /k/pfinance/$1/web..."
 mkdir -p /k/pfinance/$1/web
-cp dist_prod/index.js /k/pfinance/$1/web/web.js
+if [ "$1" == "dev" ]; then
+    cp -r dist_devk8/* /k/pfinance/$1/web/
+else
+    cp -r dist_prod/* /k/pfinance/$1/web/
+fi
 
 echo "Done!"
