@@ -1,0 +1,45 @@
+meta {
+  name: Create Transaction
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/v2/transactions
+  body: json
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "amountCents": -5499,
+    "accountId": 1,
+    "category": "GROCERIES",
+    "description": "Weekly shopping",
+    "creditorName": "SuperMarket Inc",
+    "bookingDate": "2024-01-15",
+    "type": "DEBIT"
+  }
+}
+
+docs {
+  Create a new transaction (V2 - camelCase).
+
+  Required fields (camelCase):
+  - amountCents: Transaction amount in cents (negative for expenses)
+  - accountId: Account ID
+
+  Optional fields (camelCase):
+  - category: Category code
+  - description: Transaction description
+  - creditorName: Merchant/creditor name
+  - bookingDate: Date (YYYY-MM-DD)
+  - valueDate: Value date (YYYY-MM-DD)
+  - accountTo: Destination account for transfers
+  - type: Transaction type
+}

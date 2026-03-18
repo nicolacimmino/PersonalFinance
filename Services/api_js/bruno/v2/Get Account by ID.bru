@@ -1,0 +1,19 @@
+meta {
+  name: Get Account by ID
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/v2/accounts/16
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}
+
+docs {
+  Get a single account by ID (V2 - camelCase).
+}

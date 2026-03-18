@@ -1,0 +1,22 @@
+meta {
+  name: Get Budgets
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/api/v2/budgets
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}
+
+docs {
+  Get all budgets (V2 - camelCase).
+
+  Returns budgets with camelCase fields:
+  - fromDate, toDate, amountCents, spentCentsEur, spentCents, transactionCount
+}

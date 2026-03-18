@@ -1,0 +1,22 @@
+meta {
+  name: Get Accounts
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/v1/accounts
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}
+
+docs {
+  Get all accounts (V1 - snake_case).
+
+  Returns accounts with snake_case fields:
+  - asset_type, pri_transactions_src, balance_cents, balance_eur_cents
+}

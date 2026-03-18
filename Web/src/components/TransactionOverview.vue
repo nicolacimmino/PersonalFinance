@@ -1,10 +1,10 @@
 <template>
   <div class="transaction-details">
     <div v-if="transaction.type === 'TRANSFER'" class="transaction-category pf-text-medium">
-      <span :class="(transaction.amount_cents < 0) ? 'pi pi-arrow-right' : 'pi pi-arrow-left'"></span>
+      <span :class="(transaction.amountCents < 0) ? 'pi pi-arrow-right' : 'pi pi-arrow-left'"></span>
       &nbsp;
       {{
-        (transaction.account_to_name) ? transaction.account_to_name : "-"
+        (transaction.accountToName) ? transaction.accountToName : "-"
       }}
     </div>
     <div v-else class="transaction-category pf-text-medium">
@@ -13,19 +13,19 @@
     <div class="pf-text-medium transaction-amount">
       <span v-if="privacy">---&nbsp;{{ transaction.currency }}</span>
       <span v-else>
-            {{ transaction.amount_cents / 100.0 }} {{ transaction.currency }}
+            {{ transaction.amountCents / 100.0 }} {{ transaction.currency }}
         </span>
     </div>
     <div class="transaction-account-name pf-text-small">
-      {{ transaction.account_name }}
+      {{ transaction.accountName }}
     </div>
     <div class="transaction-amount-in-ref-currency pf-text-small">
-      <span v-if="!privacy && (transaction.ref_currency !== transaction.currency)">
-      {{ transaction.amount_cents_in_ref_currency / 100.0 }} {{ transaction.ref_currency }}
+      <span v-if="!privacy && (transaction.refCurrency !== transaction.currency)">
+      {{ transaction.amountCentsInRefCurrency / 100.0 }} {{ transaction.refCurrency }}
       </span>
     </div>
     <div class="transaction-creditor pf-text-medium">
-      {{ (transaction.creditor_name) ? transaction.creditor_name : "---" }}
+      {{ (transaction.creditorName) ? transaction.creditorName : "---" }}
     </div>
     <div class="transaction-description pf-text-small">
       {{ transaction.description }}
@@ -33,7 +33,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   props: {
     transaction: Object,

@@ -1,0 +1,31 @@
+meta {
+  name: Get Report by Category
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{baseUrl}}/api/v1/reports/by_category?date_from=2024-01-01&date_to=2024-12-31
+  body: none
+  auth: none
+}
+
+params:query {
+  date_from: 2024-01-01
+  date_to: 2024-12-31
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}
+
+docs {
+  Get spending report grouped by category (V1 - snake_case).
+
+  Query parameters:
+  - date_from: Report start date (YYYY-MM-DD)
+  - date_to: Report end date (YYYY-MM-DD)
+
+  Returns report with snake_case fields:
+  - date_from, date_to, total_cents, transactions_count, category_description
+}

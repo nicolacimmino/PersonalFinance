@@ -16,18 +16,18 @@ export default class TransactionsDataTransformations {
             if (res[aggregation_category] === undefined) {
                 res[aggregation_category] = {
                     category: aggregation_category,
-                    total_cents: 0,
+                    totalCents: 0,
                     currency: report.currency,
                     color: report.color,
                     type: report.type,
-                    transactions_count: 0,
+                    transactionCount: 0,
                     subcategories: []
                 };
                 result.push(res[aggregation_category])
             }
 
-            res[aggregation_category].total_cents += report.total_cents;
-            res[aggregation_category].transactions_count += report.transactions_count;
+            res[aggregation_category].totalCents += report.totalCents;
+            res[aggregation_category].transactionCount += report.transactionCount;
             res[aggregation_category].subcategories.push(report);
 
             return res;

@@ -1,0 +1,22 @@
+meta {
+  name: Get Transaction by ID
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/v2/transactions/4146
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}
+
+docs {
+  Get a single transaction by ID (V2 - camelCase).
+  
+  Returns transaction with camelCase field names:
+  - accountId, bookingDate, amountCents, etc.
+}

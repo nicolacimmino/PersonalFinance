@@ -34,17 +34,13 @@
   </div>
 </template>
 
-<script>
-import TransactionApi from "@/TransactionsApi.ts";
+<script lang="ts">
 import BudgetOverview from "@/components/BudgetOverview.vue";
 import moment from "moment";
 import ToolBar from "@/components/ToolBar.vue";
+import { useBudgets, useSettings } from '@/composables';
 
 export default {
-  mounted() {
-    this.privacy = (localStorage.getItem("privacy") === "true");
-    this.loadBudgets()
-  },
   components: {
     ToolBar,
     BudgetOverview,
@@ -55,38 +51,30 @@ export default {
       default: "ACTIVE"
     }
   },
-  watch: {
-    $route: function () {
-      this.loadBudgets()
-    }
+  setup() {
+    const { budgets, isLoading } = useBudgets()
+    const { privacy, setPrivacy } = useSettings()
+    return { budgets, isLoading, privacy, setPrivacy }
   },
-  data() {
-    return {
-      loaded: false,
-      activeBudgets: [],
-      pastBudgets: [],
-      privacy: Boolean,
-      upEnabled: Boolean
+  computed: {
+    loaded() {
+      return !this.isLoading;
+    },
+    activeBudgets() {
+      return this.budgets
+        .filter(item => moment(item.fromDate).isBefore(moment.now()))
+        .filter(item => item.active === true);
+    },
+    pastBudgets() {
+      return this.budgets
+        .filter(item => moment(item.fromDate).isBefore(moment.now()))
+        .filter(item => item.active === false)
+        .sort((a, b) => (moment(a.start_date).isAfter(moment(b.start_date))) ? 1 : (a.start_date === b.start_date) ? 0 : -1);
     }
   },
   methods: {
-    onPrivacyChange(newPrivacy) {
-      this.privacy = newPrivacy;
-    },
-    loadBudgets() {
-      TransactionApi.loadBudgets().then(fetchedBudgets => {
-        fetchedBudgets = fetchedBudgets.filter(item => {
-          return moment(item.from_date).isBefore(moment.now())
-        });
-
-        this.activeBudgets = fetchedBudgets.filter(item => {
-          return item.active === true
-        });
-        this.pastBudgets = fetchedBudgets.filter(item => {
-          return item.active === false
-        }).sort((a, b) => (moment(a.start_date).isAfter(moment(b.start_date))) ? 1 : (a.start_date === b.start_date) ? 0 : -1);
-        this.loaded = true;
-      });
+    onPrivacyChange(value) {
+      this.setPrivacy(value)
     },
   },
 }

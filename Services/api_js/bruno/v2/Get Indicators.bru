@@ -1,0 +1,31 @@
+meta {
+  name: Get Indicators
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/api/v2/reports/indicators?dateFrom=2024-01-01&dateTo=2024-12-31
+  body: none
+  auth: none
+}
+
+params:query {
+  dateFrom: 2024-01-01
+  dateTo: 2024-12-31
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}
+
+docs {
+  Get KPI indicators (V2 - camelCase).
+
+  Query parameters (camelCase):
+  - dateFrom: Indicator start date (YYYY-MM-DD)
+  - dateTo: Indicator end date (YYYY-MM-DD)
+
+  Returns indicators with camelCase field:
+  - refCurrency
+}

@@ -1,16 +1,14 @@
 <template>
   <ToolBar
-      @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
-      @compact="(newCompact) => onCompactChange(newCompact)"
-      @ref-currency="(newRefCurrency) => onRefCurrencyChange(newRefCurrency)"
-      :compact-enabled="true"
-      :eye-enabled="true"
-      v-bind:ref-currency-enabled="this.compact && !this.privacy"
+    @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
+    @compact="(newCompact) => onCompactChange(newCompact)"
+    @ref-currency="(newRefCurrency) => onRefCurrencyChange(newRefCurrency)"
+    :compact-enabled="true"
+    :eye-enabled="true"
+    v-bind:ref-currency-enabled="this.compact && !this.privacy"
   />
   <div class="accounts-table">
-    <div v-if="!loaded">
-      Loading...
-    </div>
+    <div v-if="!loaded">Loading...</div>
     <div v-else>
       <template v-for="(accounts, type) in byAccountType" v-bind:key="type">
         <div class="account-group-header pf-text-medium">
@@ -20,18 +18,24 @@
           <div v-if="!privacy" class="account-group-balance">
             {{ Math.floor(totalEurCentsForType(type) / 100.0) }} EUR
           </div>
-          <div v-else class="account-group-balance">
-            ---
-          </div>
+          <div v-else class="account-group-balance">---</div>
         </div>
-        <template v-for="account in accounts.sort((a,b) => (a.description > b.description) ? 1 : -1) "
-                  v-bind:key="account.id">
-          <AccountOverview v-if="!compact" :account=account :privacy=privacy :compact=compact></AccountOverview>
-          <CompactAccountOverview v-if="compact"
-                                  :account=account
-                                  :privacy=privacy
-                                  :compact=compact
-                                  :ref-currency-active=refCurrency
+        <template
+          v-for="account in accounts.sort((a, b) => (a.description > b.description ? 1 : -1))"
+          v-bind:key="account.id"
+        >
+          <AccountOverview
+            v-if="!compact"
+            :account="account"
+            :privacy="privacy"
+            :compact="compact"
+          ></AccountOverview>
+          <CompactAccountOverview
+            v-if="compact"
+            :account="account"
+            :privacy="privacy"
+            :compact="compact"
+            :ref-currency-active="refCurrency"
           ></CompactAccountOverview>
         </template>
       </template>
@@ -39,79 +43,70 @@
   </div>
 </template>
 
-<script>
-import AccountOverview from "@/components/AccountOverview.vue";
-import TransactionApi from "@/TransactionsApi.ts";
-import CompactAccountOverview from "@/components/AccountOverviewCompact.vue";
-import ToolBar from "@/components/ToolBar.vue";
+<script lang="ts">
+import AccountOverview from '@/components/AccountOverview.vue'
+import CompactAccountOverview from '@/components/AccountOverviewCompact.vue'
+import ToolBar from '@/components/ToolBar.vue'
+import { useAccounts, useSettings } from '@/composables'
 
 export default {
   components: {
     ToolBar,
     CompactAccountOverview,
-    AccountOverview: AccountOverview,
+    AccountOverview: AccountOverview
   },
-  mounted() {
-    this.loadAllAccounts()
-    this.privacy = (localStorage.getItem("privacy") === "true")
-    this.compact = (localStorage.getItem("compact") === "true")
-    this.refCurrency = (localStorage.getItem("refCurrency") === "true")
+  setup() {
+    const { accounts, isLoading } = useAccounts()
+    const { privacy, compact, refCurrency, setPrivacy, setCompact, setRefCurrency } = useSettings()
+    return { accounts, isLoading, privacy, compact, refCurrency, setPrivacy, setCompact, setRefCurrency }
   },
-  data() {
-    return {
-      loaded: false,
-      privacy: true,
-      compact: true,
-      refCurrency: false,
-      currentCategoryFilter: "",
-      accounts: []
+  computed: {
+    loaded() {
+      return !this.isLoading
+    },
+    byAccountType() {
+      return this.accounts
+        .slice()
+        .sort((a, b) => (a.assetType > b.assetType ? 1 : -1))
+        .reduce((acc, account) => {
+          ;(acc[account.assetType] = acc[account.assetType] || []).push(account)
+          return acc
+        }, {})
     }
   },
   methods: {
-    onPrivacyChange(newPrivacy) {
-      this.privacy = newPrivacy;
+    onPrivacyChange(value) {
+      this.setPrivacy(value)
     },
-    onCompactChange(newCompact) {
-      this.compact = newCompact;
+    onCompactChange(value) {
+      this.setCompact(value)
     },
-    onRefCurrencyChange(newRefCurrency) {
-      this.refCurrency = newRefCurrency;
-    },
-    loadAllAccounts() {
-      TransactionApi.getAccounts().then(accounts => {
-        this.accounts = accounts.sort((a,b) => (a.description > b.description) ? 1 : -1)
-        this.loaded = true
-      });
+    onRefCurrencyChange(value) {
+      this.setRefCurrency(value)
     },
     totalEurCentsForType(type) {
-      return this.byAccountType[type].reduce((sum, account) => sum + account.balance_cents_in_ref_currency, 0)
+      return this.byAccountType[type].reduce(
+        (sum, account) => sum + account.balanceRefCurrencyCents,
+        0
+      )
     },
     typeToTypeDescription(type) {
       switch (type) {
         case 'CASH':
-          return "Cash"
+          return 'Cash'
         case 'BANK_CURRENT':
-          return "Bank Current"
+          return 'Bank Current'
         case 'BANK_SAVINGS':
-          return "Bank Savings"
+          return 'Bank Savings'
         case 'BANK_CREDIT':
-          return "Credit Cards"
+          return 'Credit Cards'
         case 'INV':
-          return "Investments"
+          return 'Investments'
         case 'ACC':
-          return "Accounting"
+          return 'Accounting'
         default:
-          return "Other"
+          return 'Other'
       }
-    }
-  },
-  computed: {
-    byAccountType() {
-      return this.accounts.sort((a, b) => (a.type > b.type) ? 1 : -1)
-          .reduce((acc, account) => {
-            (acc[account.type] = acc[account.type] || []).push(account)
-            return acc
-          }, {})
     }
   }
 }
@@ -129,7 +124,7 @@ export default {
   padding: 5px;
   margin-top: 15px;
   background-color: var(--color-negative-background);
-  color: var(--color-negative-text)
+  color: var(--color-negative-text);
 }
 
 .account-group-description {
@@ -140,5 +135,4 @@ export default {
   grid-area: balance;
   text-align: right;
 }
-
 </style>

@@ -6,7 +6,7 @@
     </div>
     <div class="alert-message pf-text-medium">
       <div v-if="alert.item==='TRANSACTIONS'">
-        <a :href='"/transactions?edit_id=" + alert.item_id + "&edit_return=/"'>
+        <a :href='"/transactions?edit_id=" + alert.itemId + "&edit_return=/"'>
           <span v-html="formatPlainTextAlert(alert.message)"></span>
         </a>
       </div>
@@ -24,11 +24,9 @@
 
 <script>
 
-import Alert from "@/models/alert.ts"
-
 export default {
   props: {
-    alert: Alert,
+    alert: Object,
   },
   methods: {
     formatPlainTextAlert(message) {

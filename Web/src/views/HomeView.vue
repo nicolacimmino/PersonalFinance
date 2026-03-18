@@ -27,24 +27,27 @@
 
 import ToolBar from "@/components/ToolBar.vue";
 import AlertOverview from "@/components/AlertOverview.vue";
-import TransactionApi from "@/TransactionsApi.ts";
-import Alert from "@/models/alert.ts";
+import { useAlerts, useSettings } from '@/composables';
 
 export default {
   name: 'HomeView',
   components: {AlertOverview, ToolBar},
+  setup() {
+    const { alerts, alertsByItemType } = useAlerts()
+    const settings = useSettings()
+    return { alerts, alertsByItemType, settings }
+  },
+  computed: {
+    existingApiKey() {
+      return this.settings.apiKey.value
+    },
+  },
   methods: {
     saveApiKey() {
-      localStorage.setItem("pfinanceApiKey", this.newApiKey)
-      this.existingApiKey = this.newApiKey;
+      this.settings.setApiKey(this.newApiKey);
+      this.newApiKey = "";
     },
-    loadAllAlerts() {
-      TransactionApi.loadAllAlerts().then(alerts => {
-        this.alerts = alerts
-      });
-
-    },
-    typeToTypeDescription(type) {
+    typeToTypeDescription(type: string) {
       switch (type) {
         case 'ACCOUNTS':
           return "Accounts"
@@ -57,27 +60,11 @@ export default {
       }
     }
   },
-  mounted() {
-    this.existingApiKey = localStorage.getItem("pfinanceApiKey") || ""
-    if (this.existingApiKey !== "") {
-      this.loadAllAlerts()
-    }
-  },
   data() {
     return {
       newApiKey: "",
-      existingApiKey: "",
-      alerts: Array as Alert[]
     }
   },
-  computed: {
-    alertsByItemType() {
-      return this.alerts.reduce((acc, alert) => {
-        (acc[alert.item] = acc[alert.item] || []).push(alert)
-        return acc
-      }, {})
-    }
-  }
 }
 </script>
 <style>

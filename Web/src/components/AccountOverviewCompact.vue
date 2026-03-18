@@ -2,16 +2,18 @@
   <div class="account-details">
     <div class="description pf-text-medium">
       {{ account.description }}
-      <span :class="(account.status == 'OK') ? 'pi' : 'pi pi-exclamation-triangle'"
-            :style="{color:'red'}"></span>
+      <span
+        :class="account.status == 'OK' ? 'pi' : 'pi pi-exclamation-triangle'"
+        :style="{ color: 'red' }"
+      ></span>
     </div>
     <div v-if="!refCurrencyActive" class="balance pf-text-medium">
-        <span v-if="privacy">---</span>
-        <span v-else>{{ account.balance_cents / 100.0 }} {{ account.currency }}</span>
+      <span v-if="privacy">---</span>
+      <span v-else>{{ account.balanceCents / 100.0 }} {{ account.currency }}</span>
     </div>
     <div v-else class="balance pf-text-medium">
-        <span v-if="privacy">---</span>
-        <span v-else>{{ account.balance_cents_in_ref_currency / 100.0 }} {{ account.ref_currency }}</span>
+      <span v-if="privacy">---</span>
+      <span v-else>{{ account.balanceRefCurrencyCents / 100.0 }} EUR</span>
     </div>
   </div>
 </template>
@@ -37,7 +39,7 @@ export default {
         query: {
           account_id: account_id
         }
-      });
+      })
     }
   }
 }
@@ -49,7 +51,7 @@ export default {
   grid-template: 'description balance';
   padding: 0px;
   margin-bottom: 2px;
-  background-color: var(--color-background)
+  background-color: var(--color-background);
 }
 
 .description {
@@ -63,5 +65,4 @@ export default {
   text-align: right;
   color: var(--color-text);
 }
-
 </style>

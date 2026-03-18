@@ -11,7 +11,7 @@
     <div class="ref-currency toolbar-icon">
       <i :class="(refCurrency) ? 'pi pi-money-bill' : 'pi pi-euro'"
          :style="(refCurrencyEnabled) ? 'color:black' : 'color:#EEEEEE'"
-         @click="toggleRefCurrency(); $emit('ref-currency', this.refCurrency)"
+         @click="handleToggleRefCurrency()"
       >
         &nbsp;
       </i>
@@ -27,7 +27,7 @@
     <div class="maximize toolbar-icon">
       <i :class="(compact) ? 'pi pi-window-maximize' : 'pi pi-window-minimize'"
          :style="(compactEnabled) ? 'color:black' : 'color:#EEEEEE'"
-         @click="toggleCompact(); $emit('compact', this.compact)"
+         @click="handleToggleCompact()"
       >
         &nbsp;
       </i>
@@ -35,7 +35,7 @@
     <div class="eye toolbar-icon">
       <i :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
          :style="(eyeEnabled) ? 'color:black' : 'color:#EEEEEE'"
-         @click="togglePrivacy(); $emit('privacy', this.privacy);"
+         @click="handleTogglePrivacy()"
       >
         &nbsp;
       </i>
@@ -65,8 +65,8 @@
       <div>
         <select
             id="viewYear"
-            v-model="this.year"
-            @change="changeYear(); $emit('changeYear', this.year); showMenu=false;"
+            :value="year"
+            @change="(e) => { changeYear(e); showMenu=false; }"
         >
           <option v-for="y in years" :key="y" :value="y">
             {{ y }}
@@ -77,9 +77,9 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import 'primeicons/primeicons.css'
-import moment from "moment";
+import { useSettings } from '@/composables';
 
 export default {
   props: {
@@ -88,55 +88,66 @@ export default {
     refCurrencyEnabled: Boolean,
     eyeEnabled: Boolean,
   },
+  setup() {
+    const settings = useSettings()
+    return {
+      privacy: settings.privacy,
+      compact: settings.compact,
+      refCurrency: settings.refCurrency,
+      year: settings.year,
+      togglePrivacy: settings.togglePrivacy,
+      toggleCompact: settings.toggleCompact,
+      toggleRefCurrency: settings.toggleRefCurrency,
+      setYear: settings.setYear
+    }
+  },
   computed: {
     years() {
-      const startYear = 2024
-      const currentYear = new Date().getFullYear()
-      const list = []
+      const startYear = 2024;
+      const currentYear = new Date().getFullYear();
+      const list = [];
 
       for (let y = startYear; y <= currentYear; y++) {
-        list.push(y)
+        list.push(y);
       }
 
-      return list
+      return list;
     }
   },
   emits: ['ref-currency', 'arrow-up', 'compact', 'privacy', 'changeYear'],
   data() {
     return {
-      privacy: (localStorage.getItem("privacy") === "true"),
-      compact: (localStorage.getItem("compact") === "true"),
-      refCurrency: (localStorage.getItem("refCurrency") === "true"),
       showMenu: false,
-      year: (localStorage.getItem("year") || moment().year()).toString(),
     }
   },
   methods: {
-    togglePrivacy() {
+    handleTogglePrivacy() {
       if (!this.eyeEnabled) {
         return;
       }
-      this.privacy = !this.privacy
-      localStorage.setItem("privacy", this.privacy.toString());
+      this.togglePrivacy();
+      this.$emit('privacy', this.privacy);
     },
-    toggleCompact() {
+    handleToggleCompact() {
       if (!this.compactEnabled) {
-        return
+        return;
       }
-
-      this.compact = !this.compact
-      localStorage.setItem("compact", this.compact.toString());
+      this.toggleCompact();
+      this.$emit('compact', this.compact);
     },
-    toggleRefCurrency() {
+    handleToggleRefCurrency() {
       if (!this.refCurrencyEnabled) {
         return;
       }
-
-      this.refCurrency = !this.refCurrency
-      localStorage.setItem("refCurrency", this.refCurrency.toString());
+      this.toggleRefCurrency();
+      this.$emit('ref-currency', this.refCurrency);
     },
-    changeYear() {
-      localStorage.setItem("year", this.year);
+    changeYear(event?: Event) {
+      if (event) {
+        const target = event.target as HTMLSelectElement;
+        this.setYear(parseInt(target.value, 10));
+      }
+      this.$emit('changeYear', this.year);
     },
   }
 }

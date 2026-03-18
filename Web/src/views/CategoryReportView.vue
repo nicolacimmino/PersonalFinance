@@ -39,11 +39,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import CategorySpendingOverview from "@/components/CategoryOverview.vue";
 import ToolBar from "@/components/ToolBar.vue";
-import TransactionApi from "@/TransactionsApi.ts";
 import TransactionsDataTransformations from "@/TransactionsDataTransformations.ts";
+import { getCategoryReport } from '@/services/api';
+import { useSettings } from '@/composables';
 import {Pie} from 'vue-chartjs'
 import {Chart as ChartJS, ArcElement, Tooltip, Legend} from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
@@ -57,15 +58,15 @@ export default {
     CategoryOverview: CategorySpendingOverview,
     Pie: Pie,
   },
-  mounted() {
-    this.privacy = (localStorage.getItem("privacy") === "true")
-    this.loadByCategoryReport(this.type, "")
-  },
   props: {
     type: {
       type: String,
       default: "EXPENSE"
     },
+  },
+  setup() {
+    const { privacy, year, setPrivacy } = useSettings()
+    return { privacy, year, setPrivacy }
   },
   computed: {
     upArrowEnabled() {
@@ -77,10 +78,12 @@ export default {
       this.loadByCategoryReport(this.type, "")
     }
   },
+  mounted() {
+    this.loadByCategoryReport(this.type, "");
+  },
   data() {
     return {
       loaded: false,
-      privacy: true,
       currentCategoryFilter: "",
       categories: [],
       chartOptions: {
@@ -115,8 +118,8 @@ export default {
     }
   },
   methods: {
-    onPrivacyChange(newPrivacy) {
-      this.privacy = newPrivacy
+    onPrivacyChange(value) {
+      this.setPrivacy(value)
     },
     loadPreviousCategoryReport() {
       if (this.currentCategoryFilter === "") {
@@ -136,45 +139,44 @@ export default {
         }
       });
     },
-    loadByCategoryReport(typeFilter, categoryFilter) {
+    async loadByCategoryReport(typeFilter, categoryFilter) {
       this.loaded = false;
-      TransactionApi.loadByCategoryReport(localStorage.getItem("year"))
-          .then(fetchedCategoriesReport => {
-            let aggregatedData = TransactionsDataTransformations.aggregateSubLevels(
-                fetchedCategoriesReport.reports, typeFilter, categoryFilter
-            ).sort((a, b) => (Math.abs(a.total_cents) > Math.abs(b.total_cents)) ? -1 : 1);
+      const fetchedCategoriesReport = await getCategoryReport(this.year);
 
-            aggregatedData.forEach(report => report.subcategories
-                .sort((a, b) => (Math.abs(a.total_cents) > Math.abs(b.total_cents)) ? -1 : 1));
+      let aggregatedData = TransactionsDataTransformations.aggregateSubLevels(
+          fetchedCategoriesReport.reports, typeFilter, categoryFilter
+      ).sort((a, b) => (Math.abs(a.totalCents) > Math.abs(b.totalCents)) ? -1 : 1);
 
-            if (aggregatedData.length === 0) {
-              this.loaded = true;
-              return;
+      aggregatedData.forEach(report => report.subcategories
+          .sort((a, b) => (Math.abs(a.totalCents) > Math.abs(b.totalCents)) ? -1 : 1));
+
+      if (aggregatedData.length === 0) {
+        this.loaded = true;
+        return;
+      }
+
+      this.currentCategoryFilter = categoryFilter;
+
+      this.categories = aggregatedData;
+
+      this.chartData = {
+        labels: this.categories.map(
+            item => {
+              return item.category
             }
-
-            this.currentCategoryFilter = categoryFilter;
-
-            this.categories = aggregatedData;
-
-            this.chartData = {
-              labels: this.categories.map(
-                  item => {
-                    return item.category
-                  }
-              ),
-              datasets: [{
-                backgroundColor:
-                    ['#00429d', '#367176', '#649856', '#90be36', '#bde516', '#fcd6b7', '#f9aa8c', '#f57b5e', '#ea4438', '#cb0032']
-                ,
-                data: this.categories.map(
-                    item => {
-                      return Math.abs(item.total_cents) / 100.00
-                    }
-                )
-              }]
-            }
-            this.loaded = true;
-          });
+        ),
+        datasets: [{
+          backgroundColor:
+              ['#00429d', '#367176', '#649856', '#90be36', '#bde516', '#fcd6b7', '#f9aa8c', '#f57b5e', '#ea4438', '#cb0032']
+          ,
+          data: this.categories.map(
+              item => {
+                return Math.abs(item.totalCents) / 100.00
+              }
+          )
+        }]
+      }
+      this.loaded = true;
     },
   },
 }

@@ -1,0 +1,21 @@
+meta {
+  name: Get Categories
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/api/v2/categories
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}
+
+docs {
+  Get all categories (V2).
+
+  Note: Categories already use clean naming, so V2 is identical to V1.
+}
