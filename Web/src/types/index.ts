@@ -40,11 +40,13 @@ export interface Transaction {
 export interface Account {
   id: string | number
   name: string
+  description: string
   currency?: string
   refCurrency?: string
   balanceCents?: number
   balanceRefCurrencyCents?: number
   type?: string
+  canCreateTransactions: boolean
 }
 
 /**

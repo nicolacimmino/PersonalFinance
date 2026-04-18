@@ -11,6 +11,7 @@ export interface AccountDtoV2 {
   status: string;
   assetType: string;
   primaryTransactionSource: string;
+  canCreateTransactions: boolean;
   balanceCents: number;
   balanceRefCurrencyCents: number;
 }

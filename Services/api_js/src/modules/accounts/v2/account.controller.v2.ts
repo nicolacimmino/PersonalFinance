@@ -15,6 +15,7 @@ function toAccountDtoV2(account: ApplicationAccount): AccountDtoV2 {
     iban: account.iban,
     status: account.status,
     assetType: account.asset_type,
+    canCreateTransactions: account.pri_transactions_src !== 'OBI',
     balanceCents: account.balance_cents,
     balanceRefCurrencyCents: account.balance_eur_cents,
   };

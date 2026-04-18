@@ -73,7 +73,7 @@
               Cancel
             </button>
             <button class="button-save"
-                    @click="transaction.type=transactionType; $emit('save', transaction);"
+                    @click="transaction.type=transactionType; transaction.amountCents=Math.round(parseFloat(transaction.amount)*100); $emit('save', transaction);"
             >
               Save
             </button>
@@ -108,6 +108,7 @@ export default {
         bookingDate: moment(new Date()).format("YYYY-MM-DD"),
         creditorName: "",
         amount: Number,
+        amountCents: Number,
         category: String,
         account: Object,
         destinationAccount: Object,
@@ -124,7 +125,7 @@ export default {
   computed: {
     canCreateTransactionAccounts() {
       return this.accounts.filter(item => {
-        return item.can_create_transactions === "1";
+        return item.canCreateTransactions;
       })
     },
     transactionType() {
