@@ -201,7 +201,11 @@ export default {
   padding-top: 5px;
   padding-left: 10px;
   padding-right: 10px;
-  font-size: var(--pf-text-small-font-size);
+  font-size: var(--pf-text-large-font-size);
+}
+
+.indicator-entry:nth-child(even) {
+  background-color: var(--color-row-alt);
 }
 
 .indicator-label {
@@ -226,6 +230,10 @@ export default {
   padding-top: 5px;
   padding-left: 10px;
   padding-right: 10px;
-  font-size: var(--pf-text-small-font-size);
+  font-size: var(--pf-text-large-font-size);
+}
+
+.indicator-derived-entry:nth-child(even) {
+  background-color: var(--color-row-alt);
 }
 </style>

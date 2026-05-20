@@ -38,7 +38,7 @@ export default {
 
 .navbar Div {
   padding: 10px;
-  background-color: white;
+  background-color: var(--color-background);
 }
 
 .main {
@@ -46,7 +46,7 @@ export default {
 }
 
 .mainContainer {
-  background-color: white;
+  background-color: var(--color-background);
   grid-template:
     'navigation'
     'main';

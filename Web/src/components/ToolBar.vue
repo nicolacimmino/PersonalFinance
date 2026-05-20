@@ -2,7 +2,7 @@
   <div class="toolbar-container">
     <div class="menu-bar toolbar-icon">
       <i class="pi pi-bars"
-         style="color:black"
+         style="color: var(--color-icon-active)"
          @click="showMenu=true"
       >
         &nbsp;
@@ -10,7 +10,7 @@
     </div>
     <div class="ref-currency toolbar-icon">
       <i :class="(refCurrency) ? 'pi pi-money-bill' : 'pi pi-euro'"
-         :style="(refCurrencyEnabled) ? 'color:black' : 'color:#EEEEEE'"
+         :style="(refCurrencyEnabled) ? 'color: var(--color-icon-active)' : 'color: var(--color-icon-inactive)'"
          @click="handleToggleRefCurrency()"
       >
         &nbsp;
@@ -18,7 +18,7 @@
     </div>
     <div class="arrow-up toolbar-icon">
       <i class="pi pi-arrow-up"
-         :style="(upEnabled) ? 'color:black' : 'color:#EEEEEE'"
+         :style="(upEnabled) ? 'color: var(--color-icon-active)' : 'color: var(--color-icon-inactive)'"
          @click="$emit('arrow-up')"
       >
         &nbsp;
@@ -26,7 +26,7 @@
     </div>
     <div class="maximize toolbar-icon">
       <i :class="(compact) ? 'pi pi-window-maximize' : 'pi pi-window-minimize'"
-         :style="(compactEnabled) ? 'color:black' : 'color:#EEEEEE'"
+         :style="(compactEnabled) ? 'color: var(--color-icon-active)' : 'color: var(--color-icon-inactive)'"
          @click="handleToggleCompact()"
       >
         &nbsp;
@@ -34,7 +34,7 @@
     </div>
     <div class="eye toolbar-icon">
       <i :class="(privacy) ? 'pi pi-eye' : 'pi pi-eye-slash'"
-         :style="(eyeEnabled) ? 'color:black' : 'color:#EEEEEE'"
+         :style="(eyeEnabled) ? 'color: var(--color-icon-active)' : 'color: var(--color-icon-inactive)'"
          @click="handleTogglePrivacy()"
       >
         &nbsp;
@@ -162,7 +162,7 @@ export default {
   padding: 0px;
   margin-bottom: 20px;
   margin-top: 20px;
-  background-color: white;
+  background-color: var(--color-background);
   text-align: center;
   /*position: sticky;*/
   /*top: 0;*/

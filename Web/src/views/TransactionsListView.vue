@@ -232,7 +232,7 @@ export default {
 
 <style scoped>
 .transactions-table {
-  background-color: white;
+  background-color: var(--color-background);
 }
 
 .transactions-date-header {

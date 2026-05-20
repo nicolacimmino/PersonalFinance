@@ -270,7 +270,8 @@ export default {
   float: right;
   margin: 5px;
   padding: 5px;
-  background-color: lightgrey;
+  background-color: var(--color-button-neutral);
+  color: var(--color-text);
   border: 1px;
   border-radius: 5px;
 }
@@ -279,7 +280,8 @@ export default {
   float: right;
   margin: 5px;
   padding: 5px;
-  background-color: lightgreen;
+  background-color: var(--color-button-positive);
+  color: var(--color-text);
   border: 1px;
   border-radius: 5px;
 }

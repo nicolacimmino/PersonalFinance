@@ -164,7 +164,7 @@ export default {
 .container {
   margin: 0px auto;
   padding: 30px;
-  background-color: mintcream;
+  background-color: var(--color-background);
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
@@ -184,7 +184,8 @@ label {
   float: right;
   margin: 5px;
   padding: 5px;
-  background-color: lightgreen;
+  background-color: var(--color-button-positive);
+  color: var(--color-text);
   border: 1px;
   border-radius: 5px;
 }
@@ -193,7 +194,8 @@ label {
   float: right;
   margin: 5px;
   padding: 5px;
-  background-color: lightcoral;
+  background-color: var(--color-button-negative);
+  color: var(--color-text);
   border: 1px;
   border-radius: 5px;
 }
