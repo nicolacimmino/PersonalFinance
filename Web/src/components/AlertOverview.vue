@@ -55,4 +55,8 @@ export default {
   grid-area: message;
   text-align: left;
 }
+
+.alert-message a {
+  color: var(--color-text);
+}
 </style>

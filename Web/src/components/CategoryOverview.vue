@@ -86,7 +86,7 @@ export default {
   grid-template: 'sc-category sc-amount';
   grid-template-columns: 2fr 1fr;
   text-align: left;
-  color: var(--color-secondary-text);
+  color: var(--color-muted-text);
 }
 
 .subcategory-category {
