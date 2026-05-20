@@ -1,17 +1,17 @@
 <template>
   <div class="account-details">
-    <div class="description pf-text-medium">
+    <div class="description pf-text-large">
       {{ account.description }}
       <span
         :class="account.status == 'OK' ? 'pi' : 'pi pi-exclamation-triangle'"
         :style="{ color: 'red' }"
       ></span>
     </div>
-    <div v-if="!refCurrencyActive" class="balance pf-text-medium">
+    <div v-if="!refCurrencyActive" class="balance pf-text-large">
       <span v-if="privacy">---</span>
       <span v-else>{{ formatMoney(account.balanceCents) }} {{ account.currency }}</span>
     </div>
-    <div v-else class="balance pf-text-medium">
+    <div v-else class="balance pf-text-large">
       <span v-if="privacy">---</span>
       <span v-else>{{ formatMoney(account.balanceRefCurrencyCents) }} EUR</span>
     </div>

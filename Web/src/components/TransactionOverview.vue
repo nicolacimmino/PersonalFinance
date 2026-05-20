@@ -1,33 +1,33 @@
 <template>
   <div class="transaction-details">
-    <div v-if="transaction.type === 'TRANSFER'" class="transaction-category pf-text-medium">
+    <div v-if="transaction.type === 'TRANSFER'" class="transaction-category pf-text-large">
       <span :class="(transaction.amountCents < 0) ? 'pi pi-arrow-right' : 'pi pi-arrow-left'"></span>
       &nbsp;
       {{
         (transaction.accountToName) ? transaction.accountToName : "-"
       }}
     </div>
-    <div v-else class="transaction-category pf-text-medium">
+    <div v-else class="transaction-category pf-text-large">
       {{ (transaction.category) ? transaction.category : "-" }}
     </div>
-    <div class="pf-text-medium transaction-amount">
+    <div class="pf-text-large transaction-amount">
       <span v-if="privacy">---&nbsp;{{ transaction.currency }}</span>
       <span v-else>
             {{ formatMoney(transaction.amountCents) }} {{ transaction.currency }}
         </span>
     </div>
-    <div class="transaction-account-name pf-text-small">
+    <div class="transaction-account-name pf-text-medium">
       {{ transaction.accountName }}
     </div>
-    <div class="transaction-amount-in-ref-currency pf-text-small">
+    <div class="transaction-amount-in-ref-currency pf-text-medium">
       <span v-if="!privacy && (transaction.refCurrency !== transaction.currency)">
       {{ formatMoney(transaction.amountCentsInRefCurrency) }} {{ transaction.refCurrency }}
       </span>
     </div>
-    <div class="transaction-creditor pf-text-medium">
+    <div class="transaction-creditor pf-text-large">
       {{ (transaction.creditorName) ? transaction.creditorName : "---" }}
     </div>
-    <div class="transaction-description pf-text-small">
+    <div class="transaction-description pf-text-medium">
       {{ transaction.description }}
     </div>
   </div>

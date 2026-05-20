@@ -1,23 +1,23 @@
 <template>
   <div class="account-details" @click="this.showAccountTransactions(account.id)">
-    <div class="description pf-text-medium">
+    <div class="description pf-text-large">
       {{ account.description }}
     </div>
-    <div class="code pf-text-small">
+    <div class="code pf-text-medium">
       {{ account.code }}
     </div>
-    <div class="balance pf-text-medium">
+    <div class="balance pf-text-large">
       <span v-if="privacy">--- {{ account.currency }}</span>
       <span v-else>{{ formatMoney(account.balanceCents) }} {{ account.currency }}</span>
     </div>
     <div
       v-if="!privacy && account.currency !== 'EUR'"
-      class="balance-in-ref-currency pf-text-small"
+      class="balance-in-ref-currency pf-text-medium"
     >
       {{ formatMoney(account.balanceRefCurrencyCents) }} EUR
     </div>
-    <div class="iban pf-text-small">IBAN: {{ account.iban !== '' ? account.iban : '-' }}</div>
-    <div class="status pf-text-medium">
+    <div class="iban pf-text-medium">IBAN: {{ account.iban !== '' ? account.iban : '-' }}</div>
+    <div class="status pf-text-large">
       Status: {{ account.status }}
       <span
         :class="account.status === 'OK' ? 'pi' : 'pi pi-exclamation-triangle'"
@@ -85,13 +85,13 @@ export default {
 .code {
   grid-area: code;
   text-align: left;
-  color: var(--color-secondary-text);
+  color: var(--color-muted-text);
 }
 
 .balance-in-ref-currency {
   grid-area: balance-ref;
   text-align: right;
-  color: var(--color-secondary-text);
+  color: var(--color-muted-text);
 }
 
 .balance {

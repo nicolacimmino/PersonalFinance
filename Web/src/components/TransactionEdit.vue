@@ -228,13 +228,13 @@ export default {
 .account-name {
   grid-area: account-name;
   text-align: left;
-  color: grey;
+  color: var(--color-muted-text);
 }
 
 .amount-in-ref-currency {
   grid-area: amount-ref;
   text-align: right;
-  color: grey;
+  color: var(--color-muted-text);
 }
 
 .negative-price {
