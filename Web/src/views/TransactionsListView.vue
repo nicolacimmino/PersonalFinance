@@ -3,34 +3,39 @@
     @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
     @changeYear="loadAllTransactions(account_id, category_filter)"
     :eye-enabled="true"
+    :compact-enabled="true"
+    :ref-currency-enabled="compact"
   />
   <div v-if="loading">
     Loading...
   </div>
   <div v-else>
-    <div class="transactions-table">
-      <div v-if="editDialog">
-        <transition name="modal">
-          <TransactionEdit :transaction="transaction"
-                           :accounts="accounts"
+    <!-- Modals (shared between both views) -->
+    <div v-if="editDialog">
+      <transition name="modal">
+        <TransactionEdit :transaction="transaction"
+                         :accounts="accounts"
+                         :categories="categories"
+                         @cancel="editDialog = false; followEditReturn();"
+                         @save="updatedValues => {
+                           onTransactionValuesChange(updatedValues);
+                           followEditReturn();
+                         }">
+        </TransactionEdit>
+      </transition>
+    </div>
+    <div v-if="adding">
+      <transition name="modal">
+        <TransactionCreate :accounts="accounts"
                            :categories="categories"
-                           @cancel="editDialog = false; followEditReturn();"
-                           @save="updatedValues => {
-                             onTransactionValuesChange(updatedValues);
-                             followEditReturn();
-                           }">
-          </TransactionEdit>
-        </transition>
-      </div>
-      <div v-if="adding">
-        <transition name="modal">
-          <TransactionCreate :accounts="accounts"
-                             :categories="categories"
-                             @cancel="this.adding=false;"
-                             @save="(newTransaction) => {onNewTransaction(newTransaction); this.adding=false}">
-          </TransactionCreate>
-        </transition>
-      </div>
+                           @cancel="this.adding=false;"
+                           @save="(newTransaction) => {onNewTransaction(newTransaction); this.adding=false}">
+        </TransactionCreate>
+      </transition>
+    </div>
+
+    <!-- Normal card view -->
+    <div v-if="!compact" class="transactions-table">
       <template v-for="(transactions, bookingDate) in byDate" v-bind:key="bookingDate">
         <div class="transactions-date-header pf-text-large">
           {{ moment(bookingDate).format('DD-MM-YYYY') }}
@@ -45,8 +50,32 @@
           </TransactionOverview>
         </div>
       </template>
-      <div class="add_button pi pi-plus-circle" v-on:click="addTransaction()"></div>
     </div>
+
+    <!-- Compact table view -->
+    <div v-else class="transactions-compact">
+      <div class="compact-header-row">
+        <div>Date</div>
+        <div>Category</div>
+        <div>Beneficiary</div>
+        <div class="compact-amount-header">Amount</div>
+      </div>
+      <div v-for="t in transactions" :key="t.id"
+           class="compact-row"
+           @click="onTransactionClick(t)">
+        <div>{{ moment(t.bookingDate).format('DD-MM') }}</div>
+        <div class="compact-cell-clip">{{ t.type === 'TRANSFER' ? (t.accountToName || '-') : (t.category || '-') }}</div>
+        <div class="compact-cell-clip">{{ t.creditorName || '-' }}</div>
+        <div v-if="!privacy" :class="t.amountCents < 0 ? 'compact-negative' : 'compact-positive'">
+          {{ refCurrency
+            ? (t.amountCentsInRefCurrency / 100.0).toFixed(0) + ' ' + t.refCurrency
+            : (t.amountCents / 100.0).toFixed(0) + ' ' + t.currency }}
+        </div>
+        <div v-else>---</div>
+      </div>
+    </div>
+
+    <div class="add_button pi pi-plus-circle" v-on:click="addTransaction()"></div>
   </div>
   <div id="snackbar" :class="{ show: snackbarVisible }">{{ snackbarMessage }}</div>
 </template>
@@ -58,7 +87,7 @@ import ToolBar from '@/components/ToolBar.vue'
 import moment from 'moment'
 import 'primeicons/primeicons.css'
 import TransactionCreate from '@/components/TransactionCreate.vue'
-import { usePrivacy, useLoading, useSnackbar, useYearFilter, useAccounts, useCategories } from '@/composables'
+import { usePrivacy, useLoading, useSnackbar, useYearFilter, useAccounts, useCategories, useSettings } from '@/composables'
 import { getAccount, getTransactions, getTransaction, updateTransaction, createTransaction } from '@/services/api'
 
 export default {
@@ -82,6 +111,7 @@ export default {
     const { selectedYear } = useYearFilter()
     const { accounts: allAccounts } = useAccounts()
     const { categories: allCategories } = useCategories()
+    const { compact, refCurrency } = useSettings()
 
     return {
       privacy,
@@ -94,7 +124,9 @@ export default {
       showSnackbar,
       selectedYear,
       allAccounts,
-      allCategories
+      allCategories,
+      compact,
+      refCurrency
     }
   },
   computed: {
@@ -245,11 +277,58 @@ export default {
 
 .add_button {
   position: fixed;
-  bottom: 60px;
-  right: 60px;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 40px;
   border-radius: 50%;
   background-color: var(--pf-c-dark-gray);
   color: white;
+}
+
+.transactions-compact {
+  width: 100%;
+  font-size: var(--pf-text-medium-font-size);
+}
+
+.compact-header-row,
+.compact-row {
+  display: grid;
+  grid-template-columns: 3fr 5fr 7fr 4fr;
+  column-gap: 4px;
+  padding: 3px 5px;
+  align-items: center;
+}
+
+.compact-header-row {
+  background-color: var(--color-negative-background);
+  color: var(--color-negative-text);
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+}
+
+.compact-row:nth-child(even) {
+  background-color: var(--color-row-alt);
+}
+
+.compact-cell-clip {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compact-amount-header {
+  text-align: right;
+}
+
+.compact-negative {
+  color: #FF7070;
+  text-align: right;
+}
+
+.compact-positive {
+  color: #90A959;
+  text-align: right;
 }
 </style>

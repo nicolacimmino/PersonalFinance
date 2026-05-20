@@ -49,24 +49,24 @@
       </i>
     </div>
   </div>
-  <div v-if="showMenu" class="navigation">
+  <div v-if="showMenu" class="navigation" @click.self="showMenu = false">
     <div class="navbar">
-      <div>
+      <div @click="showMenu = false">
         <RouterLink class="navigation-link" to="/">Home</RouterLink>
       </div>
-      <div>
+      <div @click="showMenu = false">
         <RouterLink class="navigation-link" to="/transactions">Transactions</RouterLink>
       </div>
-      <div>
+      <div @click="showMenu = false">
         <RouterLink class="navigation-link" to="/category_report">Categories</RouterLink>
       </div>
-      <div>
+      <div @click="showMenu = false">
         <RouterLink class="navigation-link" to="/budgets">Budgets</RouterLink>
       </div>
-      <div>
+      <div @click="showMenu = false">
         <RouterLink class="navigation-link" to="/accounts">Accounts</RouterLink>
       </div>
-      <div>
+      <div @click="showMenu = false">
         <RouterLink class="navigation-link" to="/indicators">Indicators</RouterLink>
       </div>
       <hr>
