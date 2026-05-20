@@ -42,7 +42,7 @@
       </div>
       <div class="indicator-derived-entry">
         <div class="indicator-description">
-          Cash/ESS (months)
+          CASH/ESS (months)
         </div>
         <div v-if="!privacy" class="indicator-value">
           {{ Math.floor(valueOfIndicator('CASH') / ESS_MONTHLY_COST_CENTS) }}
@@ -53,10 +53,10 @@
       </div>
       <div class="indicator-derived-entry">
         <div class="indicator-description">
-          INPS/ESS (months)
+          IP12/ESS (months)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ Math.floor(valueOfIndicator('INPS') / ESS_MONTHLY_COST_CENTS) }}
+          {{ Math.floor(valueOfIndicator('IP12') / ESS_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">
           ---
@@ -64,10 +64,10 @@
       </div>
       <div class="indicator-derived-entry">
         <div class="indicator-description">
-          INPS/ESS+DST (months)
+          IP12/ESS+DST (months)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ Math.floor(valueOfIndicator('INPS') / TOTAL_MONTHLY_COST_CENTS) }}
+          {{ Math.floor(valueOfIndicator('IP12') / TOTAL_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">
           ---
@@ -75,10 +75,32 @@
       </div>
       <div class="indicator-derived-entry">
         <div class="indicator-description">
-          INVT 6%/ESS+DST
+          INVT 3%/ESS+DST
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ Math.floor((INVESTMENT_RETURN_RATE * valueOfIndicator('INVT')) / TOTAL_MONTHLY_COST_CENTS) }}
+          {{ Math.floor((0.03 * valueOfIndicator('INVT')) / TOTAL_MONTHLY_COST_CENTS) }}
+        </div>
+        <div v-else class="indicator-value">
+          ---
+        </div>
+      </div>
+      <div class="indicator-derived-entry">
+        <div class="indicator-description">
+          INVT 4%/ESS+DST
+        </div>
+        <div v-if="!privacy" class="indicator-value">
+          {{ Math.floor((0.04 * valueOfIndicator('INVT')) / TOTAL_MONTHLY_COST_CENTS) }}
+        </div>
+        <div v-else class="indicator-value">
+          ---
+        </div>
+      </div>
+      <div class="indicator-derived-entry">
+        <div class="indicator-description">
+          INVT 5%/ESS+DST
+        </div>
+        <div v-if="!privacy" class="indicator-value">
+          {{ Math.floor((0.05 * valueOfIndicator('INVT')) / TOTAL_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">
           ---
@@ -167,6 +189,10 @@ export default {
           return "Income Active"
         case 'INPS':
           return "Income Passive"
+        case 'IP12':
+          return "Income Passive Last 12 Months"
+        case 'IA12':
+          return "Income Active Last 12 Months"
         default:
           if (type.substring(0, 1) == "C") {
             return type.substring(1, 4) + " in EUR"
