@@ -28,13 +28,16 @@
     --color-button-negative: lightcoral;
     --color-button-neutral: lightgrey;
     --color-row-alt: rgba(0, 0, 0, 0.05);
+    --color-muted-text: grey;
 }
 
 @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not(.theme-light) {
         --color-background: var(--pf-c-dark-gray);
         --color-second-background: var(--pf-c-dark-gray-2);
         --color-text: var(--pf-c-white);
+        --color-negative-background: var(--pf-c-white);
+        --color-negative-text: var(--pf-c-black);
         --color-input-background: var(--pf-c-dark-gray-2);
         --color-input-text: var(--pf-c-white);
         --color-input-border: #556;
@@ -44,7 +47,26 @@
         --color-button-negative: #7a2b2b;
         --color-button-neutral: #505050;
         --color-row-alt: rgba(255, 255, 255, 0.07);
+        --color-muted-text: #dddddd;
     }
+}
+
+:root.theme-dark {
+    --color-background: var(--pf-c-dark-gray);
+    --color-second-background: var(--pf-c-dark-gray-2);
+    --color-text: var(--pf-c-white);
+    --color-negative-background: var(--pf-c-white);
+    --color-negative-text: var(--pf-c-black);
+    --color-input-background: var(--pf-c-dark-gray-2);
+    --color-input-text: var(--pf-c-white);
+    --color-input-border: #556;
+    --color-icon-active: var(--pf-c-white);
+    --color-icon-inactive: rgba(255, 255, 255, 0.15);
+    --color-button-positive: #2d6a30;
+    --color-button-negative: #7a2b2b;
+    --color-button-neutral: #505050;
+    --color-row-alt: rgba(255, 255, 255, 0.07);
+    --color-muted-text: #dddddd;
 }
 
 input, select, textarea {

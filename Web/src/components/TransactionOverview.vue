@@ -52,7 +52,7 @@ export default {
     'description description description description';
   padding: 5px;
   margin-bottom: 2px;
-  background-color: var(--color-second-background);
+  background-color: var(--color-background);
 }
 
 .transaction-description {
@@ -67,13 +67,13 @@ export default {
   grid-area: account-name;
   text-align: left;
   overflow: clip;
-  color: grey;
+  color: var(--color-muted-text);
 }
 
 .transaction-amount-in-ref-currency {
   grid-area: amount-ref;
   text-align: right;
-  color: grey;
+  color: var(--color-muted-text);
 }
 
 .transaction-amount {

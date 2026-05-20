@@ -43,6 +43,11 @@ export const config = {
    * LocalStorage key for selected year filter
    */
   yearStorageKey: 'year',
+
+  /**
+   * LocalStorage key for manual theme override ('light' | 'dark')
+   */
+  themeStorageKey: 'theme',
 } as const;
 
 /**

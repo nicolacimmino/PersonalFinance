@@ -40,6 +40,14 @@
         &nbsp;
       </i>
     </div>
+    <div class="theme toolbar-icon">
+      <i :class="isDark ? 'pi pi-sun' : 'pi pi-moon'"
+         style="color: var(--color-icon-active)"
+         @click="toggleTheme()"
+      >
+        &nbsp;
+      </i>
+    </div>
   </div>
   <div v-if="showMenu" class="navigation">
     <div class="navbar">
@@ -95,9 +103,11 @@ export default {
       compact: settings.compact,
       refCurrency: settings.refCurrency,
       year: settings.year,
+      isDark: settings.isDark,
       togglePrivacy: settings.togglePrivacy,
       toggleCompact: settings.toggleCompact,
       toggleRefCurrency: settings.toggleRefCurrency,
+      toggleTheme: settings.toggleTheme,
       setYear: settings.setYear
     }
   },
@@ -157,8 +167,8 @@ export default {
 <style scoped>
 .toolbar-container {
   display: grid;
-  grid-template: "menu-bar ref-currency arrow-up maximize eye";
-  grid-template-columns: [ref-currency] 1fr [arrow-up] 1fr [maximize] 1fr [eye] 1fr;
+  grid-template: "menu-bar ref-currency arrow-up maximize eye theme";
+  grid-template-columns: [ref-currency] 1fr [arrow-up] 1fr [maximize] 1fr [eye] 1fr [theme] 1fr;
   padding: 0px;
   margin-bottom: 20px;
   margin-top: 20px;
@@ -190,6 +200,10 @@ export default {
 
 .eye {
   grid-area: eye;
+}
+
+.theme {
+  grid-area: theme;
 }
 
 .navigation {
