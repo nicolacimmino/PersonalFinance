@@ -20,7 +20,7 @@
 
         </div>
       </div>
-      <template v-for="indicator in indicators" v-bind:key="indicator.label">
+      <template v-for="indicator in orderedIndicators" v-bind:key="indicator.label">
         <div class="indicator-entry">
           <div class="indicator-label">
             {{ indicator.label }}
@@ -73,39 +73,63 @@
           ---
         </div>
       </div>
-      <div class="indicator-derived-entry">
+
+      <div class="indicator-derived-entry" :class="fiClass(invtMonths(0.03, 1.2 * ESS_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          INVT 3%/ESS+DST
+          INVT 3%/ESS+20%
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ Math.floor((0.03 * valueOfIndicator('INVT')) / TOTAL_MONTHLY_COST_CENTS) }}
+          {{ invtMonths(0.03, 1.2 * ESS_MONTHLY_COST_CENTS) }}
         </div>
-        <div v-else class="indicator-value">
-          ---
-        </div>
+        <div v-else class="indicator-value">---</div>
       </div>
-      <div class="indicator-derived-entry">
+      <div class="indicator-derived-entry" :class="fiClass(invtMonths(0.04, 1.2 * ESS_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          INVT 4%/ESS+DST
+          INVT 4%/ESS+20%
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ Math.floor((0.04 * valueOfIndicator('INVT')) / TOTAL_MONTHLY_COST_CENTS) }}
+          {{ invtMonths(0.04, 1.2 * ESS_MONTHLY_COST_CENTS) }}
         </div>
-        <div v-else class="indicator-value">
-          ---
-        </div>
+        <div v-else class="indicator-value">---</div>
       </div>
-      <div class="indicator-derived-entry">
+      <div class="indicator-derived-entry" :class="fiClass(invtMonths(0.05, 1.2 * ESS_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          INVT 5%/ESS+DST
+          INVT 5%/ESS+20%
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ Math.floor((0.05 * valueOfIndicator('INVT')) / TOTAL_MONTHLY_COST_CENTS) }}
+          {{ invtMonths(0.05, 1.2 * ESS_MONTHLY_COST_CENTS) }}
         </div>
-        <div v-else class="indicator-value">
-          ---
-        </div>
+        <div v-else class="indicator-value">---</div>
       </div>
+
+      <div class="indicator-derived-entry" :class="fiClass(invtMonths(0.03, 1.2 * TOTAL_MONTHLY_COST_CENTS))">
+        <div class="indicator-description">
+          INVT 3%/ESS+DST+20%
+        </div>
+        <div v-if="!privacy" class="indicator-value">
+          {{ invtMonths(0.03, 1.2 * TOTAL_MONTHLY_COST_CENTS) }}
+        </div>
+        <div v-else class="indicator-value">---</div>
+      </div>
+      <div class="indicator-derived-entry" :class="fiClass(invtMonths(0.04, 1.2 * TOTAL_MONTHLY_COST_CENTS))">
+        <div class="indicator-description">
+          INVT 4%/ESS+DST+20%
+        </div>
+        <div v-if="!privacy" class="indicator-value">
+          {{ invtMonths(0.04, 1.2 * TOTAL_MONTHLY_COST_CENTS) }}
+        </div>
+        <div v-else class="indicator-value">---</div>
+      </div>
+      <div class="indicator-derived-entry" :class="fiClass(invtMonths(0.05, 1.2 * TOTAL_MONTHLY_COST_CENTS))">
+        <div class="indicator-description">
+          INVT 5%/ESS+DST+20%
+        </div>
+        <div v-if="!privacy" class="indicator-value">
+          {{ invtMonths(0.05, 1.2 * TOTAL_MONTHLY_COST_CENTS) }}
+        </div>
+        <div v-else class="indicator-value">---</div>
+      </div>
+
       <div class="indicator-derived-entry">
         <div class="indicator-description">
           Cash (% of TWO)
@@ -137,7 +161,7 @@
 
 <script lang="ts">
 import ToolBar from "@/components/ToolBar.vue";
-import { ESS_MONTHLY_COST_CENTS, TOTAL_MONTHLY_COST_CENTS, INVESTMENT_RETURN_RATE } from "@/constants";
+import { ESS_MONTHLY_COST_CENTS, TOTAL_MONTHLY_COST_CENTS, INVESTMENT_RETURN_RATE, INDICATOR_ORDER } from "@/constants";
 import { useIndicators, useYearFilter, useSettings } from '@/composables';
 import { toRef } from 'vue';
 
@@ -154,6 +178,16 @@ export default {
   computed: {
     loaded() {
       return !this.isLoading;
+    },
+    orderedIndicators() {
+      const indexed = Object.fromEntries(
+        INDICATOR_ORDER.map((label, i) => [label, i])
+      );
+      return [...this.indicators].sort((a, b) => {
+        const ai = indexed[a.label] ?? Infinity;
+        const bi = indexed[b.label] ?? Infinity;
+        return ai - bi;
+      });
     }
   },
   data() {
@@ -170,6 +204,12 @@ export default {
     },
     valueOfIndicator(label: string) {
       return this.getIndicatorValue(label);
+    },
+    invtMonths(rate: number, monthlyBaseCents: number): number {
+      return Math.floor((rate * this.valueOfIndicator('INVT')) / monthlyBaseCents);
+    },
+    fiClass(value: number): string {
+      return (!this.privacy && value >= 12) ? 'indicator-fi-achieved' : '';
     },
     labelToDescription(type: string) {
       switch (type.substring(0, 4)) {
@@ -261,5 +301,9 @@ export default {
 
 .indicator-derived-entry:nth-child(even) {
   background-color: var(--color-row-alt);
+}
+
+.indicator-fi-achieved {
+  color: #90A959;
 }
 </style>

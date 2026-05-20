@@ -32,3 +32,21 @@ export const INVESTMENT_RETURN_RATE = 0.06; // 6% annual return
  * Conversion factor from cents to currency units
  */
 export const CENTS_TO_CURRENCY = 100.0;
+
+/**
+ * Display order for the indicators table.
+ * Indicators are shown in this order; any label not listed appears at the end.
+ * Edit this array to control the order without touching view logic.
+ */
+export const INDICATOR_ORDER: string[] = [
+  'TONW',
+  'CASH',
+  'INVT',
+  'EXPE',
+  'IP12',
+  'IA12',
+  'INPS',
+  'INAT',
+  'CFAT',
+  'CFOA'
+]
