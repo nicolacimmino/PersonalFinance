@@ -9,10 +9,10 @@
           ---&nbsp;{{ entry.currency }}
         </div>
         <div v-else-if="entry.type === 'EXPENSE'">
-          {{ Math.floor(-(entry.totalCents / 100.0)) }}&nbsp;{{ entry.currency }}
+          {{ formatMoney(-entry.totalCents) }}&nbsp;{{ entry.currency }}
         </div>
         <div v-else>
-          {{ Math.floor(entry.totalCents / 100.0) }}&nbsp;{{ entry.currency }}
+          {{ formatMoney(entry.totalCents) }}&nbsp;{{ entry.currency }}
         </div>
       </div>
     </div>
@@ -22,10 +22,10 @@
 
           <div class="subcategory-category">{{ category.category }}</div>
           <div v-if="entry.type === 'EXPENSE'" class="subcategory-amount">
-            {{ Math.floor(-(category.totalCents / 100.0)) }}&nbsp;{{ category.currency }}
+            {{ formatMoney(-category.totalCents) }}&nbsp;{{ category.currency }}
           </div>
           <div v-else class="subcategory-amount">
-            {{ Math.floor((category.totalCents / 100.0)) }}&nbsp;{{ category.currency }}
+            {{ formatMoney(category.totalCents) }}&nbsp;{{ category.currency }}
           </div>
 
         </div>
@@ -36,12 +36,14 @@
 
 <script>
 import 'primeicons/primeicons.css'
+import { formatMoney } from '@/utils/format'
 
 export default {
   props: {
     entry: Object,
     privacy: Boolean
-  }
+  },
+  methods: { formatMoney }
 };
 </script>
 

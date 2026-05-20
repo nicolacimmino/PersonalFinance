@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <ToolBar
     @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
     @changeYear="loadAllTransactions(account_id, category_filter)"
@@ -68,8 +68,8 @@
         <div class="compact-cell-clip">{{ t.creditorName || '-' }}</div>
         <div v-if="!privacy" :class="t.amountCents < 0 ? 'compact-negative' : 'compact-positive'">
           {{ refCurrency
-            ? (t.amountCentsInRefCurrency / 100.0).toFixed(0) + ' ' + t.refCurrency
-            : (t.amountCents / 100.0).toFixed(0) + ' ' + t.currency }}
+            ? formatMoney(t.amountCentsInRefCurrency) + ' ' + t.refCurrency
+            : formatMoney(t.amountCents) + ' ' + t.currency }}
         </div>
         <div v-else>---</div>
       </div>
@@ -88,6 +88,7 @@ import moment from 'moment'
 import 'primeicons/primeicons.css'
 import TransactionCreate from '@/components/TransactionCreate.vue'
 import { usePrivacy, useLoading, useSnackbar, useYearFilter, useAccounts, useCategories, useSettings } from '@/composables'
+import { formatMoney } from '@/utils/format'
 import { getAccount, getTransactions, getTransaction, updateTransaction, createTransaction } from '@/services/api'
 
 export default {
@@ -126,7 +127,8 @@ export default {
       allAccounts,
       allCategories,
       compact,
-      refCurrency
+      refCurrency,
+      formatMoney
     }
   },
   computed: {

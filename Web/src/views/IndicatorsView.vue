@@ -29,7 +29,7 @@
             {{ labelToDescription(indicator.label) }}
           </div>
           <div v-if="!privacy" class="indicator-value">
-            {{ Math.floor(indicator.totalCents / 100.0) }}
+            {{ formatMoney(indicator.totalCents) }}
           </div>
           <div v-else class="indicator-value">
             ---
@@ -45,7 +45,7 @@
           CASH/ESS (months)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ Math.floor(valueOfIndicator('CASH') / ESS_MONTHLY_COST_CENTS) }}
+          {{ formatCount(valueOfIndicator('CASH') / ESS_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">
           ---
@@ -56,7 +56,7 @@
           IP12/ESS (months)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ Math.floor(valueOfIndicator('IP12') / ESS_MONTHLY_COST_CENTS) }}
+          {{ formatCount(valueOfIndicator('IP12') / ESS_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">
           ---
@@ -67,7 +67,7 @@
           IP12/ESS+DST (months)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ Math.floor(valueOfIndicator('IP12') / TOTAL_MONTHLY_COST_CENTS) }}
+          {{ formatCount(valueOfIndicator('IP12') / TOTAL_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">
           ---
@@ -162,6 +162,7 @@
 <script lang="ts">
 import ToolBar from "@/components/ToolBar.vue";
 import { ESS_MONTHLY_COST_CENTS, TOTAL_MONTHLY_COST_CENTS, INVESTMENT_RETURN_RATE, INDICATOR_ORDER } from "@/constants";
+import { formatMoney, formatCount } from '@/utils/format'
 import { useIndicators, useYearFilter, useSettings } from '@/composables';
 import { toRef } from 'vue';
 
@@ -205,6 +206,8 @@ export default {
     valueOfIndicator(label: string) {
       return this.getIndicatorValue(label);
     },
+    formatMoney,
+    formatCount,
     invtMonths(rate: number, monthlyBaseCents: number): number {
       return Math.floor((rate * this.valueOfIndicator('INVT')) / monthlyBaseCents);
     },

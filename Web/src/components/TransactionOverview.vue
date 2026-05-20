@@ -13,7 +13,7 @@
     <div class="pf-text-medium transaction-amount">
       <span v-if="privacy">---&nbsp;{{ transaction.currency }}</span>
       <span v-else>
-            {{ transaction.amountCents / 100.0 }} {{ transaction.currency }}
+            {{ formatMoney(transaction.amountCents) }} {{ transaction.currency }}
         </span>
     </div>
     <div class="transaction-account-name pf-text-small">
@@ -21,7 +21,7 @@
     </div>
     <div class="transaction-amount-in-ref-currency pf-text-small">
       <span v-if="!privacy && (transaction.refCurrency !== transaction.currency)">
-      {{ transaction.amountCentsInRefCurrency / 100.0 }} {{ transaction.refCurrency }}
+      {{ formatMoney(transaction.amountCentsInRefCurrency) }} {{ transaction.refCurrency }}
       </span>
     </div>
     <div class="transaction-creditor pf-text-medium">
@@ -34,11 +34,14 @@
 </template>
 
 <script lang="ts">
+import { formatMoney } from '@/utils/format';
+
 export default {
   props: {
     transaction: Object,
     privacy: Boolean
-  }
+  },
+  methods: { formatMoney }
 }
 </script>
 

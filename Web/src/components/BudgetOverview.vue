@@ -25,7 +25,7 @@
           Size
         </div>
         <div class="budget-data-value">
-          {{ Math.floor(Math.abs(budget.amountCents / 100.0)) }} {{ budget.currency }}
+          {{ formatMoney(Math.abs(budget.amountCents)) }} {{ budget.currency }}
         </div>
       </div>
       <div class="budget-data" v-if="!privacy">
@@ -33,7 +33,7 @@
           Spent
         </div>
         <div class="budget-data-value">
-          {{ Math.floor(Math.abs(budget.spentCents / 100.0)) }} {{ budget.currency }}
+          {{ formatMoney(Math.abs(budget.spentCents)) }} {{ budget.currency }}
         </div>
       </div>
       <div class="budget-data">
@@ -71,6 +71,7 @@ import 'primeicons/primeicons.css'
 import moment from "moment";
 import {Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale} from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { formatMoney } from '@/utils/format'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels)
 
@@ -83,6 +84,7 @@ export default {
     privacy: Boolean
   },
   methods: {
+    formatMoney,
     chartOptions() {
       return {
         animation: {

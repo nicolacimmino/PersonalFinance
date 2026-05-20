@@ -7,7 +7,7 @@
             {{ transaction.creditorName }}
           </div>
           <div :class="(transaction.amountCents < 0) ? 'negative-price' : 'non-negative-price'">
-            {{ transaction.amountCents / 100.0 }} {{ transaction.currency }}
+            {{ formatMoney(transaction.amountCents) }} {{ transaction.currency }}
           </div>
           <!--          Edit category or destination account-->
           <div v-if="!this.isTransfer">
@@ -41,7 +41,7 @@
             {{ transaction.accountName }}
           </div>
           <div class="amount-in-ref-currency pf-text-medium">
-            {{ transaction.amountCents_in_refCurrency / 100.0 }} {{ transaction.refCurrency }}
+            {{ formatMoney(transaction.amountCents_in_refCurrency) }} {{ transaction.refCurrency }}
           </div>
           <div class="booking-date pf-text-medium">
             {{ moment(transaction.bookingDate).format('DD-MM-YYYY') }}
@@ -93,6 +93,7 @@
 <script>
 import moment from 'moment/moment.js'
 import { VueToggles } from 'vue-toggles'
+import { formatMoney } from '@/utils/format'
 
 export default {
   mounted() {
@@ -122,6 +123,7 @@ export default {
   },
   methods: {
     moment: moment,
+    formatMoney,
     saveEnabled() {
       if (this.selectedCategory !== this.transaction.category) {
         return true

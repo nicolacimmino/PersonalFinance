@@ -16,7 +16,7 @@
             {{ typeToTypeDescription(type) }} ({{ accounts.length }})
           </div>
           <div v-if="!privacy" class="account-group-balance">
-            {{ Math.floor(totalEurCentsForType(type) / 100.0) }} EUR
+            {{ formatMoney(totalEurCentsForType(type)) }} EUR
           </div>
           <div v-else class="account-group-balance">---</div>
         </div>
@@ -48,6 +48,7 @@ import AccountOverview from '@/components/AccountOverview.vue'
 import CompactAccountOverview from '@/components/AccountOverviewCompact.vue'
 import ToolBar from '@/components/ToolBar.vue'
 import { useAccounts, useSettings } from '@/composables'
+import { formatMoney } from '@/utils/format'
 
 export default {
   components: {
@@ -75,6 +76,7 @@ export default {
     }
   },
   methods: {
+    formatMoney,
     onPrivacyChange(value) {
       this.setPrivacy(value)
     },

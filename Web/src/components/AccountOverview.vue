@@ -8,13 +8,13 @@
     </div>
     <div class="balance pf-text-medium">
       <span v-if="privacy">--- {{ account.currency }}</span>
-      <span v-else>{{ account.balanceCents / 100.0 }} {{ account.currency }}</span>
+      <span v-else>{{ formatMoney(account.balanceCents) }} {{ account.currency }}</span>
     </div>
     <div
       v-if="!privacy && account.currency !== 'EUR'"
       class="balance-in-ref-currency pf-text-small"
     >
-      {{ account.balanceRefCurrencyCents / 100.0 }} EUR
+      {{ formatMoney(account.balanceRefCurrencyCents) }} EUR
     </div>
     <div class="iban pf-text-small">IBAN: {{ account.iban !== '' ? account.iban : '-' }}</div>
     <div class="status pf-text-medium">
@@ -30,6 +30,7 @@
 
 <script>
 import 'primeicons/primeicons.css'
+import { formatMoney } from '@/utils/format'
 
 export default {
   props: {
@@ -43,6 +44,7 @@ export default {
     }
   },
   methods: {
+    formatMoney,
     showAccountTransactions(account_id) {
       this.$router.push({
         path: '/transactions',

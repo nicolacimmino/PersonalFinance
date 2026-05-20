@@ -9,17 +9,18 @@
     </div>
     <div v-if="!refCurrencyActive" class="balance pf-text-medium">
       <span v-if="privacy">---</span>
-      <span v-else>{{ account.balanceCents / 100.0 }} {{ account.currency }}</span>
+      <span v-else>{{ formatMoney(account.balanceCents) }} {{ account.currency }}</span>
     </div>
     <div v-else class="balance pf-text-medium">
       <span v-if="privacy">---</span>
-      <span v-else>{{ account.balanceRefCurrencyCents / 100.0 }} EUR</span>
+      <span v-else>{{ formatMoney(account.balanceRefCurrencyCents) }} EUR</span>
     </div>
   </div>
 </template>
 
 <script>
 import 'primeicons/primeicons.css'
+import { formatMoney } from '@/utils/format'
 
 export default {
   props: {
@@ -33,6 +34,7 @@ export default {
     }
   },
   methods: {
+    formatMoney,
     showAccountTransactions(account_id) {
       this.$router.push({
         path: '/transactions',
