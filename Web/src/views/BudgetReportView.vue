@@ -3,33 +3,18 @@
       @privacy="(newPrivacy) => onPrivacyChange(newPrivacy)"
       :eye-enabled="true"
   />
-  <div class="pf-tabs">
-    <div class="pf-tab" :class="(this.type==='ACTIVE') ? 'pf-tab-selected' : 'pf-tab-inactive'"
-         @click="this.$router.push({ path: '/budgets', query: {type:'ACTIVE'}})"
-    >
-      <p class=" pf-text-large">Active</p>
-    </div>
-    <div class="pf-tab" :class="(this.type==='PAST') ? 'pf-tab-selected' : 'pf-tab-inactive'"
-         @click="this.$router.push({ path: '/budgets', query: {type:'PAST'}})"
-    >
-      <p class=" pf-text-large">Past</p>
-    </div>
-  </div>
   <div class="budgets-table">
     <div v-if="!loaded">
       Loading...
     </div>
     <div v-else>
-      <div v-if="this.type==='ACTIVE'">
-        <template v-for="budget in activeBudgets" v-bind:key="budget.id">
-          <BudgetOverview :budget=budget :privacy=privacy></BudgetOverview>
-        </template>
-      </div>
-      <div v-else>
-        <template v-for="budget in pastBudgets" v-bind:key="budget.id">
-          <BudgetOverview :budget=budget :privacy=privacy></BudgetOverview>
-        </template>
-      </div>
+      <template v-for="budget in activeBudgets" v-bind:key="budget.id">
+        <BudgetOverview :budget=budget :privacy=privacy></BudgetOverview>
+      </template>
+      <div class="past-header pf-text-large">Past</div>
+      <template v-for="budget in pastBudgets" v-bind:key="budget.id">
+        <BudgetOverview :budget=budget :privacy=privacy></BudgetOverview>
+      </template>
     </div>
   </div>
 </template>
@@ -44,12 +29,6 @@ export default {
   components: {
     ToolBar,
     BudgetOverview,
-  },
-  props: {
-    type: {
-      type: String,
-      default: "ACTIVE"
-    }
   },
   setup() {
     const { budgets, isLoading } = useBudgets()
@@ -84,5 +63,13 @@ export default {
 .budgets-table {
   padding: 5px;
   background-color: var(--color-background);
+}
+
+.past-header {
+  background-color: var(--color-negative-background);
+  color: var(--color-negative-text);
+  padding: 4px 5px;
+  margin-top: 15px;
+  margin-bottom: 5px;
 }
 </style>

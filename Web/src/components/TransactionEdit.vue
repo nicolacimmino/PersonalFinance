@@ -3,8 +3,11 @@
     <div class="mask">
       <div class="wrapper">
         <div class="container">
-          <div class="creditor pf-text-large">
-            {{ transaction.creditorName }}
+          <div v-if="editCreditorName" class="creditor pf-text-large">
+            <input v-model="editedCreditorName" @blur="editCreditorName = false" />
+          </div>
+          <div v-else class="creditor pf-text-large" @click="editCreditorName = true">
+            {{ editedCreditorName || '---' }}
           </div>
           <div :class="(transaction.amountCents < 0) ? 'negative-price' : 'non-negative-price'">
             {{ formatMoney(transaction.amountCents) }} {{ transaction.currency }}
@@ -79,6 +82,7 @@
                       accountTo: (selectedDestinationAccount && isTransfer) ? selectedDestinationAccount.id : null,
                       isTransfer: isTransfer,
                       description: editedDescription,
+                      creditorName: editedCreditorName,
                        })"
                     :disabled="!saveEnabled()">
               Save
@@ -101,6 +105,7 @@ export default {
     this.selectedDestinationAccount = this.accounts.find((account) => account.id === this.transaction.accountTo)
     this.isTransfer = this.transaction.type === 'TRANSFER'
     this.editedDescription = this.transaction.description
+    this.editedCreditorName = this.transaction.creditorName
   },
   props: {
     transaction: undefined,
@@ -115,7 +120,9 @@ export default {
       selectedDestinationAccount: Object,
       editDestinationAccount: false,
       editDescription: false,
-      editedDescription: String
+      editedDescription: String,
+      editCreditorName: false,
+      editedCreditorName: String
     }
   },
   components: {
@@ -130,6 +137,10 @@ export default {
       }
 
       if (this.editedDescription !== this.transaction.description) {
+        return true
+      }
+
+      if (this.editedCreditorName !== this.transaction.creditorName) {
         return true
       }
 

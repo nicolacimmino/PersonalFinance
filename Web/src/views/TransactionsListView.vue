@@ -232,7 +232,8 @@ export default {
         updatedValues.category,
         type,
         updatedValues.description,
-        updatedValues.accountTo
+        updatedValues.accountTo,
+        updatedValues.creditorName
       )
       // Update in local list
       const index = this.transactions.findIndex(t => t.id === this.transaction.id)

@@ -72,6 +72,7 @@ import moment from "moment";
 import {Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale} from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { formatMoney } from '@/utils/format'
+import { useSettings } from '@/composables/useSettings'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels)
 
@@ -83,6 +84,10 @@ export default {
     budget: Object,
     privacy: Boolean
   },
+  setup() {
+    const { isDark } = useSettings()
+    return { isDark }
+  },
   methods: {
     formatMoney,
     chartOptions() {
@@ -90,7 +95,8 @@ export default {
         animation: {
           duration: 0
         },
-        responsive: false,
+        responsive: true,
+        maintainAspectRatio: false,
         font: {
           size: 15
         },
@@ -121,9 +127,13 @@ export default {
           x: {
             stacked: false,
             display: !this.privacy,
+            ticks: { color: this.isDark ? '#ffffff' : '#333333' },
+            grid: { color: this.isDark ? '#ffffff44' : '#33333322' }
           },
           y: {
-            stacked: true
+            stacked: true,
+            ticks: { color: this.isDark ? '#ffffff' : '#333333' },
+            grid: { color: this.isDark ? '#ffffff44' : '#33333322' }
           }
         },
         indexAxis: 'y',
@@ -194,34 +204,34 @@ export default {
 }
 
 .budget-graph-spent-container {
-  text-align: center;
+  width: 100%;
 }
 
 .budget-graph-spent {
   grid-area: budget_graph_spent;
-  display: inline-block;
+  display: block;
   width: 100%;
+  height: 160px;
 }
 
 .budget-data {
   display: grid;
   grid-template: 'label value';
-  margin-bottom: 15px;
-  row-gap: 5px;
+  margin-bottom: 3px;
   background-color: var(--color-background)
 }
 
 .budget-data-label {
   grid-area: label;
   text-align: left;
-  font-size: var(--pf-text-medium-font-size);
+  font-size: var(--pf-text-large-font-size);
   color: var(--color-text);
 }
 
 .budget-data-value {
   grid-area: value;
   text-align: right;
-  font-size: var(--pf-text-medium-font-size);
+  font-size: var(--pf-text-large-font-size);
   color: var(--color-text);
 }
 

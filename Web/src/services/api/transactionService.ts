@@ -48,7 +48,8 @@ export async function updateTransaction(
   category: string,
   type: string,
   description: string,
-  accountTo: number
+  accountTo: number,
+  creditorName: string
 ): Promise<Transaction> {
   return await httpClient.patch<Transaction>(
     `/api/v2/transactions/${id}`,
@@ -60,7 +61,8 @@ export async function updateTransaction(
         type,
         category,
         description,
-        accountTo
+        accountTo,
+        creditorName
       }).filter(([, value]) => value !== undefined)
     )
   )
