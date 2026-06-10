@@ -43,8 +43,8 @@
           <div class="account-name pf-text-medium">
             {{ transaction.accountName }}
           </div>
-          <div class="amount-in-ref-currency pf-text-medium">
-            {{ formatMoney(transaction.amountCents_in_refCurrency) }} {{ transaction.refCurrency }}
+          <div v-if="transaction.refCurrency && transaction.refCurrency !== transaction.currency" class="amount-in-ref-currency pf-text-medium">
+            {{ formatMoney(transaction.amountCentsInRefCurrency) }} {{ transaction.refCurrency }}
           </div>
           <div class="booking-date pf-text-medium">
             {{ moment(transaction.bookingDate).format('DD-MM-YYYY') }}
@@ -253,14 +253,14 @@ export default {
   text-align: right;
   vertical-align: bottom;
   font-weight: bold;
-  color: #A63D40;
+  color: var(--color-amount-negative);
 }
 
 .non-negative-price {
   grid-area: amount;
   text-align: right;
   font-weight: bold;
-  color: #90A959;
+  color: var(--color-amount-positive);
 }
 
 .category {

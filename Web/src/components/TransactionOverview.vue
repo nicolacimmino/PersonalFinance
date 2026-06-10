@@ -10,7 +10,7 @@
     <div v-else class="transaction-category pf-text-large">
       {{ (transaction.category) ? transaction.category : "-" }}
     </div>
-    <div class="pf-text-large transaction-amount">
+    <div :class="['pf-text-large', 'transaction-amount', transaction.amountCents < 0 ? 'amount-negative' : 'amount-positive']">
       <span v-if="privacy">---&nbsp;{{ transaction.currency }}</span>
       <span v-else>
             {{ formatMoney(transaction.amountCents) }} {{ transaction.currency }}
@@ -84,6 +84,14 @@ export default {
   text-align: right;
   vertical-align: bottom;
   font-weight: bold;
+}
+
+.amount-negative {
+  color: var(--color-amount-negative);
+}
+
+.amount-positive {
+  color: var(--color-amount-positive);
 }
 
 .transaction-category {

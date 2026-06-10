@@ -28,11 +28,11 @@
       </template>
 
       <div class="indicator-header">
-        Derived Indicators
+        Derived Indicators (Months)
       </div>
       <div class="indicator-derived-entry">
         <div class="indicator-description">
-          CASH/ESS (Months)
+          CASH/ESS
         </div>
         <div v-if="!privacy" class="indicator-value">
           {{ (valueOfIndicator('CASH') / ESS_MONTHLY_COST_CENTS).toFixed(2) }}
@@ -42,9 +42,21 @@
         </div>
       </div>
 
+      <div class="indicator-derived-entry">
+        <div class="indicator-description">
+          CASH/ESS+DST
+        </div>
+        <div v-if="!privacy" class="indicator-value">
+          {{ (valueOfIndicator('CASH') / (ESS_MONTHLY_COST_CENTS + DST_MONTHLY_COST_CENTS())).toFixed(2) }}
+        </div>
+        <div v-else class="indicator-value">
+          ---
+        </div>
+      </div>
+
       <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.03, 1.2 * ESS_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          TONW 3%/ESS+20% (Months)
+          TONW 3%/ESS+20%
         </div>
         <div v-if="!privacy" class="indicator-value">
           {{ tonwMonths(0.03, 1.2 * ESS_MONTHLY_COST_CENTS).toFixed(2) }}
@@ -53,7 +65,7 @@
       </div>
       <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.04, 1.2 * ESS_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          TONW 4%/ESS+20% (Months)
+          TONW 4%/ESS+20%
         </div>
         <div v-if="!privacy" class="indicator-value">
           {{ tonwMonths(0.04, 1.2 * ESS_MONTHLY_COST_CENTS).toFixed(2) }}
@@ -62,7 +74,7 @@
       </div>
       <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.05, 1.2 * ESS_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          TONW 5%/ESS+20% (Months)
+          TONW 5%/ESS+20%
         </div>
         <div v-if="!privacy" class="indicator-value">
           {{ tonwMonths(0.05, 1.2 * ESS_MONTHLY_COST_CENTS).toFixed(2) }}
@@ -72,7 +84,7 @@
 
       <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.03, 1.2 * TOTAL_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          TONW 3%/ESS+DST+20% (Months)
+          TONW 3%/ESS+DST+20%
         </div>
         <div v-if="!privacy" class="indicator-value">
           {{ tonwMonths(0.03, 1.2 * TOTAL_MONTHLY_COST_CENTS).toFixed(2) }}
@@ -81,7 +93,7 @@
       </div>
       <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.04, 1.2 * TOTAL_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          TONW 4%/ESS+DST+20% (Months)
+          TONW 4%/ESS+DST+20%
         </div>
         <div v-if="!privacy" class="indicator-value">
           {{ tonwMonths(0.04, 1.2 * TOTAL_MONTHLY_COST_CENTS).toFixed(2) }}
@@ -90,37 +102,12 @@
       </div>
       <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.05, 1.2 * TOTAL_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          TONW 5%/ESS+DST+20% (Months)
+          TONW 5%/ESS+DST+20%
         </div>
         <div v-if="!privacy" class="indicator-value">
           {{ tonwMonths(0.05, 1.2 * TOTAL_MONTHLY_COST_CENTS).toFixed(2) }}
         </div>
         <div v-else class="indicator-value">---</div>
-      </div>
-
-      <div class="indicator-derived-entry">
-        <div class="indicator-description">
-          Cash (% of TWO)
-        </div>
-        <div v-if="!privacy" class="indicator-value">
-          {{ (Math.abs(100 * valueOfIndicator('CASH') / valueOfIndicator('TONW'))).toFixed(2) }}
-        </div>
-        <div v-else class="indicator-value">
-          ---
-        </div>
-      </div>
-      <div class="indicator-derived-entry">
-        <div class="indicator-description">
-          Income Active (% of total)
-        </div>
-        <div v-if="!privacy" class="indicator-value">
-          {{
-            (Math.abs(100 * valueOfIndicator('INAT') / (valueOfIndicator('INAT') + (valueOfIndicator('INPS'))))).toFixed(2)
-          }}
-        </div>
-        <div v-else class="indicator-value">
-          ---
-        </div>
       </div>
     </div>
 
@@ -129,7 +116,10 @@
 
 <script lang="ts">
 import ToolBar from "@/components/ToolBar.vue";
-import { ESS_MONTHLY_COST_CENTS, TOTAL_MONTHLY_COST_CENTS, INVESTMENT_RETURN_RATE, INDICATORS_INFO } from "@/constants";
+import {
+  ESS_MONTHLY_COST_CENTS, TOTAL_MONTHLY_COST_CENTS, INVESTMENT_RETURN_RATE, INDICATORS_INFO,
+  DST_MONTHLY_COST_CENTS
+} from '@/constants'
 import { formatMoney, formatCount } from '@/utils/format'
 import { useIndicators, useYearFilter, useSettings } from '@/composables';
 import { toRef } from 'vue';
@@ -172,6 +162,9 @@ export default {
     }
   },
   methods: {
+    DST_MONTHLY_COST_CENTS() {
+      return DST_MONTHLY_COST_CENTS
+    },
     onPrivacyChange(value) {
       this.setPrivacy(value)
     },
@@ -262,7 +255,7 @@ export default {
 }
 
 .indicator-fi-achieved {
-  color: #90A959;
+  color: var(--color-amount-positive);
 }
 
 .indicator-bold {
@@ -270,10 +263,10 @@ export default {
 }
 
 .value-positive {
-  color: #90A959;
+  color: var(--color-amount-positive);
 }
 
 .value-negative {
-  color: #FF7070;
+  color: var(--color-amount-negative);
 }
 </style>

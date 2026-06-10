@@ -29,6 +29,8 @@
     --color-button-neutral: lightgrey;
     --color-row-alt: rgba(0, 0, 0, 0.05);
     --color-muted-text: grey;
+    --color-amount-negative: #A63D40;
+    --color-amount-positive: #90A959;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -48,6 +50,7 @@
         --color-button-neutral: #505050;
         --color-row-alt: rgba(255, 255, 255, 0.07);
         --color-muted-text: #dddddd;
+        --color-amount-negative: #FF7070;
     }
 }
 
@@ -67,6 +70,7 @@
     --color-button-neutral: #505050;
     --color-row-alt: rgba(255, 255, 255, 0.07);
     --color-muted-text: #dddddd;
+    --color-amount-negative: #FF7070;
 }
 
 input, select, textarea {

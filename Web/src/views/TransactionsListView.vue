@@ -326,12 +326,12 @@ export default {
 }
 
 .compact-negative {
-  color: #FF7070;
+  color: var(--color-amount-negative);
   text-align: right;
 }
 
 .compact-positive {
-  color: #90A959;
+  color: var(--color-amount-positive);
   text-align: right;
 }
 </style>
