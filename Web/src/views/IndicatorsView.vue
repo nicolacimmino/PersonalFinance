@@ -32,32 +32,10 @@
       </div>
       <div class="indicator-derived-entry">
         <div class="indicator-description">
-          CASH/ESS (months)
+          CASH/ESS (Months)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ formatCount(valueOfIndicator('CASH') / ESS_MONTHLY_COST_CENTS) }}
-        </div>
-        <div v-else class="indicator-value">
-          ---
-        </div>
-      </div>
-      <div class="indicator-derived-entry">
-        <div class="indicator-description">
-          IP12/ESS (months)
-        </div>
-        <div v-if="!privacy" class="indicator-value">
-          {{ formatCount(valueOfIndicator('IP12') / ESS_MONTHLY_COST_CENTS) }}
-        </div>
-        <div v-else class="indicator-value">
-          ---
-        </div>
-      </div>
-      <div class="indicator-derived-entry">
-        <div class="indicator-description">
-          IP12/ESS+DST (months)
-        </div>
-        <div v-if="!privacy" class="indicator-value">
-          {{ formatCount(valueOfIndicator('IP12') / TOTAL_MONTHLY_COST_CENTS) }}
+          {{ (valueOfIndicator('CASH') / ESS_MONTHLY_COST_CENTS).toFixed(2) }}
         </div>
         <div v-else class="indicator-value">
           ---
@@ -66,56 +44,56 @@
 
       <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.03, 1.2 * ESS_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          TONW 3%/ESS+20%
+          TONW 3%/ESS+20% (Months)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ tonwMonths(0.03, 1.2 * ESS_MONTHLY_COST_CENTS) }}
+          {{ tonwMonths(0.03, 1.2 * ESS_MONTHLY_COST_CENTS).toFixed(2) }}
         </div>
         <div v-else class="indicator-value">---</div>
       </div>
       <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.04, 1.2 * ESS_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          TONW 4%/ESS+20%
+          TONW 4%/ESS+20% (Months)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ tonwMonths(0.04, 1.2 * ESS_MONTHLY_COST_CENTS) }}
+          {{ tonwMonths(0.04, 1.2 * ESS_MONTHLY_COST_CENTS).toFixed(2) }}
         </div>
         <div v-else class="indicator-value">---</div>
       </div>
       <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.05, 1.2 * ESS_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          TONW 5%/ESS+20%
+          TONW 5%/ESS+20% (Months)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ tonwMonths(0.05, 1.2 * ESS_MONTHLY_COST_CENTS) }}
+          {{ tonwMonths(0.05, 1.2 * ESS_MONTHLY_COST_CENTS).toFixed(2) }}
         </div>
         <div v-else class="indicator-value">---</div>
       </div>
 
       <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.03, 1.2 * TOTAL_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          TONW 3%/ESS+DST+20%
+          TONW 3%/ESS+DST+20% (Months)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ tonwMonths(0.03, 1.2 * TOTAL_MONTHLY_COST_CENTS) }}
+          {{ tonwMonths(0.03, 1.2 * TOTAL_MONTHLY_COST_CENTS).toFixed(2) }}
         </div>
         <div v-else class="indicator-value">---</div>
       </div>
       <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.04, 1.2 * TOTAL_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          TONW 4%/ESS+DST+20%
+          TONW 4%/ESS+DST+20% (Months)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ tonwMonths(0.04, 1.2 * TOTAL_MONTHLY_COST_CENTS) }}
+          {{ tonwMonths(0.04, 1.2 * TOTAL_MONTHLY_COST_CENTS).toFixed(2) }}
         </div>
         <div v-else class="indicator-value">---</div>
       </div>
       <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.05, 1.2 * TOTAL_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          TONW 5%/ESS+DST+20%
+          TONW 5%/ESS+DST+20% (Months)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ tonwMonths(0.05, 1.2 * TOTAL_MONTHLY_COST_CENTS) }}
+          {{ tonwMonths(0.05, 1.2 * TOTAL_MONTHLY_COST_CENTS).toFixed(2) }}
         </div>
         <div v-else class="indicator-value">---</div>
       </div>
@@ -125,7 +103,7 @@
           Cash (% of TWO)
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ (Math.abs(100 * valueOfIndicator('CASH') / valueOfIndicator('TONW'))).toFixed(1) }}
+          {{ (Math.abs(100 * valueOfIndicator('CASH') / valueOfIndicator('TONW'))).toFixed(2) }}
         </div>
         <div v-else class="indicator-value">
           ---
@@ -137,7 +115,7 @@
         </div>
         <div v-if="!privacy" class="indicator-value">
           {{
-            (Math.abs(100 * valueOfIndicator('INAT') / (valueOfIndicator('INAT') + (valueOfIndicator('INPS'))))).toFixed(1)
+            (Math.abs(100 * valueOfIndicator('INAT') / (valueOfIndicator('INAT') + (valueOfIndicator('INPS'))))).toFixed(2)
           }}
         </div>
         <div v-else class="indicator-value">
@@ -203,7 +181,7 @@ export default {
     formatMoney,
     formatCount,
     tonwMonths(rate: number, monthlyBaseCents: number): number {
-      return Math.floor((rate * this.valueOfIndicator('TONW')) / monthlyBaseCents);
+      return Math.floor(100 * (rate * this.valueOfIndicator('TONW')) / monthlyBaseCents) / 100;
     },
     fiClass(value: number): string {
       return (!this.privacy && value >= 12) ? 'indicator-fi-achieved' : '';
