@@ -9,26 +9,16 @@
       Loading...
     </div>
     <div v-else>
-      <div class="indicator-header">
-        <div class="indicator-label">
-          Indicator
-        </div>
-        <div class="indicator-description">
-
-        </div>
-        <div class="indicator-value">
-
-        </div>
-      </div>
-      <template v-for="indicator in orderedIndicators" v-bind:key="indicator.label">
-        <div class="indicator-entry">
+      <template v-for="group in groupedIndicators" v-bind:key="group.name">
+        <div class="indicator-header">{{ group.name }}</div>
+        <div v-for="indicator in group.items" v-bind:key="indicator.label" class="indicator-entry" :class="{ 'indicator-bold': indicator.bold }">
           <div class="indicator-label">
             {{ indicator.label }}
           </div>
           <div class="indicator-description">
-            {{ labelToDescription(indicator.label) }}
+            {{ indicator.description }}
           </div>
-          <div v-if="!privacy" class="indicator-value">
+          <div v-if="!privacy" class="indicator-value" :class="indicator.totalCents < 0 ? 'value-negative' : 'value-positive'">
             {{ formatMoney(indicator.totalCents) }}
           </div>
           <div v-else class="indicator-value">
@@ -161,7 +151,7 @@
 
 <script lang="ts">
 import ToolBar from "@/components/ToolBar.vue";
-import { ESS_MONTHLY_COST_CENTS, TOTAL_MONTHLY_COST_CENTS, INVESTMENT_RETURN_RATE, INDICATOR_ORDER } from "@/constants";
+import { ESS_MONTHLY_COST_CENTS, TOTAL_MONTHLY_COST_CENTS, INVESTMENT_RETURN_RATE, INDICATORS_INFO } from "@/constants";
 import { formatMoney, formatCount } from '@/utils/format'
 import { useIndicators, useYearFilter, useSettings } from '@/composables';
 import { toRef } from 'vue';
@@ -180,15 +170,19 @@ export default {
     loaded() {
       return !this.isLoading;
     },
-    orderedIndicators() {
-      const indexed = Object.fromEntries(
-        INDICATOR_ORDER.map((label, i) => [label, i])
-      );
-      return [...this.indicators].sort((a, b) => {
-        const ai = indexed[a.label] ?? Infinity;
-        const bi = indexed[b.label] ?? Infinity;
-        return ai - bi;
+    groupedIndicators() {
+      const byLabel = Object.fromEntries(this.indicators.map(ind => [ind.label, ind]));
+      const seen = new Set<string>();
+      const groups = INDICATORS_INFO.map(({ group, indicators }) => {
+        const items = indicators.flatMap(({ indicator, bold, description }) => {
+          seen.add(indicator);
+          return byLabel[indicator] ? [{ ...byLabel[indicator], bold: bold ?? false, description: description ?? '' }] : [];
+        });
+        return { name: group, items };
       });
+      const remaining = this.indicators.filter(ind => !seen.has(ind.label));
+      if (remaining.length) groups.push({ name: '', items: remaining.map(ind => ({ ...ind, bold: false, description: '' })) });
+      return groups;
     }
   },
   data() {
@@ -213,39 +207,6 @@ export default {
     },
     fiClass(value: number): string {
       return (!this.privacy && value >= 12) ? 'indicator-fi-achieved' : '';
-    },
-    labelToDescription(type: string) {
-      switch (type.substring(0, 4)) {
-        case 'CASH':
-          return "Cash"
-        case 'TONW':
-          return "Total Net Worth"
-        case 'CFAT':
-          return "Cash Flow Active"
-        case 'CFOA':
-          return "Cash Flow"
-        case 'INVT':
-          return "Investments"
-        case 'EXPE':
-          return "Expenses"
-        case 'INAT':
-          return "Income Active"
-        case 'INPS':
-          return "Income Passive"
-        case 'IP12':
-          return "Income Passive Last 12 Months"
-        case 'IA12':
-          return "Income Active Last 12 Months"
-        case 'DS12':
-          return "DST Last 12 Months"
-        case 'ES12':
-          return "ESS Last 12 Months"
-        default:
-          if (type.substring(0, 1) == "C") {
-            return type.substring(1, 4) + " in EUR"
-          }
-          return "Other"
-      }
     }
   }
 }
@@ -263,6 +224,18 @@ export default {
   font-weight: bold;
   background-color: var(--color-negative-background);
   color: var(--color-negative-text);
+}
+
+.indicator-subheader {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: var(--pf-text-font-size);
+  font-weight: bold;
+  color: var(--color-negative-background);
 }
 
 .indicator-entry {
@@ -312,5 +285,17 @@ export default {
 
 .indicator-fi-achieved {
   color: #90A959;
+}
+
+.indicator-bold {
+  font-weight: bold;
+}
+
+.value-positive {
+  color: #90A959;
+}
+
+.value-negative {
+  color: #FF7070;
 }
 </style>

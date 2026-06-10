@@ -34,19 +34,46 @@ export const INVESTMENT_RETURN_RATE = 0.06; // 6% annual return
 export const CENTS_TO_CURRENCY = 100.0;
 
 /**
- * Display order for the indicators table.
- * Indicators are shown in this order; any label not listed appears at the end.
- * Edit this array to control the order without touching view logic.
+ * Grouped display order for the indicators table.
+ * Each entry defines a group name and the ordered list of indicator labels in that group.
+ * Indicators not listed in any group appear at the end under an implicit empty group.
  */
-export const INDICATOR_ORDER: string[] = [
-  'TONW',
-  'CASH',
-  'INVT',
-  'EXPE',
-  'IP12',
-  'IA12',
-  'INPS',
-  'INAT',
-  'CFAT',
-  'CFOA'
+export type IndicatorConfig = { indicator: string; bold?: boolean; description?: string }
+
+export const INDICATORS_INFO: { group: string; indicators: IndicatorConfig[] }[] = [
+  {
+    group: 'Net Worth',
+    indicators: [
+      { indicator: 'CASH', description: 'Cash' },
+      { indicator: 'INVT', description: 'Investments' },
+      { indicator: 'TONW', bold: true, description: 'Total Net Worth' }
+    ]
+  },
+  {
+    group: 'Cash Flow YTD',
+    indicators: [
+      { indicator: 'INPS', description: 'Income Passive' },
+      { indicator: 'INAT', description: 'Income Active' },
+      { indicator: 'INOO', description: 'Income One Off' },
+      { indicator: 'EXPE', description: 'Expenses' },
+      { indicator: 'CFOA', description: 'Cash Flow', bold: true }
+    ]
+  },
+  {
+    group: 'Past 12 Months',
+    indicators: [
+      { indicator: 'IP12', description: 'Income Passive' },
+      { indicator: 'IA12', description: 'Income Active' },
+      { indicator: 'OO12', description: 'Income One Off' },
+      { indicator: 'EX12', description: 'Expenses' },
+      { indicator: 'CF12', description: 'Cash Flow', bold: true }
+    ]
+  },
+  {
+    group: 'Budgets Alignment 12 Months',
+    indicators: [
+      { indicator: 'ES12', description: 'Expenses ESS' },
+      { indicator: 'DS12', description: 'Expenses DST' },
+    ]
+  }
 ]
