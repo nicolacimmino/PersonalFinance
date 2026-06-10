@@ -74,58 +74,58 @@
         </div>
       </div>
 
-      <div class="indicator-derived-entry" :class="fiClass(invtMonths(0.03, 1.2 * ESS_MONTHLY_COST_CENTS))">
+      <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.03, 1.2 * ESS_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          INVT 3%/ESS+20%
+          TONW 3%/ESS+20%
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ invtMonths(0.03, 1.2 * ESS_MONTHLY_COST_CENTS) }}
+          {{ tonwMonths(0.03, 1.2 * ESS_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">---</div>
       </div>
-      <div class="indicator-derived-entry" :class="fiClass(invtMonths(0.04, 1.2 * ESS_MONTHLY_COST_CENTS))">
+      <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.04, 1.2 * ESS_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          INVT 4%/ESS+20%
+          TONW 4%/ESS+20%
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ invtMonths(0.04, 1.2 * ESS_MONTHLY_COST_CENTS) }}
+          {{ tonwMonths(0.04, 1.2 * ESS_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">---</div>
       </div>
-      <div class="indicator-derived-entry" :class="fiClass(invtMonths(0.05, 1.2 * ESS_MONTHLY_COST_CENTS))">
+      <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.05, 1.2 * ESS_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          INVT 5%/ESS+20%
+          TONW 5%/ESS+20%
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ invtMonths(0.05, 1.2 * ESS_MONTHLY_COST_CENTS) }}
+          {{ tonwMonths(0.05, 1.2 * ESS_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">---</div>
       </div>
 
-      <div class="indicator-derived-entry" :class="fiClass(invtMonths(0.03, 1.2 * TOTAL_MONTHLY_COST_CENTS))">
+      <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.03, 1.2 * TOTAL_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          INVT 3%/ESS+DST+20%
+          TONW 3%/ESS+DST+20%
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ invtMonths(0.03, 1.2 * TOTAL_MONTHLY_COST_CENTS) }}
+          {{ tonwMonths(0.03, 1.2 * TOTAL_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">---</div>
       </div>
-      <div class="indicator-derived-entry" :class="fiClass(invtMonths(0.04, 1.2 * TOTAL_MONTHLY_COST_CENTS))">
+      <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.04, 1.2 * TOTAL_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          INVT 4%/ESS+DST+20%
+          TONW 4%/ESS+DST+20%
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ invtMonths(0.04, 1.2 * TOTAL_MONTHLY_COST_CENTS) }}
+          {{ tonwMonths(0.04, 1.2 * TOTAL_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">---</div>
       </div>
-      <div class="indicator-derived-entry" :class="fiClass(invtMonths(0.05, 1.2 * TOTAL_MONTHLY_COST_CENTS))">
+      <div class="indicator-derived-entry" :class="fiClass(tonwMonths(0.05, 1.2 * TOTAL_MONTHLY_COST_CENTS))">
         <div class="indicator-description">
-          INVT 5%/ESS+DST+20%
+          TONW 5%/ESS+DST+20%
         </div>
         <div v-if="!privacy" class="indicator-value">
-          {{ invtMonths(0.05, 1.2 * TOTAL_MONTHLY_COST_CENTS) }}
+          {{ tonwMonths(0.05, 1.2 * TOTAL_MONTHLY_COST_CENTS) }}
         </div>
         <div v-else class="indicator-value">---</div>
       </div>
@@ -208,8 +208,8 @@ export default {
     },
     formatMoney,
     formatCount,
-    invtMonths(rate: number, monthlyBaseCents: number): number {
-      return Math.floor((rate * this.valueOfIndicator('INVT')) / monthlyBaseCents);
+    tonwMonths(rate: number, monthlyBaseCents: number): number {
+      return Math.floor((rate * this.valueOfIndicator('TONW')) / monthlyBaseCents);
     },
     fiClass(value: number): string {
       return (!this.privacy && value >= 12) ? 'indicator-fi-achieved' : '';
@@ -236,6 +236,10 @@ export default {
           return "Income Passive Last 12 Months"
         case 'IA12':
           return "Income Active Last 12 Months"
+        case 'DS12':
+          return "DST Last 12 Months"
+        case 'ES12':
+          return "ESS Last 12 Months"
         default:
           if (type.substring(0, 1) == "C") {
             return type.substring(1, 4) + " in EUR"
